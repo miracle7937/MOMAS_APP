@@ -1,0 +1,36 @@
+
+
+
+class Routes{
+  static const String _baseURL = "https://momas.tomitechltd.com/api";
+  static String login = "$_baseURL/login";
+  static String buyAirtime = "$_baseURL/buy-airtime";
+  static String buyData = "$_baseURL/buy-data";
+  static String getData = "$_baseURL/get-data";
+  static String register = "$_baseURL/register";
+  static String checkEmail = "$_baseURL/check-email";
+  static String verifyEmail = "$_baseURL/validate-email";
+  static String balance = "$_baseURL/balance";
+  static String pay = "$_baseURL/pay";
+  static String getTransaction = "$_baseURL/get-transactions";
+  static String serviceProperties = "$_baseURL/service-properties";
+  static String serviceSearch = "$_baseURL/service-search";
+  static String features = "$_baseURL/features";
+  static String promo = "$_baseURL/promotion";
+  static String getEstate = "$_baseURL/get-estate";
+  static String setDefault = "$_baseURL/set-default";
+  static String generateToken = "$_baseURL/generate-token";
+  static String getUser = "$_baseURL/getUser";
+  static String saveComment = "$_baseURL/save-comment";
+  static String getComment = "$_baseURL/get-comment";
+  static String cablePlan = "$_baseURL/cable-plan";
+  static String buyCable = "$_baseURL/buy-cable";
+  static String validateCable = "$_baseURL/validate-cable";
+  static String vereifyMomasMeter = "$_baseURL/validate";
+  static String payMomasMeter = "$_baseURL/buy-meter";
+  static String buyMeterOthers = "$_baseURL/buy-meter-others";
+  static String reprintMeter = "$_baseURL/reprint-token";
+  static String deleteUser = "$_baseURL/delete-user";
+  static String support = "$_baseURL/support";
+  static String requestMeter = "$_baseURL/request-meter";
+}
