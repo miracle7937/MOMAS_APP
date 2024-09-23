@@ -16,7 +16,8 @@ void showErrorBottomSheet(BuildContext context, String errorMessage) {
           children: <Widget>[
             SizedBox(
                 height: 100,
-                child: Lottie.asset(MoImage.error, repeat: false, fit: BoxFit.fill)),
+                child: Lottie.asset(MoImage.error,
+                    repeat: false, fit: BoxFit.fill)),
             const SizedBox(height: 16),
             const Text(
               'An Error Occurred!',
@@ -38,7 +39,8 @@ void showErrorBottomSheet(BuildContext context, String errorMessage) {
             MoButton(
               onTap: () {
                 Navigator.of(ctx).pop();
-              }, title: 'Dismiss',
+              },
+              title: 'Dismiss',
             ),
           ],
         ),
@@ -48,7 +50,7 @@ void showErrorBottomSheet(BuildContext context, String errorMessage) {
 }
 
 Future showSuccessBottomSheet(BuildContext context, String successMessage) {
- return showModalBottomSheet(
+  return showModalBottomSheet(
     context: context,
     builder: (ctx) => Padding(
       padding: const EdgeInsets.all(12.0),
@@ -59,7 +61,8 @@ Future showSuccessBottomSheet(BuildContext context, String successMessage) {
           children: <Widget>[
             SizedBox(
                 height: MediaQuery.of(context).size.height * 0.15,
-                child: Lottie.asset(MoImage.lottieSuccess, repeat: false, fit: BoxFit.fill)),
+                child: Lottie.asset(MoImage.lottieSuccess,
+                    repeat: false, fit: BoxFit.fill)),
             const SizedBox(height: 16),
             const Text(
               'Success!',
@@ -80,6 +83,7 @@ Future showSuccessBottomSheet(BuildContext context, String successMessage) {
             const SizedBox(height: 16),
             MoButton(
               onTap: () {
+                Navigator.of(ctx).pop();
                 Navigator.of(ctx).pop();
               },
               title: 'Dismiss',

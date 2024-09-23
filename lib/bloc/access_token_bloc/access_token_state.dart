@@ -31,6 +31,11 @@ class SetEstateSuccess extends AccessTokenState {
 
   const SetEstateSuccess(this.message);
 }
+class VerifyTokenSuccess extends AccessTokenState {
+  final String message;
+
+  const VerifyTokenSuccess(this.message);
+}
 
 class GenerateTokenSuccess extends AccessTokenState {
   final GenerateTokenResponse data;

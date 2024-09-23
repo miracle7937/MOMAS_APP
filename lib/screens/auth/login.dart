@@ -176,9 +176,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                             snapshot.data?[1] == true)
                                         ? InkWell(
                                             onTap: () {
-                                              context.read<LoginBloc>().add(
-                                                  UserLoginEvent(
-                                                      snapshot.data?[0]));
+                                            BioMetric().authenticate().then((v){
+                                              if(v ==true){
+                                                context.read<LoginBloc>().add(
+                                                    UserLoginEvent(
+                                                        snapshot.data?[0]));
+                                              }
+                                            });
                                             },
                                             child: Image.asset(
                                                 MoImage.fingerPrint))

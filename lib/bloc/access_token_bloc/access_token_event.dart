@@ -33,3 +33,12 @@ class GenerateTokenEvent extends AccessTokenEvent {
   @override
   List<Object> get props => [data];
 }
+
+
+class VerifyAccessToken extends AccessTokenEvent {
+  final String token;
+  const VerifyAccessToken(this.token);
+
+  @override
+  List<Object> get props => [];
+}

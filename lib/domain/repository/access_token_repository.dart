@@ -8,25 +8,37 @@ import '../data/response/user_model.dart';
 import '../request.dart';
 
 class AccessTokenRepository {
-
   final ServerRequest _request = ServerRequest();
+
   Future<EstateResponse> getEstate() async {
-    var response = await _request.getData(path: Routes.getEstate,);
+    var response = await _request.getData(
+      path: Routes.getEstate,
+    );
     return EstateResponse.fromJson(response.data);
   }
 
-  Future<GenericResponse> setEstate(SetEstateRequest  request) async {
-    var response = await _request.postData(path: Routes.setDefault, body: request.toJson() );
+  Future<GenericResponse> setEstate(SetEstateRequest request) async {
+    var response = await _request.postData(
+        path: Routes.setDefault, body: request.toJson());
     return GenericResponse.fromJson(response.data);
   }
 
-  Future<GenericResponse> generateToken(GenerateTokenRequest  request) async {
-    var response = await _request.postData(path: Routes.generateToken, body: request.toJson() );
+  Future<GenericResponse> generateToken(GenerateTokenRequest request) async {
+    var response = await _request.postData(
+        path: Routes.generateToken, body: request.toJson());
     return GenericResponse.fromJson(response.data);
   }
 
   Future<UserModel> getUser() async {
-    var response = await _request.getData(path: Routes.getUser, );
+    var response = await _request.getData(
+      path: Routes.getUser,
+    );
     return UserModel.fromJson(response.data);
+  }
+
+  Future<GenericResponse> verifyToken(String token) async {
+    var response = await _request
+        .postData(path: Routes.approveToken, body: {"token_id": token});
+    return GenericResponse.fromJson(response.data);
   }
 }

@@ -38,6 +38,7 @@ class MoImage{
 
   static String flutterWave =  "$root/flutterwave-logo.png";
   static String payStack =  "$root/paystack.png";
+  static String remita =  "$root/remita.png";
   static String walletPayment =  "$root/wallet_payment.png";
   static String profilePic =  "$root/profile-pics.png";
   static String technician =  "$root/technician.png";

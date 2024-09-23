@@ -32,7 +32,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             emit(PaymentSuccess(url: response.url ?? ""));
           }
         } else {
-          emit(const PaymentFailure(error: 'Network error'));
+          emit(PaymentFailure(error: response.message ?? 'Network error'));
         }
       } catch (e) {
         emit(PaymentFailure(error: e.toString()));
@@ -55,4 +55,4 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   }
 }
 
-enum PaymentType { paystack, wallet, flutterwave }
+enum PaymentType { paystack, wallet, flutterwave, remita }

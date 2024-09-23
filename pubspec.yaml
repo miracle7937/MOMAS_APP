@@ -31,6 +31,9 @@ dependencies:
   screenshot: ^3.0.0
   share_plus: ^10.0.1
   icons_launcher:
+  fl_chart: ^0.68.0
+  carousel_slider:
+  flutter_native_contact_picker: ^0.0.7
 
 
 dev_dependencies:

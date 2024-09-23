@@ -37,6 +37,7 @@ class ServerRequest {
       response = await http.get(url, headers: header);
       var data = jsonDecode(response.body);
       log("$data  route: $path  status: ${response.statusCode}");
+      log("route: $path  status: ${response.statusCode}");
 
       if (response.statusCode == 401) {
         Navigator.of(NavigationService.navigatorKey.currentContext!)

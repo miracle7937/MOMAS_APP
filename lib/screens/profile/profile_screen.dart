@@ -36,8 +36,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
   load() async {
-    user = await SharedPreferenceHelper.getUser();
     settingsBloc = SettingsBloc(SettingRepository());
+    user = await SharedPreferenceHelper.getUser();
 
   }
 
@@ -203,3 +203,5 @@ class OptionTile extends StatelessWidget {
     );
   }
 }
+
+//momaspay

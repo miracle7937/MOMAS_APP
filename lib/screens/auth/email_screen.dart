@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:momas_pay/screens/auth/login.dart';
 
 import '../../bloc/registeration_bloc/register_bloc.dart';
 import '../../bloc/registeration_bloc/register_event.dart';
@@ -31,7 +33,9 @@ class _EmailScreenState extends State<EmailScreen> {
       child: Scaffold(
         backgroundColor: MoColors.mainColorII,
         body: BlocProvider(
-          create: (context) => RegisterBloc(AuthService(AuthRepository())),
+          create: (context) =>
+              RegisterBloc(AuthService(AuthRepository()))
+          ,
           child: BlocConsumer<RegisterBloc, RegisterState>(
             builder: (context, snapshot) {
               return SingleChildScrollView(
@@ -40,8 +44,14 @@ class _EmailScreenState extends State<EmailScreen> {
                     Container(
                       color: Colors.white,
                       child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.3,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.3,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             stops: const [0.5, 0.8],
@@ -58,33 +68,38 @@ class _EmailScreenState extends State<EmailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Spacer(),
+
                             Center(child: Image.asset(MoImage.logo)),
-                            const Spacer(),
                             const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   "Email Verification",
                                   style: TextStyle(
-                                      fontSize: 32, color: Colors.white),
+                                      fontSize: 22, color: Colors.white),
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 30,
-                            ),
+                            // const SizedBox(
+                            //   height: 30,
+                            // ),
                           ],
                         ),
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.7,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.7,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius:
-                            BorderRadius.only(topLeft: Radius.circular(100)),
+                        BorderRadius.only(topLeft: Radius.circular(100)),
                       ),
                       child: Column(
                         children: [
@@ -101,7 +116,10 @@ class _EmailScreenState extends State<EmailScreen> {
                             title: "Email",
                           ),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.1,
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.1,
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -136,6 +154,14 @@ class _EmailScreenState extends State<EmailScreen> {
                                 ),
                                 TextSpan(
                                   text: 'Login',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator
+                                          .of(context)
+                                          .push(
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                              const LoginScreen()));},
                                   style: TextStyle(
                                       color: MoColors.mainColor, fontSize: 14),
                                 ),
@@ -157,7 +183,8 @@ class _EmailScreenState extends State<EmailScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => EmailCodeScreen(
+                          builder: (_) =>
+                              EmailCodeScreen(
                                 email: state.email,
                               )));
                 case EmailCheckFail():

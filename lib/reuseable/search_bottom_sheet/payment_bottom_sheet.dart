@@ -1,22 +1,29 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:momas_pay/domain/repository/payment_repository.dart';
 import 'package:momas_pay/utils/colors.dart';
 import 'package:momas_pay/utils/images.dart';
+import 'package:momas_pay/utils/strings.dart';
 
 import '../../bloc/payment_bloc/payment_bloc.dart';
 import '../../bloc/payment_bloc/payment_event.dart';
 import '../../bloc/payment_bloc/payment_state.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../domain/data/response/user_model.dart';
+import '../../utils/keyboard_utils.dart';
+import '../../utils/shared_pref.dart';
+import '../error_modal.dart';
+
 class PaymentBottomSheet extends StatefulWidget {
   final String amount;
+  final String? service;
+
   final Function(String ref)? onPayment;
 
-  const PaymentBottomSheet({super.key, required this.amount, this.onPayment});
+  const PaymentBottomSheet(
+      {super.key, required this.amount, this.onPayment, this.service});
 
   @override
   State<PaymentBottomSheet> createState() => _PaymentBottomSheetState();
@@ -24,10 +31,12 @@ class PaymentBottomSheet extends StatefulWidget {
 
 class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
   late PaymentBloc paymentBloc;
+  User? user;
 
   @override
   void initState() {
     super.initState();
+    load();
     paymentBloc = PaymentBloc(PaymentRepository());
   }
 
@@ -40,6 +49,10 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
     paymentBloc.add(
       MakePayment(payType: type, amount: widget.amount),
     );
+  }
+
+  load() async {
+    user = await SharedPreferenceHelper.getUser();
   }
 
   @override
@@ -99,35 +112,36 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'NGN2,000',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    Text(
+                      'NGN${widget.amount ?? ''}',
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.w700),
                     ),
-                    Image.network(
-                      'https://via.placeholder.com/50',
-                      // Replace with your image URL
-                      width: 50,
-                      height: 50,
+                    Text(
+                      widget.service ?? "",
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 _buildPaymentOption(
                     context, 'Pay with Paystack', MoImage.payStack,
-                    onTap: () =>
-                        _onPaymentOptionTap(PaymentType.paystack)),
+                    onTap: () => _onPaymentOptionTap(PaymentType.paystack)),
+                const SizedBox(height: 10),
+                _buildPaymentOption(context, 'Pay with Remita', MoImage.remita,
+                    onTap: () => _onPaymentOptionTap(PaymentType.remita)),
                 const SizedBox(height: 10),
                 _buildPaymentOption(
                     context, 'Pay with Flutterwave', MoImage.flutterWave,
-                    onTap: () =>
-                        _onPaymentOptionTap(PaymentType.flutterwave)),
+                    onTap: () => _onPaymentOptionTap(PaymentType.flutterwave)),
                 const SizedBox(height: 10),
                 _buildPaymentOption(
                     context, 'Pay with wallet', MoImage.walletPayment,
-                    additionalInfo: 'NGN ${widget.amount}.',
-                    onTap: () =>
-                        _onPaymentOptionTap(PaymentType.wallet)),
+                    additionalInfo: isNotEmpty(user?.mainWallet.toString())
+                        ? 'NGN ${user?.mainWallet}.'
+                        : "",
+                    onTap: () => _onPaymentOptionTap(PaymentType.wallet)),
               ],
             ),
           );
@@ -145,24 +159,24 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
               if (value["status"] == "success") {
                 widget.onPayment!(value["ref"]);
                 Navigator.pop(context);
-
               }
             });
-          } else if(state is  PaymentWalletSuccess){
-              widget.onPayment!(state.ref);
-              Navigator.pop(context);
-
-          }
-
-          else if (state is PaymentFailure) {
+          } else if (state is PaymentWalletSuccess) {
+            widget.onPayment!(state.ref);
+            Navigator.pop(context);
+          } else if (state is PaymentFailure) {
             setState(() {
               isLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(
+            //       content: Text(
+            //     state.error,
+            //     style: const TextStyle(color: Colors.black),
+            //   )),
+            // );
             Navigator.pop(context);
-
+            showErrorBottomSheet(context, state.error);
           }
         },
       ),
@@ -243,6 +257,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
           onNavigationRequest: (NavigationRequest request) {
             Uri uri = Uri.parse(request.url);
             bool containsPayment = uri.toString().contains('payment');
+
             if (containsPayment == true) {
               String? ref = uri.queryParameters['ref'];
               String? status = uri.queryParameters['status'];

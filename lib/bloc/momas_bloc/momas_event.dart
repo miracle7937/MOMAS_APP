@@ -19,8 +19,6 @@ class MomasVerification extends MomasPaymentEvent {
   List<Object> get props => [meterNo];
 }
 
-
-
 class MomasMeterPayment extends MomasPaymentEvent {
   final MomasPaymentType paymentType;
   final String amount, meterType, trxref;
@@ -41,5 +39,4 @@ class MomasMeterPayment extends MomasPaymentEvent {
 
 class MomasPaymentHistory extends MomasPaymentEvent {
   const MomasPaymentHistory();
-
 }

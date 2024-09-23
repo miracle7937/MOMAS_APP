@@ -1,7 +1,3 @@
-
-
-
-
 class UserModel {
   bool? status;
   User? user;
@@ -52,35 +48,36 @@ class User {
   FlutterWaveKeys? flutterWaveKeys;
   PayStackKeys? payStackKeys;
   UserRole? userRole;
-
+  Purchase? purchase;
 
   User(
       {this.id,
-        this.firstName,
-        this.lastName,
-        this.phone,
-        this.email,
-        this.image,
-        this.deviceId,
-        this.mainWallet,
-        this.role,
-        this.code,
-        this.pin,
-        this.gender,
-        this.city,
-        this.state,
-        this.lga,
-        this.meterNo,
-        this.meterType,
-        this.status,
-        this.token,
-        this.meter,
-        this.hno,
-        this.address,
-        this.estateId,
+      this.firstName,
+      this.lastName,
+      this.phone,
+      this.email,
+      this.image,
+      this.deviceId,
+      this.mainWallet,
+      this.role,
+      this.code,
+      this.pin,
+      this.gender,
+      this.city,
+      this.state,
+      this.lga,
+      this.meterNo,
+      this.meterType,
+      this.status,
+      this.token,
+      this.meter,
+      this.hno,
+      this.address,
+      this.estateId,
       this.flutterWaveKeys,
       this.payStackKeys,
-      this.userRole});
+      this.userRole,
+      this.purchase});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -106,14 +103,16 @@ class User {
     hno = json['hno'];
     address = json['address'];
     estateName = json['estate_name'];
-    userRole =json["role"] != null? UserRole.getById(json["role"]): UserRole.none;
+    purchase =
+        json['purchase'] != null ? Purchase.fromJson(json['purchase']) : null;
+    userRole =
+        json["role"] != null ? UserRole.getById(json["role"]) : UserRole.none;
     flutterWaveKeys = json['flutterwave_keys'] != null
         ? new FlutterWaveKeys.fromJson(json['flutterwave_keys'])
         : null;
     payStackKeys = json['paystack_keys'] != null
         ? new PayStackKeys.fromJson(json['paystack_keys'])
         : null;
-
   }
 
   Map<String, dynamic> toJson() {
@@ -139,16 +138,18 @@ class User {
     data['token'] = token;
     data['estate_id'] = estateId;
     data['estate_name'] = estateName;
-    if (this.flutterWaveKeys != null) {
-      data['flutterwave_keys'] = this.flutterWaveKeys!.toJson();
+    if (purchase != null) {
+      data['purchase'] = purchase!.toJson();
     }
-    if (this.payStackKeys != null) {
-      data['paystack_keys'] = this.payStackKeys!.toJson();
+    if (flutterWaveKeys != null) {
+      data['flutterwave_keys'] = flutterWaveKeys!.toJson();
+    }
+    if (payStackKeys != null) {
+      data['paystack_keys'] = payStackKeys!.toJson();
     }
     return data;
   }
 }
-
 
 class PayStackKeys {
   String? paystackSecret;
@@ -163,8 +164,8 @@ class PayStackKeys {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['paystack_secret'] = this.paystackSecret;
-    data['paystack_public'] = this.paystackPublic;
+    data['paystack_secret'] = paystackSecret;
+    data['paystack_public'] = paystackPublic;
     return data;
   }
 }
@@ -182,8 +183,8 @@ class FlutterWaveKeys {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['flutterwave_secret'] = this.flutterWaveSecret;
-    data['flutterwave_public'] = this.flutterWavePublic;
+    data['flutterwave_secret'] = flutterWaveSecret;
+    data['flutterwave_public'] = flutterWavePublic;
     return data;
   }
 }
@@ -199,8 +200,30 @@ enum UserRole {
 
   static UserRole getById(int id) {
     return UserRole.values.firstWhere(
-          (role) => role.id == id,
+      (role) => role.id == id,
       orElse: () => UserRole.none,
     );
+  }
+}
+
+class Purchase {
+  num? minPurchase;
+  num? maxPurchase;
+  num? minVending;
+
+  Purchase({this.minPurchase, this.maxPurchase, this.minVending});
+
+  Purchase.fromJson(Map<String, dynamic> json) {
+    minPurchase = json['min_purchase'];
+    maxPurchase = json['max_purchase'];
+    minVending = json['min_vending'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['min_purchase'] = minPurchase;
+    data['max_purchase'] = maxPurchase;
+    data['min_vending'] = minVending;
+    return data;
   }
 }

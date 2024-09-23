@@ -23,12 +23,12 @@ class MomasPaymentBloc extends Bloc<MomasPaymentEvent, MomasPaymentState> {
     });
   }
 
-  Future onVerify(MomasVerification event,
-      Emitter<MomasPaymentState> emit) async {
+  Future onVerify(
+      MomasVerification event, Emitter<MomasPaymentState> emit) async {
     emit(MomasVerificationLoading());
     try {
-      final MomasVerificationResponse response = await repository
-          .verifyMomasMeter(event.meterNo);
+      final MomasVerificationResponse response =
+          await repository.verifyMomasMeter(event.meterNo);
       if (response.status == true) {
         emit(MomasMeterVerificationState(response: response));
       } else {
@@ -39,21 +39,18 @@ class MomasPaymentBloc extends Bloc<MomasPaymentEvent, MomasPaymentState> {
     }
   }
 
-  Future onPayment(MomasMeterPayment event,
-      Emitter<MomasPaymentState> emit) async {
+  Future onPayment(
+      MomasMeterPayment event, Emitter<MomasPaymentState> emit) async {
     emit(MomasPaymentLoading());
     try {
-      var data = MomasMeterBuy(amount:
-      event.amount,
+      var data = MomasMeterBuy(
+          amount: event.amount,
           trxref: event.trxref,
           meterType: event.meterType,
-          meterNo: event.meterNo
-
-      );
+          meterNo: event.meterNo);
       MomasPaymentResponse? response;
       if (event.paymentType == MomasPaymentType.self) {
-        response = await repository
-            .payMomasMeter(data);
+        response = await repository.payMomasMeter(data);
       } else {
         response = await repository.payOtherMomasMeter(data);
       }
@@ -67,26 +64,23 @@ class MomasPaymentBloc extends Bloc<MomasPaymentEvent, MomasPaymentState> {
     }
   }
 
+  Future onPaymentHistory(
+      MomasPaymentHistory event, Emitter<MomasPaymentState> emit) async {
+    emit(MomasPaymentLoading());
+    try {
+      MeterPaymentResponse response = await repository.getMomasMeterHistory();
 
-
-Future onPaymentHistory(MomasPaymentHistory event,
-    Emitter<MomasPaymentState> emit) async {
-  emit(MomasPaymentLoading());
-  try {
-    MeterPaymentResponse response = await repository.getMomasMeterHistory();
-
-    if (response.status == true) {
-      emit(MomasMeterSuccess(response));
-    } else {
-      emit(MomasPaymentFailure(error: response.message ?? "Payment fails"));
+      if (response.status == true) {
+        emit(MomasMeterSuccess(response));
+      } else {
+        emit(MomasPaymentFailure(error: response.message ?? "Payment fails"));
+      }
+    } catch (e, _) {
+      print(e);
+      print(_);
+      emit(MomasPaymentFailure(error: e.toString()));
     }
-  } catch (e) {
-    emit(MomasPaymentFailure(error: e.toString()));
   }
-}}
-
-
-enum MomasPaymentType {
-  self,
-  others
 }
+
+enum MomasPaymentType { self, others }

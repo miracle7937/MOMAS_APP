@@ -33,4 +33,5 @@ class Routes{
   static String deleteUser = "$_baseURL/delete-user";
   static String support = "$_baseURL/support";
   static String requestMeter = "$_baseURL/request-meter";
+  static String approveToken = "$_baseURL/approve-token";
 }

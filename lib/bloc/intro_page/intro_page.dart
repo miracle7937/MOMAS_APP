@@ -1,11 +1,7 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:momas_pay/domain/data/request/login.dart';
 import 'package:momas_pay/screens/auth/login.dart';
 import 'package:momas_pay/utils/images.dart';
-
-
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -20,55 +16,61 @@ class _IntroPageState extends State<IntroPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.only(bottom: 30.0),
+          child: Stack(
             children: [
-              buildPage(
-                context,
-                image: 'assets/family.png', // replace with your asset
-                title: 'EASY AND SWIFT',
-                description:
-                'Managing your electricity bills just got easier. Pay, track, and manage all your utility payments in one place, anytime, anywhere.',
+              PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                children: [
+                  buildPage(
+                    context,
+                    image: 'assets/family.png', // replace with your asset
+                    title: 'EASY AND SWIFT',
+                    description:
+                        'Managing your electricity bills just got easier. Pay, track, and manage all your utility payments in one place, anytime, anywhere.',
+                  ),
+                  buildPage(
+                    context,
+                    image: 'assets/thinking.png', // replace with your asset
+                    title: 'FRIENDLY AND ENGAGING',
+                    description:
+                        'We\'re excited to have you on Momaspay. Say goodbye to long queues and missed deadlines—pay your electric bills with just a few taps. Let\'s get started!',
+                  ),
+                  buildPage(
+                    context,
+                    image: 'assets/technician.png', // replace with your asset
+                    title: 'GETTING SERVICES',
+                    description:
+                        'Momaspay helps you easily locate the best service providers around you.',
+                  ),
+                ],
               ),
-              buildPage(
-                context,
-                image: 'assets/thinking.png', // replace with your asset
-                title: 'FRIENDLY AND ENGAGING',
-                description:
-                'We\'re excited to have you on Momaspay. Say goodbye to long queues and missed deadlines—pay your electric bills with just a few taps. Let\'s get started!',
-              ),
-              buildPage(
-                context,
-                image: 'assets/technician.png', // replace with your asset
-                title: 'GETTING SERVICES',
-                description:
-                'Momaspay helps you easily locate the best service providers around you.',
+              // Page indicator
+              Positioned(
+                bottom: MediaQuery.of(context).size.height *
+                    0.3, // Position it below the image section
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(3, (index) => buildDot(index)),
+                ),
               ),
             ],
           ),
-          // Page indicator
-          Positioned(
-            bottom: MediaQuery.of(context).size.height*0.3, // Position it below the image section
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(3, (index) => buildDot(index)),
-            ),
-          ),
-        ],
+        ),
+        bottomSheet: _currentIndex == 2
+            ? buildGetStartedButton(context)
+            : buildNextButton(),
       ),
-      bottomSheet: _currentIndex == 2
-          ? buildGetStartedButton(context)
-          : buildNextButton(),
     );
   }
 
@@ -85,17 +87,19 @@ class _IntroPageState extends State<IntroPage> {
     );
   }
 
-  Widget buildPage(BuildContext context, {required String image, required String title, required String description}) {
+  Widget buildPage(BuildContext context,
+      {required String image,
+      required String title,
+      required String description}) {
     return Stack(
       children: [
         // Image section
         Container(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height*0.8,
-            child:  Image.asset(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: Image.asset(
               image,
               fit: BoxFit.cover,
-
             ),
           ),
         ),
@@ -129,7 +133,7 @@ class _IntroPageState extends State<IntroPage> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            height:   MediaQuery.of(context).size.height*0.34,
+            height: MediaQuery.of(context).size.height * 0.34,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
             decoration: BoxDecoration(
               color: Colors.green[700],
@@ -215,7 +219,3 @@ class _IntroPageState extends State<IntroPage> {
     );
   }
 }
-
-
-
-

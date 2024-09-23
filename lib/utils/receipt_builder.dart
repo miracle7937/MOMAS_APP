@@ -7,33 +7,35 @@ import '../domain/data/response/meter_payment_response.dart';
 import '../domain/data/transaction_details.dart';
 
 class ReceiptBuilder {
-
-  List<TransactionDetail> accessToken(TokenData data){
+  List<TransactionDetail> accessToken(TokenData data) {
     return [
-      TransactionDetail(label: 'Service:', value:  data.service),
+      TransactionDetail(label: 'Service:', value: data.service),
       TransactionDetail(label: 'Address:', value: data.address),
-      TransactionDetail(label: 'Name:',value:  data.name),
+      TransactionDetail(label: 'Name:', value: data.name),
       TransactionDetail(label: 'Token:', value: data.token.toString() ?? ""),
     ];
   }
 
-  List<TransactionDetail> meterPayment(MomasPaymentData data){
+  List<TransactionDetail> meterPayment(MomasPaymentData data) {
     return [
-      TransactionDetail(label: 'Service:', value:  data.service),
+      TransactionDetail(label: 'Service:', value: data.service),
       TransactionDetail(label: 'Address:', value: data.address),
-      TransactionDetail(label: 'Name:',value:  data.fullName),
+      TransactionDetail(label: 'Name:', value: data.fullName),
       TransactionDetail(label: 'Token:', value: data.token.toString() ?? ""),
       TransactionDetail(label: 'Date:', value: data.date.toString() ?? ""),
     ];
   }
 
-  List<TransactionDetail> meterHistory(MeterData data){
+  List<TransactionDetail> meterHistory(MeterData data) {
     return [
-      TransactionDetail(label: 'Order ID:', value:  data.orderId),
-      TransactionDetail(label: 'Amount:', value: "NGN ${data.amount.toString()}"),
-      TransactionDetail(label: 'Unit:',value:  data.unit.toString()  ?? ""),
+      TransactionDetail(label: 'Order ID:', value: data.orderId),
+      TransactionDetail(label: 'Address:', value: data.address),
+      TransactionDetail(
+          label: 'Amount:', value: "NGN ${data.amount.toString()}"),
+      TransactionDetail(label: 'Unit:', value: data.unit.toString() ?? ""),
       TransactionDetail(label: 'Token:', value: data.token.toString() ?? ""),
-      TransactionDetail(label: 'Date:', value:  TimeUtil.formatMMMMDY(data.createdAt!)),
+      TransactionDetail(
+          label: 'Date:', value: TimeUtil.formatMMMMDY(data.createdAt!)),
     ];
   }
 
@@ -43,9 +45,10 @@ class ReceiptBuilder {
       TransactionDetail(label: 'Payment Type:', value: data.payType ?? ""),
       TransactionDetail(label: 'Service Type:', value: data.serviceType ?? ""),
       TransactionDetail(label: 'Amount:', value: 'NGN ${data.amount}'),
-      TransactionDetail(label: 'Status:', value:  data.status?.name ?? ""),
-      TransactionDetail(label: 'Note:', value:data.note ?? ""),
-      TransactionDetail(label: 'Date:', value: TimeUtil.formatMMMMDY(data.createdAt!)),
+      TransactionDetail(label: 'Status:', value: data.status?.name ?? ""),
+      TransactionDetail(label: 'Note:', value: data.note ?? ""),
+      TransactionDetail(
+          label: 'Date:', value: TimeUtil.formatMMMMDY(data.createdAt!)),
     ];
   }
 }

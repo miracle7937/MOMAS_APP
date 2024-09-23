@@ -11,7 +11,7 @@ class MeterPaymentResponse {
     if (json['data'] != null) {
       data = <MeterData>[];
       json['data'].forEach((v) {
-        data!.add( MeterData.fromJson(v));
+        data!.add(MeterData.fromJson(v));
       });
     }
   }
@@ -33,21 +33,23 @@ class MeterData {
   String? orderId;
   String? token;
   int? amount;
-  int? unit;
+  num? unit;
   int? status;
   String? createdAt;
+  String? address;
   String? updatedAt;
 
   MeterData(
       {this.id,
-        this.userId,
-        this.orderId,
-        this.token,
-        this.amount,
-        this.unit,
-        this.status,
-        this.createdAt,
-        this.updatedAt});
+      this.userId,
+      this.orderId,
+      this.token,
+      this.amount,
+      this.unit,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.address});
 
   MeterData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -59,6 +61,7 @@ class MeterData {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    address = json['address'];
   }
 
   Map<String, dynamic> toJson() {
@@ -72,6 +75,7 @@ class MeterData {
     data['status'] = status;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['address'] = address;
     return data;
   }
 }

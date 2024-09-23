@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momas_pay/domain/data/response/user_model.dart';
 import 'package:momas_pay/domain/repository/bill_repository.dart';
@@ -45,6 +46,10 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   ServiceDataResponse? serviceDataResponse;
   bool isLoading = false;
   User? user;
+  num minPurchase = 0;
+  num maxPurchase = 0;
+  num minVending = 0;
+  String amountValue = "";
 
   @override
   void initState() {
@@ -59,6 +64,23 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
 
   load() async {
     user = await SharedPreferenceHelper.getUser();
+    getForSelfVent();
+  }
+
+  getForSelfVent() {
+    if (widget.momasPaymentType == MomasPaymentType.self) {
+      maxPurchase = user!.purchase!.maxPurchase!;
+      minPurchase = user!.purchase!.minPurchase!;
+      minVending = user!.purchase!.minVending!;
+      setState(() {});
+    }
+  }
+
+  getForOtherVent(MomasVerificationResponse? verificationResponse) {
+    maxPurchase = verificationResponse!.data!.purchase!.maxPurchase!;
+    minPurchase = verificationResponse.data!.purchase!.minPurchase!;
+    minVending = verificationResponse.data!.purchase!.minPurchase!;
+    setState(() {});
   }
 
   @override
@@ -122,7 +144,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                       onChanged: (v) {
                                         setState(() {
                                           selectedEstate = v;
-                                          verificationResponse= null;
+                                          verificationResponse = null;
                                         });
                                       },
                                       items: (serviceDataResponse
@@ -191,6 +213,11 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                           color: Colors.grey,
                                         ),
                                         title: "Meter Number",
+                                        onChange: (v) {
+                                          setState(() {
+                                            verificationResponse = null;
+                                          });
+                                        },
                                       ),
                                     ),
                                     Expanded(
@@ -199,6 +226,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                             state is MomasVerificationLoading,
                                         title: "VERIFY",
                                         onTap: () {
+                                          verificationResponse = null;
                                           bloc.add(MomasVerification(
                                               meterNo: meterTextFormController
                                                   .text));
@@ -249,22 +277,58 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                       MoFormWidget(
                         controller: amountFormController,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.deny(RegExp(r'[,.]')),
+                        ],
                         title: "Amount (NGN)",
+                        onChange: (value) {
+                          setState(() {
+                            amountValue = value;
+                          });
+                        },
                       ),
                       const SizedBox(
                         height: 5,
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Row(
                           children: [
-                            Text("Min 1,000 | Max 1,000,000",
-                                style: TextStyle(
+                            Text("Min $minPurchase | Max $maxPurchase",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black)),
+                            const Spacer(),
+                            Text("Min Vend $minVending ",
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black))
                           ],
                         ),
                       ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .1,
+                      ),
+                      amountFormController.text.isNotEmpty
+                          ? Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("Total Amount:",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black)),
+                                  Text(
+                                      " ${int.parse(amountFormController.text) - minVending} ",
+                                      style: const TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black)),
+                                ],
+                              ),
+                            )
+                          : Container(),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .1,
                       ),
@@ -289,6 +353,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                 showErrorBottomSheet(context, state.error);
               case MomasMeterVerificationState():
                 verificationResponse = state.response;
+                getForOtherVent(verificationResponse);
               case MomasPaymentSuccess():
                 Navigator.push(
                     context,
@@ -310,18 +375,25 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
     var amount = isNotEmpty(amountFormController.text)
         ? int.parse(amountFormController.text)
         : 0;
-    if (amount < 1000 || amount > 1000000) {
+    if (amount < minPurchase || amount > maxPurchase) {
       showErrorBottomSheet(
           context, "Amount can't exceed the maximum and minimum range");
       return;
     }
+    num payableAmount = int.parse(amountFormController.text) - minVending;
+
+    if (payableAmount <= 0) {
+      showErrorBottomSheet(
+          context, "Payable amount can't be less or equal to zero");
+      return;
+    }
     showPaymentModal(context, user!.meterNo!, () {
-      MoBottomSheet().payment(context, amount: amountFormController.text,
+      MoBottomSheet().payment(context, amount: payableAmount.toString(),
           onPayment: (String ref) {
         bloc.add(MomasMeterPayment(
-            amount: amountFormController.text,
+            amount: payableAmount.toString(),
             meterNo: user!.meterNo!,
-            meterType: user!.meterType!,
+            meterType: user!.meterType ?? "",
             trxref: ref,
             paymentType: MomasPaymentType.self));
       });
@@ -329,37 +401,43 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   }
 
   payForOther() {
-
     var amount = isNotEmpty(amountFormController.text)
         ? int.parse(amountFormController.text)
         : 0;
-    if (amount < 1000 || amount > 1000000) {
+    if (amount < minPurchase || amount > maxPurchase) {
       showErrorBottomSheet(
           context, "Amount can't exceed the maximum and minimum range");
       return;
     }
 
-    if(selectedEstate == null){
+    if (selectedEstate == null) {
       showErrorBottomSheet(
           context, "Provide the estate you making the payment for");
       return;
     }
-    if(verificationResponse == null || isEmpty(meterTextFormController.text)){
-      showErrorBottomSheet(
-          context, "Verify meter number before payment");
+    if (verificationResponse == null || isEmpty(meterTextFormController.text)) {
+      showErrorBottomSheet(context, "Verify meter number before payment");
       return;
     }
+    num payableAmount = int.parse(amountFormController.text) - minVending;
+
+    if (payableAmount <= 0) {
+      showErrorBottomSheet(
+          context, "Payable amount can't be less or equal to zero");
+      return;
+    }
+
     showPaymentModal(context, user!.meterNo!, () {
       MoBottomSheet().payment(context, amount: amountFormController.text,
           onPayment: (String ref) {
-            bloc.add(MomasMeterPayment(
-                amount: amountFormController.text,
-                meterNo: meterTextFormController.text,
-                meterType: verificationResponse!.data!.meterType!,
-                trxref: ref,
-                estateId: selectedEstate!.id.toString(),
-                paymentType: MomasPaymentType.others));
-          });
+        bloc.add(MomasMeterPayment(
+            amount: payableAmount.toString(),
+            meterNo: meterTextFormController.text,
+            meterType: verificationResponse!.data!.meterType!,
+            trxref: ref,
+            estateId: selectedEstate!.id.toString(),
+            paymentType: MomasPaymentType.others));
+      });
     });
   }
 
@@ -384,7 +462,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Pay for Meter :$meter',
+                  'Meter number: $meter',
                   style: const TextStyle(
                     fontSize: 19,
                     fontWeight: FontWeight.bold,
@@ -403,44 +481,51 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        onYesPressed();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: MoColors.mainColorII,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          onYesPressed();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: MoColors.mainColorII,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 12.0),
-                        child: Text(
-                          'Yes, Pay',
-                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 12.0),
+                          child: Text(
+                            'Pay',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close the dialog
-                        // Handle cancel action here if needed
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: MoColors.mainColorII),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                          // Handle cancel action here if needed
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: MoColors.mainColorII),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 12.0),
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                              fontSize: 16, color: MoColors.mainColorII),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 12.0),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                                fontSize: 12, color: MoColors.mainColorII),
+                          ),
                         ),
                       ),
                     ),

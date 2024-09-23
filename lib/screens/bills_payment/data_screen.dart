@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:momas_pay/bloc/data_bloc/data_state.dart';
 import 'package:momas_pay/domain/data/response/data_response.dart';
 import 'package:momas_pay/domain/repository/bill_repository.dart';
@@ -33,6 +34,9 @@ class _DataScreenState extends State<DataScreen> {
   late DataBloc dataBloc;
   DataPlan? selectedDataPlan;
 
+  Contact? _contact;
+  final FlutterContactPicker _contactPicker = FlutterContactPicker();
+
   void _selectNetwork(Network network) {
     setState(() {
       _selectedNetwork = network;
@@ -59,10 +63,10 @@ class _DataScreenState extends State<DataScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Handle back button press
+            Navigator.pop(context);
           },
         ),
-        title: const Text('Data'),
+        title: const Text('Data Bundle'),
       ),
       body: BlocProvider(
         create: (context) => DataBloc(repository: BillRepository()),
@@ -119,14 +123,42 @@ class _DataScreenState extends State<DataScreen> {
                             )
                             .toList()),
                     const SizedBox(height: 20),
-                    MoFormWidget(
-                      controller: _phoneController,
-                      keyboardType: TextInputType.phone,
-                      prefixIcon: const Icon(
-                        Icons.phone,
-                        color: Colors.grey,
-                      ),
-                      title: "Phone Number",
+                    Row(
+                      children: [
+                        Expanded(
+                          child: MoFormWidget(
+                            controller: _phoneController,
+                            keyboardType: TextInputType.phone,
+                            prefixIcon: const Icon(
+                              Icons.phone,
+                              color: Colors.grey,
+                            ),
+                            title: "Phone Number",
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            Contact? contact =
+                                await _contactPicker.selectContact();
+                            setState(() {
+                              _contact = contact;
+                            });
+                            _phoneController.text =
+                                _contact?.phoneNumbers?.first ?? "";
+                          },
+                          child: const Column(
+                            children: [
+                              SizedBox(
+                                height: 53,
+                              ),
+                              Icon(
+                                Icons.perm_contact_cal_outlined,
+                                size: 40,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                     const SizedBox(height: 20),
                     selectedDataPlan != null
@@ -162,9 +194,7 @@ class _DataScreenState extends State<DataScreen> {
                                   amount: amount,
                                   phone: phone,
                                   variationCode: variantCode ?? "",
-                                 ref: ref
-
-                              ),
+                                  ref: ref),
                             );
                           });
                         } else {
