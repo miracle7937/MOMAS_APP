@@ -1,3 +1,5 @@
+import 'package:momas_pay/domain/data/response/tariff.dart';
+
 class UserModel {
   bool? status;
   User? user;
@@ -49,35 +51,38 @@ class User {
   PayStackKeys? payStackKeys;
   UserRole? userRole;
   Purchase? purchase;
+  List<Tariff>? tariffs;
 
-  User(
-      {this.id,
-      this.firstName,
-      this.lastName,
-      this.phone,
-      this.email,
-      this.image,
-      this.deviceId,
-      this.mainWallet,
-      this.role,
-      this.code,
-      this.pin,
-      this.gender,
-      this.city,
-      this.state,
-      this.lga,
-      this.meterNo,
-      this.meterType,
-      this.status,
-      this.token,
-      this.meter,
-      this.hno,
-      this.address,
-      this.estateId,
-      this.flutterWaveKeys,
-      this.payStackKeys,
-      this.userRole,
-      this.purchase});
+  User({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.phone,
+    this.email,
+    this.image,
+    this.deviceId,
+    this.mainWallet,
+    this.role,
+    this.code,
+    this.pin,
+    this.gender,
+    this.city,
+    this.state,
+    this.lga,
+    this.meterNo,
+    this.meterType,
+    this.status,
+    this.token,
+    this.meter,
+    this.hno,
+    this.address,
+    this.estateId,
+    this.flutterWaveKeys,
+    this.payStackKeys,
+    this.userRole,
+    this.purchase,
+    this.tariffs,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -103,6 +108,9 @@ class User {
     hno = json['hno'];
     address = json['address'];
     estateName = json['estate_name'];
+    tariffs = json['tariff'] != null
+        ? (json['tariff'] as List).map((v) => Tariff.fromJson(v)).toList()
+        : [];
     purchase =
         json['purchase'] != null ? Purchase.fromJson(json['purchase']) : null;
     userRole =
@@ -138,9 +146,13 @@ class User {
     data['token'] = token;
     data['estate_id'] = estateId;
     data['estate_name'] = estateName;
+    data['tariff'] = tariffs?.map((value) {
+      return value.toJson();
+    }).toList();
     if (purchase != null) {
       data['purchase'] = purchase!.toJson();
     }
+
     if (flutterWaveKeys != null) {
       data['flutterwave_keys'] = flutterWaveKeys!.toJson();
     }

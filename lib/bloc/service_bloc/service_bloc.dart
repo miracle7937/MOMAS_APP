@@ -28,6 +28,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
         emit(ServiceStateFailed(response.message ?? ""));
       }
     } catch (_, e) {
+      print(e);
       emit(ServiceStateFailed(_.toString()));
     }
   }
@@ -55,7 +56,8 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       emit(ServiceStateLoading());
       var response = await serviceRepository.saveServiceComment(
           event.jobId, event.rating, event.comment);
-      var responseComment = await serviceRepository.getServiceComment(event.jobId);
+      var responseComment =
+          await serviceRepository.getServiceComment(event.jobId);
       if (response.status == true) {
         emit(ServiceSaveChatStateSuccess(response.message ?? ""));
         emit(ServiceGetChatStateSuccess(responseComment));

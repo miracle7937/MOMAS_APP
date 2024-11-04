@@ -1,7 +1,4 @@
-
-
-
-class Routes{
+class Routes {
   static const String _baseURL = "https://momas.tomitechltd.com/api";
   static String login = "$_baseURL/login";
   static String buyAirtime = "$_baseURL/buy-airtime";
@@ -34,4 +31,7 @@ class Routes{
   static String support = "$_baseURL/support";
   static String requestMeter = "$_baseURL/request-meter";
   static String approveToken = "$_baseURL/approve-token";
+  static String disApproveToken = "$_baseURL/disapprove-token";
+  static String tokenList = "$_baseURL/token-list";
+  static String vendingProperties = "$_baseURL/vending-properties";
 }

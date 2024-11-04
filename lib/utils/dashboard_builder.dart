@@ -72,7 +72,7 @@ class DashboardBuilder {
                 ? "Verify estate token"
                 : "Generate and manage security token",
             onTap: () {
-              if (!(user.userRole == UserRole.estateStaff)) {
+              if ((user.userRole == UserRole.estateStaff)) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(

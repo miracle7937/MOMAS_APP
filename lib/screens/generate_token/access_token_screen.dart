@@ -209,9 +209,8 @@ class _AccessTokenScreenState extends State<AccessTokenScreen> {
                   List<EstateData>? estateData;
                   if (state is AccessTokenSuccess) {
                     estateData = state.estateData;
-                    selectedEstateData =
-                        estateData.firstWhere((v) => v.id == 1);
-                    // selectedEstateData = estateData.firstWhere((v)=>v.id.toString() == snapshot.data!.estateId);
+                    selectedEstateData = estateData.firstWhere(
+                        (v) => v.id.toString() == snapshot.data!.estateId);
                   }
                   return SafeArea(
                     child: SingleChildScrollView(
@@ -317,7 +316,7 @@ class _AccessTokenScreenState extends State<AccessTokenScreen> {
                             ),
                             _switchValue
                                 ? MoFormWidget(
-                                    title: "Email",
+                                    title: "Visitor's Email",
                                     keyboardType: TextInputType.number,
                                     controller: _emailController,
                                     prefixIcon: const Icon(
@@ -351,7 +350,6 @@ class _AccessTokenScreenState extends State<AccessTokenScreen> {
                                                   .toString());
                                           accessTokenBloc
                                               .add(GenerateTokenEvent(data));
-
                                         } else {
                                           showErrorBottomSheet(context,
                                               "Please provide all entries");

@@ -18,7 +18,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     });
   }
 
-  Future<void> _onWalletEvent(DashboardEvent event, Emitter<DashboardState> emit) async {
+  Future<void> _onWalletEvent(
+      DashboardEvent event, Emitter<DashboardState> emit) async {
     super.onEvent(event);
     try {
       if (event is WalletDashboardEvent) {
@@ -30,13 +31,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           emit(WalletFailure());
         }
       }
-
     } catch (_, e) {
       emit(WalletFailure());
     }
   }
 
-  Future<void> _onFeatureEvent(DashboardEvent event, Emitter<DashboardState> emit) async {
+  Future<void> _onFeatureEvent(
+      DashboardEvent event, Emitter<DashboardState> emit) async {
     super.onEvent(event);
 
     try {
@@ -50,11 +51,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         }
       }
     } catch (_, e) {
+      print(e);
       emit(WalletFailure());
     }
   }
 }
-
 
 class WalletBloc extends Bloc<DashboardEvent, DashboardState> {
   final DashboardService service;

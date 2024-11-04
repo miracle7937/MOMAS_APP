@@ -34,10 +34,24 @@ class GenerateTokenEvent extends AccessTokenEvent {
   List<Object> get props => [data];
 }
 
-
 class VerifyAccessToken extends AccessTokenEvent {
   final String token;
   const VerifyAccessToken(this.token);
+
+  @override
+  List<Object> get props => [];
+}
+
+class DisApproveToken extends AccessTokenEvent {
+  final String token;
+  const DisApproveToken(this.token);
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetEstateTokenList extends AccessTokenEvent {
+  const GetEstateTokenList();
 
   @override
   List<Object> get props => [];

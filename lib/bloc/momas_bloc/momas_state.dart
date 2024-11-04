@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:momas_pay/domain/data/response/vending_properties.dart';
 
 import '../../domain/data/request/momas_payent_response.dart';
 import '../../domain/data/response/meter_payment_response.dart';
@@ -48,4 +49,13 @@ class MomasMeterSuccess extends MomasPaymentState {
 
   @override
   List<Object> get props => [meterPaymentResponse];
+}
+
+class MomasVendingProperties extends MomasPaymentState {
+  final VendingPropertiesData vendingPropertiesData;
+
+  const MomasVendingProperties(this.vendingPropertiesData);
+
+  @override
+  List<Object> get props => [vendingPropertiesData];
 }

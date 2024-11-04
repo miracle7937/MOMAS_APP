@@ -23,6 +23,13 @@ class AccessTokenBloc extends Bloc<AccessTokenEvent, AccessTokenState> {
     on<VerifyAccessToken>((event, emit) async {
       await verifyToken(event, emit);
     });
+    on<DisApproveToken>((event, emit) async {
+      await disApproveToken(event, emit);
+    });
+
+    on<GetEstateTokenList>((event, emit) async {
+      await getTokenList(event, emit);
+    });
   }
 
   Future mapEventToState(
@@ -35,6 +42,23 @@ class AccessTokenBloc extends Bloc<AccessTokenEvent, AccessTokenState> {
           emit(AccessTokenSuccess(response.data ?? []));
         } else {
           emit(AccessTokenFailed(response.message ?? ""));
+        }
+      } catch (e) {
+        emit(AccessTokenFailed(e.toString()));
+      }
+    }
+  }
+
+  Future getTokenList(
+      AccessTokenEvent event, Emitter<AccessTokenState> emit) async {
+    if (event is GetEstateTokenList) {
+      emit(AccessTokenLoading());
+      try {
+        final response = await repository.getTokenList();
+        if (response.status == true) {
+          emit(GetTokenListSuccess(response.data));
+        } else {
+          emit(const AccessTokenFailed("Fails to get generated Token"));
         }
       } catch (e) {
         emit(AccessTokenFailed(e.toString()));
@@ -68,7 +92,7 @@ class AccessTokenBloc extends Bloc<AccessTokenEvent, AccessTokenState> {
       try {
         final response = await repository.generateToken(event.data);
         if (response.status == true) {
-          emit(SetEstateSuccess(response.message ?? ""));
+          emit(GenerateTokenSuccess(response));
         } else {
           emit(AccessTokenFailed(response.message ?? ""));
         }
@@ -80,17 +104,31 @@ class AccessTokenBloc extends Bloc<AccessTokenEvent, AccessTokenState> {
 
   Future verifyToken(
       VerifyAccessToken event, Emitter<AccessTokenState> emit) async {
-      emit(AccessTokenLoading());
-      try {
-        final response = await repository.verifyToken(event.token);
-        if (response.status == true) {
-          emit(VerifyTokenSuccess(response.message ?? ""));
-        } else {
-          emit(AccessTokenFailed(response.message ?? ""));
-        }
-      } catch (e) {
-        emit(AccessTokenFailed(e.toString()));
+    emit(AccessTokenLoading());
+    try {
+      final response = await repository.verifyToken(event.token);
+      if (response.status == true) {
+        emit(VerifyTokenSuccess(response.message ?? ""));
+      } else {
+        emit(AccessTokenFailed(response.message ?? ""));
       }
+    } catch (e) {
+      emit(AccessTokenFailed(e.toString()));
+    }
+  }
 
+  Future disApproveToken(
+      DisApproveToken event, Emitter<AccessTokenState> emit) async {
+    emit(AccessTokenLoading());
+    try {
+      final response = await repository.disApproveToken(event.token);
+      if (response.status == true) {
+        emit(VerifyTokenSuccess(response.message ?? ""));
+      } else {
+        emit(AccessTokenFailed(response.message ?? ""));
+      }
+    } catch (e) {
+      emit(AccessTokenFailed(e.toString()));
+    }
   }
 }

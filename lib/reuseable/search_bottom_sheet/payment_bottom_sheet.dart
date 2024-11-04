@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -233,6 +234,7 @@ class PaymentWebView extends StatefulWidget {
 }
 
 class _PaymentWebViewState extends State<PaymentWebView> {
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -250,14 +252,21 @@ class _PaymentWebViewState extends State<PaymentWebView> {
           onProgress: (int progress) {
             // Update loading bar.
           },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
+          onPageStarted: (String url) {
+            setState(() {
+              isLoading = true;
+            });
+          },
+          onPageFinished: (String url) {
+            setState(() {
+              isLoading = false;
+            });
+          },
           onHttpError: (HttpResponseError error) {},
           onWebResourceError: (WebResourceError error) {},
           onNavigationRequest: (NavigationRequest request) {
             Uri uri = Uri.parse(request.url);
             bool containsPayment = uri.toString().contains('payment');
-
             if (containsPayment == true) {
               String? ref = uri.queryParameters['ref'];
               String? status = uri.queryParameters['status'];
@@ -273,7 +282,23 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Payment')),
-        body: WebViewWidget(controller: controller));
+      appBar: AppBar(title: const Text('Payment')),
+      body: Stack(
+        children: [
+          WebViewWidget(controller: controller),
+          if (isLoading)
+            Container(
+              color: Colors.white,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: const Center(
+                child: CupertinoActivityIndicator(
+                  radius: 15.0,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

@@ -1,10 +1,13 @@
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:momas_pay/domain/data/response/tariff.dart';
 import 'package:momas_pay/domain/data/response/user_model.dart';
 import 'package:momas_pay/domain/repository/bill_repository.dart';
+import 'package:momas_pay/utils/amount_formatter.dart';
 import 'package:momas_pay/utils/colors.dart';
 import '../../bloc/momas_bloc/momas_bloc.dart';
 import '../../bloc/momas_bloc/momas_event.dart';
@@ -50,6 +53,8 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   num maxPurchase = 0;
   num minVending = 0;
   String amountValue = "";
+  Tariff? selectedTariff;
+  List<Tariff> tariff = [];
 
   @override
   void initState() {
@@ -64,23 +69,18 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
 
   load() async {
     user = await SharedPreferenceHelper.getUser();
-    getForSelfVent();
-  }
-
-  getForSelfVent() {
+    tariff = user?.tariffs ?? [];
     if (widget.momasPaymentType == MomasPaymentType.self) {
-      maxPurchase = user!.purchase!.maxPurchase!;
-      minPurchase = user!.purchase!.minPurchase!;
-      minVending = user!.purchase!.minVending!;
-      setState(() {});
+      setState(() => isLoading = true);
+      bloc.add(MomasVerification(meterNo: user!.meterNo!));
     }
   }
 
   getForOtherVent(MomasVerificationResponse? verificationResponse) {
-    maxPurchase = verificationResponse!.data!.purchase!.maxPurchase!;
-    minPurchase = verificationResponse.data!.purchase!.minPurchase!;
-    minVending = verificationResponse.data!.purchase!.minPurchase!;
-    setState(() {});
+    maxPurchase = verificationResponse!.data?.purchase?.maxPurchase ?? 0;
+    minPurchase = verificationResponse.data?.purchase?.minPurchase ?? 0;
+    minVending = verificationResponse.data?.purchase?.minVending ?? 0;
+    setState(() => isLoading = false);
   }
 
   @override
@@ -306,31 +306,232 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * .1,
+                      const SizedBox(
+                        height: 10,
                       ),
-                      amountFormController.text.isNotEmpty
+                      EPDropdownButton<Tariff>(
+                          itemsListTitle: "Selected Vending Type",
+                          iconSize: 22,
+                          value: selectedTariff,
+                          hint: const Text(""),
+                          isExpanded: true,
+                          underline: const Divider(),
+                          searchMatcher: (item, text) {
+                            return (item.title!)
+                                .toLowerCase()
+                                .contains(text.toLowerCase());
+                          },
+                          onChanged: (v) {
+                            setState(() {
+                              selectedTariff = v;
+                            });
+                          },
+                          items: tariff
+                              .map(
+                                (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Row(
+                                      children: [
+                                        Text(e.type.toString().toUpperCase(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .copyWith(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black)),
+                                      ],
+                                    )),
+                              )
+                              .toList()),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .04,
+                      ),
+                      (amountFormController.text.isNotEmpty &&
+                              selectedTariff != null &&
+                              verificationResponse != null)
                           ? Center(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text("Total Amount:",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black)),
-                                  Text(
-                                      " ${int.parse(amountFormController.text) - minVending} ",
-                                      style: const TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black)),
-                                ],
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15.0,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // Header Row
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 0.0, vertical: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Items",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Amount (NGN)",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Divider(),
+                                    // Items Table
+                                    Table(
+                                      columnWidths: const {
+                                        0: FlexColumnWidth(),
+                                        1: FixedColumnWidth(100),
+                                      },
+                                      children: [
+                                        TableRow(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 8.0),
+                                              child: Text(
+                                                "Tariff",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                AmountFormatter.format(
+                                                  double.parse(selectedTariff
+                                                          ?.amount
+                                                          .toString() ??
+                                                      '0'),
+                                                ),
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        TableRow(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 8.0),
+                                              child: Text(
+                                                "Utilities",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                AmountFormatter.format(
+                                                    double.parse(
+                                                        minVending.toString())),
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        TableRow(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 8.0),
+                                              child: Text(
+                                                "Amount  to Vend",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                AmountFormatter.format(
+                                                  double.parse(
+                                                          amountFormController
+                                                              .text) -
+                                                      minVending,
+                                                ),
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    const Divider(),
+                                    // Total Section
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            "Amount payable",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Text(
+                                            AmountFormatter.formatNaira(
+                                                double.parse(
+                                                        amountFormController
+                                                            .text) +
+                                                    (selectedTariff!.amount ??
+                                                        0)),
+                                            style: const TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                           : Container(),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * .1,
+                        height: MediaQuery.of(context).size.height * .05,
                       ),
                       MoButton(
                         isLoading: state is MomasPaymentLoading || isLoading,
@@ -340,7 +541,10 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                               ? payForSelf()
                               : payForOther();
                         },
-                      )
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .1,
+                      ),
                     ],
                   ),
                 ),
@@ -372,26 +576,33 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   }
 
   payForSelf() {
-    var amount = isNotEmpty(amountFormController.text)
-        ? int.parse(amountFormController.text)
-        : 0;
-    if (amount < minPurchase || amount > maxPurchase) {
-      showErrorBottomSheet(
-          context, "Amount can't exceed the maximum and minimum range");
+    var receivableAmount = (isNotEmpty(amountFormController.text)
+            ? int.parse(amountFormController.text)
+            : 0) -
+        minVending;
+    if (receivableAmount < minPurchase || receivableAmount > maxPurchase) {
+      showErrorBottomSheet(context,
+          "Receivable amount (NGN$receivableAmount) fails to fall within the specified maximum and minimum range.");
       return;
     }
-    num payableAmount = int.parse(amountFormController.text) - minVending;
+    num payableAmount = int.parse(amountFormController.text);
 
     if (payableAmount <= 0) {
       showErrorBottomSheet(
           context, "Payable amount can't be less or equal to zero");
       return;
     }
+    if (selectedTariff == null) {
+      showErrorBottomSheet(context, "please select tariff type");
+      return;
+    }
     showPaymentModal(context, user!.meterNo!, () {
       MoBottomSheet().payment(context, amount: payableAmount.toString(),
           onPayment: (String ref) {
         bloc.add(MomasMeterPayment(
-            amount: payableAmount.toString(),
+            amountForVending: minVending.toString(),
+            tariffId: selectedTariff!.id.toString(),
+            amount: receivableAmount.toString(),
             meterNo: user!.meterNo!,
             meterType: user!.meterType ?? "",
             trxref: ref,
@@ -401,12 +612,13 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   }
 
   payForOther() {
-    var amount = isNotEmpty(amountFormController.text)
-        ? int.parse(amountFormController.text)
-        : 0;
-    if (amount < minPurchase || amount > maxPurchase) {
-      showErrorBottomSheet(
-          context, "Amount can't exceed the maximum and minimum range");
+    var receivableAmount = (isNotEmpty(amountFormController.text)
+            ? int.parse(amountFormController.text)
+            : 0) -
+        minVending;
+    if (receivableAmount < minPurchase || receivableAmount > maxPurchase) {
+      showErrorBottomSheet(context,
+          "Receivable amount (NGN$receivableAmount) fails to fall within the specified maximum and minimum range.");
       return;
     }
 
@@ -419,7 +631,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
       showErrorBottomSheet(context, "Verify meter number before payment");
       return;
     }
-    num payableAmount = int.parse(amountFormController.text) - minVending;
+    num payableAmount = int.parse(amountFormController.text);
 
     if (payableAmount <= 0) {
       showErrorBottomSheet(
@@ -427,11 +639,17 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
       return;
     }
 
+    if (selectedTariff == null) {
+      showErrorBottomSheet(context, "please select tariff type");
+      return;
+    }
     showPaymentModal(context, user!.meterNo!, () {
-      MoBottomSheet().payment(context, amount: amountFormController.text,
+      MoBottomSheet().payment(context, amount: payableAmount.toString(),
           onPayment: (String ref) {
         bloc.add(MomasMeterPayment(
-            amount: payableAmount.toString(),
+            amountForVending: minVending.toString(),
+            tariffId: selectedTariff!.id.toString(),
+            amount: receivableAmount.toString(),
             meterNo: meterTextFormController.text,
             meterType: verificationResponse!.data!.meterType!,
             trxref: ref,

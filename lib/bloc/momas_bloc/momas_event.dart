@@ -24,6 +24,8 @@ class MomasMeterPayment extends MomasPaymentEvent {
   final String amount, meterType, trxref;
   final String? estateId;
   final String? meterNo;
+  final String? amountForVending;
+  final String? tariffId;
 
   const MomasMeterPayment(
       {required this.amount,
@@ -31,7 +33,9 @@ class MomasMeterPayment extends MomasPaymentEvent {
       required this.trxref,
       required this.paymentType,
       this.estateId,
-      this.meterNo});
+      this.meterNo,
+      this.amountForVending,
+      this.tariffId});
 
   @override
   List<Object> get props => [amount, meterType, trxref, paymentType];
@@ -39,4 +43,8 @@ class MomasMeterPayment extends MomasPaymentEvent {
 
 class MomasPaymentHistory extends MomasPaymentEvent {
   const MomasPaymentHistory();
+}
+
+class MomasGetVentingProperties extends MomasPaymentEvent {
+  const MomasGetVentingProperties();
 }

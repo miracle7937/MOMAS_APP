@@ -11,6 +11,7 @@ import '../data/response/cable_tv_verification_response.dart';
 import '../data/response/data_response.dart';
 import '../data/response/meter_payment_response.dart';
 import '../data/response/momas_meter_response.dart';
+import '../data/response/vending_properties.dart';
 import '../request.dart';
 
 class BillRepository {
@@ -68,19 +69,22 @@ class BillRepository {
     var response = await _request.postData(
         path: Routes.payMomasMeter, body: momasPayment.toJson());
     return MomasPaymentResponse.fromJson(response.data);
-
   }
-  Future<MomasPaymentResponse> payOtherMomasMeter(MomasMeterBuy momasPayment) async {
+
+  Future<MomasPaymentResponse> payOtherMomasMeter(
+      MomasMeterBuy momasPayment) async {
     var response = await _request.postData(
         path: Routes.buyMeterOthers, body: momasPayment.toJson());
     return MomasPaymentResponse.fromJson(response.data);
-
   }
 
   Future<MeterPaymentResponse> getMomasMeterHistory() async {
-    var response = await _request.postData(
-        path: Routes.reprintMeter, body: {});
+    var response = await _request.postData(path: Routes.reprintMeter, body: {});
     return MeterPaymentResponse.fromJson(response.data);
+  }
 
+  Future<VendingPropertiesData> getVendingProperties() async {
+    var response = await _request.getData(path: Routes.vendingProperties);
+    return VendingPropertiesData.fromJson(response.data);
   }
 }

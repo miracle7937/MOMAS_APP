@@ -4,8 +4,17 @@ class MomasMeterBuy {
   String? meterType;
   String? estateId;
   String? meterNo;
+  String? amountForVending;
+  String? tariffId;
 
-  MomasMeterBuy({this.amount, this.trxref, this.meterType, this.estateId,this.meterNo});
+  MomasMeterBuy(
+      {this.amount,
+      this.trxref,
+      this.meterType,
+      this.estateId,
+      this.meterNo,
+      this.amountForVending,
+      this.tariffId});
 
   MomasMeterBuy.fromJson(Map<String, dynamic> json) {
     amount = json['amount'];
@@ -13,6 +22,8 @@ class MomasMeterBuy {
     meterType = json['meterType'];
     estateId = json['estate_id'];
     meterNo = json['meterNo'];
+    amountForVending = json['min_vend_amount'];
+    tariffId = json['tariff_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -22,6 +33,8 @@ class MomasMeterBuy {
     data['meterType'] = meterType;
     data['estate_id'] = estateId;
     data['meterNo'] = meterNo;
+    data['min_vend_amount'] = amountForVending;
+    data['tariff_id'] = tariffId;
     return data;
   }
 }

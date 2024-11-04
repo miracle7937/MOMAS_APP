@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:momas_pay/domain/data/response/vending_properties.dart';
 
 import '../../domain/data/request/momas_meter_buy.dart';
 import '../../domain/data/request/momas_payent_response.dart';
@@ -20,6 +21,10 @@ class MomasPaymentBloc extends Bloc<MomasPaymentEvent, MomasPaymentState> {
     });
     on<MomasPaymentHistory>((event, emit) async {
       await onPaymentHistory(event, emit);
+    });
+
+    on<MomasGetVentingProperties>((event, emit) async {
+      await onGetVendingProperties(event, emit);
     });
   }
 
@@ -44,6 +49,8 @@ class MomasPaymentBloc extends Bloc<MomasPaymentEvent, MomasPaymentState> {
     emit(MomasPaymentLoading());
     try {
       var data = MomasMeterBuy(
+          amountForVending: event.amountForVending,
+          tariffId: event.tariffId,
           amount: event.amount,
           trxref: event.trxref,
           meterType: event.meterType,
@@ -74,6 +81,25 @@ class MomasPaymentBloc extends Bloc<MomasPaymentEvent, MomasPaymentState> {
         emit(MomasMeterSuccess(response));
       } else {
         emit(MomasPaymentFailure(error: response.message ?? "Payment fails"));
+      }
+    } catch (e, _) {
+      print(e);
+      print(_);
+      emit(MomasPaymentFailure(error: e.toString()));
+    }
+  }
+
+  Future onGetVendingProperties(
+      MomasGetVentingProperties event, Emitter<MomasPaymentState> emit) async {
+    emit(MomasPaymentLoading());
+    try {
+      VendingPropertiesData response = await repository.getVendingProperties();
+
+      if (response.status == true) {
+        emit(MomasVendingProperties(response));
+      } else {
+        emit(const MomasPaymentFailure(
+            error: "Fails to get vending parameters"));
       }
     } catch (e, _) {
       print(e);

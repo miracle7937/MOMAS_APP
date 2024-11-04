@@ -103,7 +103,7 @@ class _MainScreenState extends State<MainScreen> {
                           color: Colors.white,
                           child: Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.25,
+                            height: MediaQuery.of(context).size.height * 0.20,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 stops: const [0.5, 0.8],
@@ -124,27 +124,18 @@ class _MainScreenState extends State<MainScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const SizedBox(
-                                    height: 10,
+                                    height: 20,
                                   ),
                                   Row(
                                     children: [
                                       Text(
                                         "Hi $name,",
                                         style: const TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.w900,
                                             color: Colors.white),
                                       ),
-                                      const Spacer(),
-                                      // const SizedBox(
-                                      //   height: 40,
-                                      //   width: 40,
-                                      //   child: Placeholder(),
-                                      // )
                                     ],
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
                                   ),
                                   BlocBuilder<WalletBloc, DashboardState>(
                                       bloc: walletBloc,
@@ -160,12 +151,12 @@ class _MainScreenState extends State<MainScreen> {
                                                       .toString()
                                                   : "",
                                             ),
-                                            unitWidget(
-                                              state is WalletLoading,
-                                              (state is WalletSuccessful)
-                                                  ? state.wallet.unit.toString()
-                                                  : "",
-                                            )
+                                            // unitWidget(
+                                            //   state is WalletLoading,
+                                            //   (state is WalletSuccessful)
+                                            //       ? state.wallet.unit.toString()
+                                            //       : "",
+                                            // )
                                           ],
                                         );
                                       })
@@ -176,7 +167,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.75,
+                          height: MediaQuery.of(context).size.height * 0.8,
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius:
@@ -318,7 +309,7 @@ class _MainScreenState extends State<MainScreen> {
                       ],
                     ),
                     Positioned(
-                      top: constraints.maxHeight * 0.22,
+                      top: constraints.maxHeight * 0.17,
                       left: (constraints.maxWidth / 2) -
                           MediaQuery.of(context).size.width * 0.4,
                       child: Container(
@@ -431,6 +422,9 @@ class _MainScreenState extends State<MainScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(
+          height: 20,
+        ),
         const Text(
           "Main Wallet",
           style: TextStyle(
@@ -455,7 +449,7 @@ class _MainScreenState extends State<MainScreen> {
               child: Text(
                 _isBalanceVisible ? amount : "***",
                 style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),

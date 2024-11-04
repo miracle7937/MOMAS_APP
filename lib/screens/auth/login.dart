@@ -147,7 +147,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onTap: () {
                                     var meterNo = "";
                                     var email = "";
-                                    if (FormValidators.isValidEmail(email)) {
+                                    if (FormValidators.isValidEmail(
+                                        generalController.text)) {
                                       email = generalController.text;
                                     } else {
                                       meterNo = generalController.text;
@@ -176,13 +177,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                             snapshot.data?[1] == true)
                                         ? InkWell(
                                             onTap: () {
-                                            BioMetric().authenticate().then((v){
-                                              if(v ==true){
-                                                context.read<LoginBloc>().add(
-                                                    UserLoginEvent(
-                                                        snapshot.data?[0]));
-                                              }
-                                            });
+                                              BioMetric()
+                                                  .authenticate()
+                                                  .then((v) {
+                                                if (v == true) {
+                                                  context.read<LoginBloc>().add(
+                                                      UserLoginEvent(
+                                                          snapshot.data?[0]));
+                                                }
+                                              });
                                             },
                                             child: Image.asset(
                                                 MoImage.fingerPrint))
