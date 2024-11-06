@@ -128,15 +128,15 @@ class DashboardBuilder {
             }),
       );
     }
-    if (future.topUp == 1) {
-      value.add(
-        GridItemModel(
-            image: MoImage.topUpWallet,
-            title: "Top up wallet",
-            subtitle: "Fund your wallet easily",
-            onTap: null),
-      );
-    }
+    // if (future.topUp == 1) {
+    //   value.add(
+    //     GridItemModel(
+    //         image: MoImage.topUpWallet,
+    //         title: "Top up wallet",
+    //         subtitle: "Fund your wallet easily",
+    //         onTap: null),
+    //   );
+    // }
     if (future.analysis == 1) {
       value.add(
         GridItemModel(

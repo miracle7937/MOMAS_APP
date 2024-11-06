@@ -72,7 +72,8 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
     tariff = user?.tariffs ?? [];
     if (widget.momasPaymentType == MomasPaymentType.self) {
       setState(() => isLoading = true);
-      bloc.add(MomasVerification(meterNo: user!.meterNo!));
+      bloc.add(MomasVerification(
+          meterNo: user!.meterNo!, estateId: user!.estateId!));
     }
   }
 
@@ -200,41 +201,49 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                       fontSize: 10,
                                       fontWeight: FontWeight.w300),
                                 ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                      child: MoFormWidget(
-                                        controller: meterTextFormController,
-                                        keyboardType: TextInputType.number,
-                                        prefixIcon: const Icon(
-                                          Icons.electric_meter,
-                                          color: Colors.grey,
-                                        ),
-                                        title: "Meter Number",
-                                        onChange: (v) {
-                                          setState(() {
-                                            verificationResponse = null;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: MoButton(
-                                        isLoading:
-                                            state is MomasVerificationLoading,
-                                        title: "VERIFY",
-                                        onTap: () {
-                                          verificationResponse = null;
-                                          bloc.add(MomasVerification(
-                                              meterNo: meterTextFormController
-                                                  .text));
-                                        },
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                (selectedEstate != null)
+                                    ? Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Expanded(
+                                            flex: 3,
+                                            child: MoFormWidget(
+                                              controller:
+                                                  meterTextFormController,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              prefixIcon: const Icon(
+                                                Icons.electric_meter,
+                                                color: Colors.grey,
+                                              ),
+                                              title: "Meter Number",
+                                              onChange: (v) {
+                                                setState(() {
+                                                  verificationResponse = null;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: MoButton(
+                                              isLoading: state
+                                                  is MomasVerificationLoading,
+                                              title: "VERIFY",
+                                              onTap: () {
+                                                verificationResponse = null;
+                                                bloc.add(MomasVerification(
+                                                    meterNo:
+                                                        meterTextFormController
+                                                            .text,
+                                                    estateId: selectedEstate!.id
+                                                        .toString()));
+                                              },
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    : Container(),
                               ],
                             )
                           : Container(),
@@ -582,10 +591,11 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
         minVending;
     if (receivableAmount < minPurchase || receivableAmount > maxPurchase) {
       showErrorBottomSheet(context,
-          "Receivable amount (NGN$receivableAmount) fails to fall within the specified maximum and minimum range.");
+          "Payable amount (NGN${amountFormController.text}) can not be less than minimum  vend.");
       return;
     }
     num payableAmount = int.parse(amountFormController.text);
+    num totalPayableAmount = payableAmount + (selectedTariff!.amount ?? 0);
 
     if (payableAmount <= 0) {
       showErrorBottomSheet(
@@ -597,12 +607,13 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
       return;
     }
     showPaymentModal(context, user!.meterNo!, () {
-      MoBottomSheet().payment(context, amount: payableAmount.toString(),
+      MoBottomSheet().payment(context, amount: totalPayableAmount.toString(),
           onPayment: (String ref) {
         bloc.add(MomasMeterPayment(
+            totalPayable: totalPayableAmount.toString(),
             amountForVending: minVending.toString(),
             tariffId: selectedTariff!.id.toString(),
-            amount: receivableAmount.toString(),
+            amount: payableAmount.toString(),
             meterNo: user!.meterNo!,
             meterType: user!.meterType ?? "",
             trxref: ref,
@@ -612,13 +623,17 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   }
 
   payForOther() {
+    if (verificationResponse?.data == null) {
+      showErrorBottomSheet(context, "Please verify the meter number.");
+      return;
+    }
     var receivableAmount = (isNotEmpty(amountFormController.text)
             ? int.parse(amountFormController.text)
             : 0) -
         minVending;
     if (receivableAmount < minPurchase || receivableAmount > maxPurchase) {
       showErrorBottomSheet(context,
-          "Receivable amount (NGN$receivableAmount) fails to fall within the specified maximum and minimum range.");
+          "Payable amount (NGN${amountFormController.text}) can not be less than minimum  vend.");
       return;
     }
 
@@ -632,6 +647,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
       return;
     }
     num payableAmount = int.parse(amountFormController.text);
+    num totalPayableAmount = payableAmount + (selectedTariff!.amount ?? 0);
 
     if (payableAmount <= 0) {
       showErrorBottomSheet(
@@ -644,12 +660,13 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
       return;
     }
     showPaymentModal(context, user!.meterNo!, () {
-      MoBottomSheet().payment(context, amount: payableAmount.toString(),
+      MoBottomSheet().payment(context, amount: totalPayableAmount.toString(),
           onPayment: (String ref) {
         bloc.add(MomasMeterPayment(
+            totalPayable: totalPayableAmount.toString(),
             amountForVending: minVending.toString(),
             tariffId: selectedTariff!.id.toString(),
-            amount: receivableAmount.toString(),
+            amount: payableAmount.toString(),
             meterNo: meterTextFormController.text,
             meterType: verificationResponse!.data!.meterType!,
             trxref: ref,
