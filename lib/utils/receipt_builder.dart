@@ -5,6 +5,7 @@ import '../domain/data/request/momas_payent_response.dart';
 import '../domain/data/response/generate_token_response.dart';
 import '../domain/data/response/meter_payment_response.dart';
 import '../domain/data/transaction_details.dart';
+import 'amount_formatter.dart';
 
 class ReceiptBuilder {
   List<TransactionDetail> accessToken(TokenData data) {
@@ -31,8 +32,8 @@ class ReceiptBuilder {
       TransactionDetail(label: 'Order ID:', value: data.orderId),
       TransactionDetail(label: 'Address:', value: data.address),
       TransactionDetail(
-          label: 'Amount:', value: "NGN ${data.amount.toString()}"),
-      TransactionDetail(label: 'Unit:', value: data.unit.toString() ?? ""),
+          label: 'Amount:',
+          value: "NGN ${AmountFormatter.formatNaira(data.amount!.toDouble())}"),
       TransactionDetail(label: 'Token:', value: data.token.toString() ?? ""),
       TransactionDetail(
           label: 'Date:', value: TimeUtil.formatMMMMDY(data.createdAt!)),

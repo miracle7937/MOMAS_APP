@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ import '../../reuseable/mo_form.dart';
 import '../../reuseable/mo_transaction_success_screen.dart';
 import '../../reuseable/pop_button.dart';
 import '../../reuseable/shadow_container.dart';
+import '../../utils/amount_formatter.dart';
 import '../../utils/receipt_builder.dart';
 
 class ReprintTokenScreen extends StatefulWidget {
@@ -68,7 +68,8 @@ class _ReprintTokenScreenState extends State<ReprintTokenScreen> {
                   child: Center(
                     child: ShadowContainer(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 8),
                         child: SizedBox(
                           height: 40,
                           width: MediaQuery.of(context).size.width - 15,
@@ -96,7 +97,8 @@ class _ReprintTokenScreenState extends State<ReprintTokenScreen> {
                       ),
                       const SizedBox(height: 16.0),
                       MoFormWidget(
-                        prefixIcon: Icon(Icons.search, color: MoColors.mainColor),
+                        prefixIcon:
+                            Icon(Icons.search, color: MoColors.mainColor),
                         hintText: "Search",
                         onChange: (value) {
                           _filterData(value);
@@ -107,36 +109,38 @@ class _ReprintTokenScreenState extends State<ReprintTokenScreen> {
                 ),
                 state is MomasPaymentLoading
                     ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SpinKitFadingCircle(
-                      color: MoColors.mainColorII,
-                      size: 50.0,
-                    )
-                  ],
-                )
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SpinKitFadingCircle(
+                            color: MoColors.mainColorII,
+                            size: 50.0,
+                          )
+                        ],
+                      )
                     : Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredMeterDataList?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (builder) => TransactionSuccessPage(
-                                details: ReceiptBuilder().meterHistory(
-                                    filteredMeterDataList![index]),
-                              ),
-                            ),
-                          );
-                        },
-                        child: TokenCard(token: filteredMeterDataList![index]),
-                      );
-                    },
-                  ),
-                ),
+                        child: ListView.builder(
+                          itemCount: filteredMeterDataList?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (builder) =>
+                                        TransactionSuccessPage(
+                                      details: ReceiptBuilder().meterHistory(
+                                          filteredMeterDataList![index]),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: TokenCard(
+                                  token: filteredMeterDataList![index]),
+                            );
+                          },
+                        ),
+                      ),
               ],
             );
           },
@@ -156,8 +160,6 @@ class _ReprintTokenScreenState extends State<ReprintTokenScreen> {
   }
 }
 
-
-
 class TokenCard extends StatelessWidget {
   final MeterData token;
 
@@ -165,7 +167,6 @@ class TokenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       child: ShadowContainer(
@@ -179,36 +180,50 @@ class TokenCard extends StatelessWidget {
                   CircleAvatar(
                     radius: 16,
                     backgroundColor: Colors.green[100],
-                    child: const Icon(Icons.receipt, color: Colors.green, size: 15,),
+                    child: const Icon(
+                      Icons.receipt,
+                      color: Colors.green,
+                      size: 15,
+                    ),
                   ),
                   const SizedBox(width: 16.0),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(
+                      Text(
                         "${token.orderId}",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15.0,
                         ),
                       ),
-                     const SizedBox(height: 10,),
-                      Text(token.token ?? "", style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.0,
-                      )),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(token.token ?? "",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12.0,
+                          )),
                     ],
                   ),
                 ],
               ),
+              const Spacer(),
               Expanded(
+                flex: 2,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(TimeUtil.formatMMMMDY(token.createdAt ?? "")
-                      , style: const TextStyle(fontSize: 10),),
                     Text(
-                       "NGN${token.amount}",
+                      TimeUtil.formatMMMMDY(token.createdAt ?? ""),
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      AmountFormatter.formatNaira(token.amount!.toDouble()),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,

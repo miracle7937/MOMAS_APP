@@ -32,17 +32,19 @@ class Comment {
   String? comment;
   int? jobId;
   String? createdAt;
+  int? rate;
   String? updatedAt;
 
   Comment(
       {this.id,
-        this.userId,
-        this.userName,
-        this.count,
-        this.comment,
-        this.jobId,
-        this.createdAt,
-        this.updatedAt});
+      this.userId,
+      this.userName,
+      this.count,
+      this.comment,
+      this.jobId,
+      this.createdAt,
+      this.updatedAt,
+      this.rate});
 
   Comment.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -53,6 +55,7 @@ class Comment {
     jobId = json['job_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    rate = json['rate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -65,6 +68,7 @@ class Comment {
     data['job_id'] = jobId;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['rate'] = rate;
     return data;
   }
 }

@@ -32,8 +32,7 @@ class MeterData {
   String? userId;
   String? orderId;
   String? token;
-  int? amount;
-  num? unit;
+  num? amount;
   int? status;
   String? createdAt;
   String? address;
@@ -45,7 +44,6 @@ class MeterData {
       this.orderId,
       this.token,
       this.amount,
-      this.unit,
       this.status,
       this.createdAt,
       this.updatedAt,
@@ -57,7 +55,6 @@ class MeterData {
     orderId = json['order_id'];
     token = json['token'];
     amount = json['amount'];
-    unit = json['unit'];
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -71,7 +68,6 @@ class MeterData {
     data['order_id'] = orderId;
     data['token'] = token;
     data['amount'] = amount;
-    data['unit'] = unit;
     data['status'] = status;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;

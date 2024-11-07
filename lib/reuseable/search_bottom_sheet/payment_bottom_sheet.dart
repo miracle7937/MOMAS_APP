@@ -253,14 +253,14 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             // Update loading bar.
           },
           onPageStarted: (String url) {
-            setState(() {
-              isLoading = true;
-            });
+            isLoading = true;
           },
           onPageFinished: (String url) {
-            setState(() {
-              isLoading = false;
-            });
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
           },
           onHttpError: (HttpResponseError error) {},
           onWebResourceError: (WebResourceError error) {},

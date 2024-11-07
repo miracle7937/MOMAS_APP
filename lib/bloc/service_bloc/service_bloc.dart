@@ -80,6 +80,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
         emit(const ServiceStateFailed("request fails to get comments"));
       }
     } catch (_, e) {
+      print(e);
       emit(ServiceStateFailed(_.toString()));
     }
   }

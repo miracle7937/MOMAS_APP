@@ -95,7 +95,8 @@ class _ServicePreviewScreenState extends State<ServicePreviewScreen> {
                         ))
                       : Expanded(
                           child: ListView.builder(
-                              itemCount: response?.comment?.length ?? 0,
+                              itemCount:
+                                  response?.comment?.reversed.length ?? 0,
                               itemBuilder: (_, index) {
                                 var comment = response!.comment![index];
                                 return _buildCommentCard(
@@ -104,7 +105,7 @@ class _ServicePreviewScreenState extends State<ServicePreviewScreen> {
                                     TimeUtil().ago(
                                       comment.createdAt ?? "",
                                     ),
-                                    comment.count ?? 0);
+                                    comment.rate ?? 0);
                               })),
                 ],
               );
@@ -178,12 +179,8 @@ class _ServicePreviewScreenState extends State<ServicePreviewScreen> {
                         context: context,
                         builder: (context) => RatingModal(
                           onSubmit: (rating, comment) {
-                            serviceBloc.add(ServicePostCommentEvent(
-                              comment,
-                              rating.toString(),
-                              data.id.toString()
-
-                            ));
+                            serviceBloc.add(ServicePostCommentEvent(comment,
+                                rating.toString(), data.id.toString()));
                             log('Rating: $rating');
                             log('Comment: $comment');
                           },
