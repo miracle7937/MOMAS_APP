@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:momas_pay/utils/images.dart';
 
-
 import '../../utils/strings.dart';
 import 'error_switch.dart';
 import 'modal_scroll_controller.dart';
@@ -66,9 +65,9 @@ class SelectionListBottomSheet<T> extends StatefulWidget {
         assert(onItemSelected != null, "onItemSelected cannot be null"),
         assert(title != null, "title cannot be null"),
         assert(
-        hasSearch && searchMatcher != null ||
-            !hasSearch && searchMatcher == null,
-        "if search enabled, matcher cannot be null"),
+            hasSearch && searchMatcher != null ||
+                !hasSearch && searchMatcher == null,
+            "if search enabled, matcher cannot be null"),
         super(key: key);
 
   @override
@@ -116,7 +115,7 @@ class _SelectionListBottomSheetState<T>
                   Theme.of(context)
                       .textTheme
                       .bodySmall!
-                      .copyWith(color: Colors.black),
+                      .copyWith(color: Colors.black, fontSize: 10),
             ),
           ));
         }
@@ -126,10 +125,10 @@ class _SelectionListBottomSheetState<T>
 
     List remaining = _filteredItems!
         .where((item) =>
-    widget.segregationMap!.values.firstWhere(
-          (segregationFunction) => segregationFunction(item),
-    ) ==
-        null)
+            widget.segregationMap!.values.firstWhere(
+              (segregationFunction) => segregationFunction(item),
+            ) ==
+            null)
         .toList();
     if (remaining != null && remaining.isNotEmpty) data.addAll(remaining);
     return data;
@@ -137,64 +136,64 @@ class _SelectionListBottomSheetState<T>
 
   List<T>? get _filteredItems => (widget.hasSearch && isNotEmpty(_searchQuery))
       ? _items!
-      .where((item) => widget.searchMatcher!(item, _searchQuery!))
-      .toList()
+          .where((item) => widget.searchMatcher!(item, _searchQuery!))
+          .toList()
       : _items;
 
   Widget _buildTitle() {
     return Text(
       widget.title!,
       key: Key(widget.title!),
-      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-        color: Colors.black,
-      ),
+      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: Colors.black,
+          ),
     );
   }
 
   OutlineInputBorder get _border => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5),
-    borderSide: BorderSide(color: Colors.white, width: 0.0),
-  );
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(color: Colors.white, width: 0.0),
+      );
 
   Widget _buildSearchBox() {
     return widget.hasSearch
         ? Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: Container(
-        color:Colors.grey.withOpacity(0.2), //miracle
-        child: TextFormField(
-          key: Key('search'),
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            color: Colors.black,
-          ),
-          decoration: InputDecoration(
-            fillColor: Colors.white,
-            contentPadding:
-            const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-            hintText: isNotEmpty(widget.searchHint)
-                ? widget.searchHint
-                : 'search',
-            hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: Colors.grey,
-            ),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(left: 12.0),
-              child: Icon(
-                Icons.search,
-                color: Colors.black12,
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Container(
+              color: Colors.grey.withOpacity(0.2), //miracle
+              child: TextFormField(
+                key: Key('search'),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Colors.black,
+                    ),
+                decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                  hintText: isNotEmpty(widget.searchHint)
+                      ? widget.searchHint
+                      : 'search',
+                  hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Colors.grey,
+                      ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.black12,
+                    ),
+                  ),
+                  border: _border,
+                  focusedBorder: _border,
+                  enabledBorder: _border,
+                  disabledBorder: _border,
+                ),
+                onChanged: (searchQuery) => setState(() {
+                  _searchQuery = searchQuery;
+                }),
               ),
             ),
-            border: _border,
-            focusedBorder: _border,
-            enabledBorder: _border,
-            disabledBorder: _border,
-          ),
-          onChanged: (searchQuery) => setState(() {
-            _searchQuery = searchQuery;
-          }),
-        ),
-      ),
-    )
+          )
         : SizedBox.shrink();
   }
 
@@ -220,7 +219,7 @@ class _SelectionListBottomSheetState<T>
         SliverSafeArea(
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (context, index) {
+              (context, index) {
                 return Container(
                   color: Colors.white,
                   child: Column(
@@ -229,10 +228,10 @@ class _SelectionListBottomSheetState<T>
                       InkWell(
                         onTap: items[index] is T
                             ? () {
-                          if (widget.shouldPop)
-                            Navigator.of(context).pop(items[index]);
-                          widget.onItemSelected!(items[index]);
-                        }
+                                if (widget.shouldPop)
+                                  Navigator.of(context).pop(items[index]);
+                                widget.onItemSelected!(items[index]);
+                              }
                             : null,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20),
@@ -289,9 +288,9 @@ class _SelectionListBottomSheetState<T>
           return SizedBox(
             height: height,
             child: const Center(
-              //To-do
-              // child: BankLoader(),
-            ),
+                //To-do
+                // child: BankLoader(),
+                ),
           );
         }
       },
@@ -310,28 +309,28 @@ class _SelectionListBottomSheetState<T>
         middle: widget.hasSearch
             ? _buildTitle()
             : Padding(
-          padding: const EdgeInsets.only(
-            left: 15,
-            right: 15,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [_buildTitle()],
-          ),
-        ),
+                padding: const EdgeInsets.only(
+                  left: 15,
+                  right: 15,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [_buildTitle()],
+                ),
+              ),
         border: widget.hasSearch ? _kDefaultNavBarBorder : null,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         trailing: widget.hasSearch
             ? GestureDetector(
-          key: const Key('close_icon_key'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Image.asset(
-            MoImage.closeIcon,
-          ),
-        )
+                key: const Key('close_icon_key'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  MoImage.closeIcon,
+                ),
+              )
             : null,
       ),
       child: _buildItemsList(),

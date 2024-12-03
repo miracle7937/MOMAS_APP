@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:momas_pay/domain/data/request/login.dart';
@@ -8,15 +6,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/data/response/user_model.dart';
 
 class SharedPreferenceHelper {
-
   static const String _keyUser = 'user';
   static const String _keyLogin = 'Login';
   static const String _token = 'TOKEN';
-  static const String _balance  = 'balance_visible';
-  static const String _unit  = 'unit_visible';
+  static const String _balance = 'balance_visible';
+  static const String _unit = 'unit_visible';
 
+  static Future<void> clearUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
 
- static Future<void> saveUser(Map user) async {
+  static Future<void> saveUser(Map user) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyUser, json.encode(user));
   }
@@ -28,27 +29,30 @@ class SharedPreferenceHelper {
 
   static Future<User?> getUser() async {
     final prefs = await SharedPreferences.getInstance();
-    var data =  prefs.getString(_keyUser, );
-    return data == null? null : User.fromJson(json.decode(data));
-    }
+    var data = prefs.getString(
+      _keyUser,
+    );
+    return data == null ? null : User.fromJson(json.decode(data));
+  }
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    var data =  prefs.getString(_token );
+    var data = prefs.getString(_token);
     return data;
   }
-
 
   static Future<void> saveLogin(Map login) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyLogin, json.encode(login));
   }
+
   static Future<Login?> getLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    var data =  prefs.getString(_keyLogin, );
-    return data == null? null : Login.fromJson(json.decode(data));
+    var data = prefs.getString(
+      _keyLogin,
+    );
+    return data == null ? null : Login.fromJson(json.decode(data));
   }
-
 
   static Future<bool> getBalanceVisibility() async {
     final prefs = await SharedPreferences.getInstance();
@@ -60,7 +64,6 @@ class SharedPreferenceHelper {
     prefs.setBool(_balance, isVisible);
   }
 
-
   static Future<bool> getUnitVisibility() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_unit) ?? true;
@@ -70,5 +73,4 @@ class SharedPreferenceHelper {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(_unit, isVisible);
   }
-
 }

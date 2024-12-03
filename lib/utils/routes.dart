@@ -1,4 +1,5 @@
 class Routes {
+  // static const String _baseURL = "http://192.64.115.75:9081/api";
   static const String _baseURL = "https://momas.tomitechltd.com/api";
   static String login = "$_baseURL/login";
   static String buyAirtime = "$_baseURL/buy-airtime";
@@ -10,6 +11,7 @@ class Routes {
   static String balance = "$_baseURL/balance";
   static String pay = "$_baseURL/pay";
   static String getTransaction = "$_baseURL/get-transactions";
+  static String retryMeter = "$_baseURL/retry-meter";
   static String serviceProperties = "$_baseURL/service-properties";
   static String serviceSearch = "$_baseURL/service-search";
   static String features = "$_baseURL/features";
@@ -34,4 +36,5 @@ class Routes {
   static String disApproveToken = "$_baseURL/disapprove-token";
   static String tokenList = "$_baseURL/token-list";
   static String vendingProperties = "$_baseURL/vending-properties";
+  static String resetPassword = "$_baseURL/reset-password";
 }

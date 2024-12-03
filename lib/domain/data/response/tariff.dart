@@ -3,9 +3,11 @@ class Tariff {
   String? type;
   String? estateId;
   String? title;
-  int? amount;
+  num? amount;
+  num? vat;
 
-  Tariff({this.id, this.type, this.estateId, this.title, this.amount});
+  Tariff(
+      {this.id, this.type, this.estateId, this.title, this.amount, this.vat});
 
   Tariff.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -13,6 +15,7 @@ class Tariff {
     estateId = json['estate_id'];
     title = json['title'];
     amount = json['amount'];
+    vat = json['vat'];
   }
 
   Map<String, dynamic> toJson() {
@@ -22,6 +25,7 @@ class Tariff {
     data['estate_id'] = estateId;
     data['title'] = title;
     data['amount'] = amount;
+    data['vat'] = vat;
     return data;
   }
 }

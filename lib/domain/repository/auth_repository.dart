@@ -21,9 +21,9 @@ class AuthRepository {
     return GenericResponse.fromJson(response.data);
   }
 
-  Future<GenericResponse> checkEmail(String email) async {
-    var response = await _request
-        .postData(path: Routes.checkEmail, body: {"email": email});
+  Future<GenericResponse> checkEmail(String email, action) async {
+    var response = await _request.postData(
+        path: Routes.checkEmail, body: {"email": email, "action": action});
     return GenericResponse.fromJson(response.data);
   }
 
@@ -35,7 +35,7 @@ class AuthRepository {
 
   Future<GenericResponse> confirmPassword(
       String email, String password, String confirmPassword) async {
-    var response = await _request.postData(path: Routes.verifyEmail, body: {
+    var response = await _request.postData(path: Routes.resetPassword, body: {
       "email": email,
       "password": password,
       "confirm_password": confirmPassword

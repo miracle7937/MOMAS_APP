@@ -44,11 +44,11 @@ class AuthService {
     return await repository.register(data);
   }
 
-  Future<GenericResponse> checkEmail(String email) async {
+  Future<GenericResponse> checkEmail(String email, action) async {
     if (!FormValidators.isValidEmail(email)) {
       throw Exception("This email is not valid");
     }
-    return await repository.checkEmail(email);
+    return await repository.checkEmail(email, action);
   }
 
   Future<GenericResponse> verifyEmail(String email, String code) async {

@@ -22,26 +22,32 @@ class MomasVerification extends MomasPaymentEvent {
 
 class MomasMeterPayment extends MomasPaymentEvent {
   final MomasPaymentType paymentType;
-  final String amount, meterType, trxref;
+  final String meterType, trxref;
   final String? estateId;
   final String? meterNo;
-  final String? amountForVending;
-  final String? totalPayable;
-  final String? tariffId;
+  String? vendValueKWPerNaira;
+  String? totalPaidAmount;
+  String? tariffId;
+  String? utilityAmount;
+  String? vendingAmount;
+  String? vatAmount;
 
-  const MomasMeterPayment(
-      {required this.amount,
-      required this.meterType,
-      required this.trxref,
-      required this.paymentType,
-      this.estateId,
-      this.meterNo,
-      this.amountForVending,
-      this.tariffId,
-      this.totalPayable});
+  MomasMeterPayment({
+    required this.meterType,
+    required this.trxref,
+    required this.paymentType,
+    this.estateId,
+    this.meterNo,
+    this.vendValueKWPerNaira,
+    this.utilityAmount,
+    this.tariffId,
+    this.totalPaidAmount,
+    this.vendingAmount,
+    this.vatAmount,
+  });
 
   @override
-  List<Object> get props => [amount, meterType, trxref, paymentType];
+  List<Object> get props => [meterType, trxref, paymentType];
 }
 
 class MomasPaymentHistory extends MomasPaymentEvent {

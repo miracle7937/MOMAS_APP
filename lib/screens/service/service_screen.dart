@@ -11,11 +11,13 @@ import '../../bloc/service_bloc/service_bloc.dart';
 import '../../bloc/service_bloc/service_event.dart';
 import '../../domain/data/response/service_data_response.dart';
 import '../../domain/data/response/service_response.dart';
+import '../../domain/data/response/user_model.dart';
 import '../../reuseable/error_modal.dart';
 import '../../reuseable/pop_button.dart';
 import '../../reuseable/search_bottom_sheet/ka_dropdown.dart';
 import '../../reuseable/shadow_container.dart';
 import '../../utils/service_launcher.dart';
+import '../../utils/shared_pref.dart';
 
 class ServiceScreen extends StatefulWidget {
   const ServiceScreen({super.key});
@@ -30,12 +32,19 @@ class _ServiceScreenState extends State<ServiceScreen> {
   Service? selectedService;
   ServiceDataResponse? serviceDataResponse;
   ServiceSearchResponse? serviceSearchResponse;
+  String? estateId;
 
   @override
   void initState() {
     super.initState();
     serviceBloc = ServiceBloc(ServiceRepository())
       ..add(const ServicePropertiesEvent());
+    getUserEstate();
+  }
+
+  getUserEstate() async {
+    User? user = await SharedPreferenceHelper.getUser();
+    estateId = user?.estateId;
   }
 
   @override
@@ -75,42 +84,42 @@ class _ServiceScreenState extends State<ServiceScreen> {
                             ),
                           ),
                         ),
-                        EPDropdownButton<Estate>(
-                          itemsListTitle: "Choose Estate",
-                          iconSize: 22,
-                          value: selectedEstate,
-                          hint: const Text(""),
-                          isExpanded: true,
-                          underline: const Divider(),
-                          searchMatcher: (item, text) {
-                            return item.title!
-                                .toLowerCase()
-                                .contains(text.toLowerCase());
-                          },
-                          onChanged: (v) {
-                            setState(() {
-                              selectedEstate = v;
-                            });
-                          },
-                          items: (serviceDataResponse?.data?.estate ?? [])
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Row(
-                                    children: [
-                                      Text(e.title.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black)),
-                                    ],
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
+                        // EPDropdownButton<Estate>(
+                        //   itemsListTitle: "Choose Estate",
+                        //   iconSize: 22,
+                        //   value: selectedEstate,
+                        //   hint: const Text(""),
+                        //   isExpanded: true,
+                        //   underline: const Divider(),
+                        //   searchMatcher: (item, text) {
+                        //     return item.title!
+                        //         .toLowerCase()
+                        //         .contains(text.toLowerCase());
+                        //   },
+                        //   onChanged: (v) {
+                        //     setState(() {
+                        //       selectedEstate = v;
+                        //     });
+                        //   },
+                        //   items: (serviceDataResponse?.data?.estate ?? [])
+                        //       .map(
+                        //         (e) => DropdownMenuItem(
+                        //           value: e,
+                        //           child: Row(
+                        //             children: [
+                        //               Text(e.title.toString(),
+                        //                   style: Theme.of(context)
+                        //                       .textTheme
+                        //                       .labelMedium!
+                        //                       .copyWith(
+                        //                           fontWeight: FontWeight.w400,
+                        //                           color: Colors.black)),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       )
+                        //       .toList(),
+                        // ),
                         EPDropdownButton<Service>(
                           itemsListTitle: "Choose Services",
                           iconSize: 22,
@@ -158,7 +167,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                             title: "Search",
                             onTap: () {
                               serviceBloc.add(ServiceSearchEvent(
-                                  selectedEstate!.id.toString(),
+                                  estateId.toString(),
                                   selectedService!.id.toString()));
                             },
                           ),
@@ -166,33 +175,42 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       ],
                     ),
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        if (serviceSearchResponse?.data?.isNotEmpty == true) {
-                          var searchData = serviceSearchResponse!.data![index];
-                          return  InkWell(
-                            onTap: (){
-                                 Navigator.of(context).push(MaterialPageRoute(
-                                     builder: (_) =>  ServicePreviewScreen(
-                                       data: searchData,
-                                       estate: selectedEstate?.title ?? "",
-                                     )));
+                  serviceSearchResponse?.data?.isNotEmpty == true
+                      ? SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              if (serviceSearchResponse?.data?.isNotEmpty ==
+                                  true) {
+                                var searchData =
+                                    serviceSearchResponse!.data![index];
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                ServicePreviewScreen(
+                                                  data: searchData,
+                                                  estate:
+                                                      selectedEstate?.title ??
+                                                          "",
+                                                )));
+                                  },
+                                  child: CustomListItem(
+                                    name: searchData.professionalName ?? "",
+                                    profession: searchData.serviceTitle ?? "",
+                                    rating: int.parse(searchData.rating ?? "0"),
+                                    phoneNumber:
+                                        searchData.professionalPhone ?? "",
+                                  ),
+                                );
+                              }
+                              return const EmptyList();
                             },
-                            child: CustomListItem(
-                              name: searchData.professionalName ?? "",
-                              profession:searchData.serviceTitle ?? "",
-                              rating: int.parse(searchData.rating ?? "0"),
-                              phoneNumber: searchData.professionalPhone ?? "",
-                            ),
-                          );
-
-                        }
-                        return const EmptyList();
-                      },
-                      childCount: serviceSearchResponse?.data?.length ?? 0,
-                    ),
-                  ),
+                            childCount:
+                                serviceSearchResponse?.data?.length ?? 0,
+                          ),
+                        )
+                      : const SliverToBoxAdapter(child: EmptyList()),
                 ],
               );
             },
@@ -295,7 +313,7 @@ class CustomListItem extends StatelessWidget {
           ),
           const SizedBox(width: 8.0),
           InkWell(
-              onTap: ()=>ServiceLauncher.makePhoneCall(phoneNumber),
+              onTap: () => ServiceLauncher.makePhoneCall(phoneNumber),
               child: const Icon(Icons.phone, color: Colors.green)),
         ],
       ),

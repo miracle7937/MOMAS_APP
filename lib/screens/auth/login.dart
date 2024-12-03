@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momas_pay/bloc/login_bloc/login_bloc.dart';
+import 'package:momas_pay/bloc/registeration_bloc/register_event.dart';
 import 'package:momas_pay/domain/repository/auth_repository.dart';
 import 'package:momas_pay/domain/service/auth_service.dart';
 import 'package:momas_pay/screens/auth/email_screen.dart';
@@ -20,6 +21,7 @@ import '../../reuseable/mo_form.dart';
 import '../../utils/bio_metric.dart';
 import '../../utils/images.dart';
 import '../../utils/validators.dart';
+import 'email_code_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -125,9 +127,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Row(
                             children: [
                               const Spacer(),
-                              Text(
-                                "Forgot Password",
-                                style: TextStyle(color: MoColors.mainColor),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const EmailScreen(
+                                                emailType: CheckEmail.forget,
+                                              )));
+                                },
+                                child: Text(
+                                  "Forgot Password",
+                                  style: TextStyle(color: MoColors.mainColor),
+                                ),
                               )
                             ],
                           ),
@@ -211,10 +223,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: MoColors.mainColor, fontSize: 14),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                const EmailScreen()));
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (_) => const EmailScreen(
+                                                  emailType:
+                                                      CheckEmail.register,
+                                                )));
                                   },
                               ),
                             ],

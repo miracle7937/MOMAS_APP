@@ -49,7 +49,8 @@ void showErrorBottomSheet(BuildContext context, String errorMessage) {
   );
 }
 
-Future showSuccessBottomSheet(BuildContext context, String successMessage) {
+Future showSuccessBottomSheet(BuildContext context, String successMessage,
+    {VoidCallback? onTap}) {
   return showModalBottomSheet(
     context: context,
     builder: (ctx) => Padding(
@@ -82,10 +83,11 @@ Future showSuccessBottomSheet(BuildContext context, String successMessage) {
             ),
             const SizedBox(height: 16),
             MoButton(
-              onTap: () {
-                Navigator.of(ctx).pop();
-                Navigator.of(ctx).pop();
-              },
+              onTap: onTap ??
+                  () {
+                    Navigator.of(ctx).pop();
+                    Navigator.of(ctx).pop();
+                  },
               title: 'Dismiss',
             ),
           ],

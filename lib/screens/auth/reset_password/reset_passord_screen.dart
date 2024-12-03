@@ -43,6 +43,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         title: const Text('Reset Password'),
       ),
       body: BlocConsumer<RegisterBloc, RegisterState>(
+        bloc: registerBloc,
         builder: (context, state) {
           return Column(
             children: [
@@ -64,6 +65,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 title: "Confirm Password",
               ),
+              const SizedBox(
+                height: 10,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
@@ -73,9 +77,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         isLoading: state is RegisterLoading,
                         title: "RESET",
                         onTap: () {
-                          if(passwordController.text.length  < 4 || confirmPasswordController.text.length  < 4  ){
-                            showErrorBottomSheet(
-                                context, "Please you password length to should..");
+                          if (passwordController.text.length < 4 ||
+                              confirmPasswordController.text.length < 4) {
+                            showErrorBottomSheet(context,
+                                "Please you password length to should..");
                             return;
                           }
                           if (isNotEmpty(passwordController.text) &&
@@ -102,7 +107,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             case RegisterProcessFailure():
               showErrorBottomSheet(context, state.error);
             case RegisterSuccess():
-              showSuccessBottomSheet(context,  state.message);
+              showSuccessBottomSheet(context, state.message, onTap: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/',
+                  (Route<dynamic> route) => false,
+                );
+              });
+
             default:
               log("state not implemented");
           }

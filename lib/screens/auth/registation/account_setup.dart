@@ -1,11 +1,8 @@
-
-
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momas_pay/domain/data/request/register.dart';
 import 'package:momas_pay/screens/auth/registation/registration_success_screen.dart';
-
 
 import '../../../bloc/registeration_bloc/register_bloc.dart';
 import '../../../bloc/registeration_bloc/register_event.dart';
@@ -33,7 +30,8 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
   final TextEditingController meterNoController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -45,11 +43,12 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
     passwordController.dispose();
     confirmPasswordController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return  SafeArea(
+    return SafeArea(
       child: Scaffold(
-        backgroundColor: MoColors.mainColorII ,
+        backgroundColor: MoColors.mainColorII,
         body: BlocProvider(
           create: (context) => RegisterBloc(AuthService(AuthRepository())),
           child: BlocConsumer<RegisterBloc, RegisterState>(
@@ -61,9 +60,9 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
                       color: Colors.white,
                       child: Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height*0.15,
+                        height: MediaQuery.of(context).size.height * 0.15,
                         decoration: BoxDecoration(
-                          gradient:  LinearGradient(
+                          gradient: LinearGradient(
                             stops: const [0.5, 0.8],
                             colors: [
                               MoColors.mainColor,
@@ -72,90 +71,149 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                           ),
-                          borderRadius: const BorderRadius.only(bottomRight: Radius.circular(100)),
+                          borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(100)),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 20,),
-                              Row(children: [  PopButton().pop(context), const Spacer(), Center(child: Image.asset(MoImage.logo, width: 50,)),],),
-                              const SizedBox(height: 10,),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                children: [
+                                  PopButton().pop(context),
+                                  const Spacer(),
+                                  Center(
+                                      child: Image.asset(
+                                    MoImage.logo,
+                                    width: 50,
+                                  )),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
                               const Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Set up Account", style: TextStyle(fontSize: 20, color: Colors.white),),
+                                  Text(
+                                    "Set up Account",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white),
+                                  ),
                                 ],
                               ),
-                              const SizedBox(height:10 ,),
+                              const SizedBox(
+                                height: 10,
+                              ),
                             ],
                           ),
                         ),
-
                       ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       // height: MediaQuery.of(context).size.height*0.8,
-                      decoration:  const BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(100)),
+                        borderRadius:
+                            BorderRadius.only(topLeft: Radius.circular(100)),
                       ),
-                      child:    Column(
+                      child: Column(
                         children: [
-                          const SizedBox(height: 50,),
-                           MoFormWidget(
-                             controller: firstNameController,
-                            prefixIcon: const Icon(Icons.person, color: Colors.grey,),
-                            title: "First Name", ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          MoFormWidget(
+                            controller: firstNameController,
+                            prefixIcon: const Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                            ),
+                            title: "First Name",
+                          ),
                           MoFormWidget(
                             controller: lastNameController,
-                            prefixIcon: const Icon(Icons.person, color: Colors.grey,),
-                            title: "Last Name", ),
-                           MoFormWidget(
-                             controller: meterNoController,
-                            prefixIcon: const Icon(Icons.electric_meter, color: Colors.grey,),
-                            title: "Meter Number", ),
-                           MoFormWidget(
-                             controller: phoneController,
-                            prefixIcon: const Icon(Icons.phone, color: Colors.grey,),
-                            title: "Phone No", ),
-                           MoFormWidget(
+                            prefixIcon: const Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                            ),
+                            title: "Last Name",
+                          ),
+                          MoFormWidget(
+                            controller: meterNoController,
+                            prefixIcon: const Icon(
+                              Icons.electric_meter,
+                              color: Colors.grey,
+                            ),
+                            title: "Meter Number",
+                          ),
+                          MoFormWidget(
+                            controller: phoneController,
+                            prefixIcon: const Icon(
+                              Icons.phone,
+                              color: Colors.grey,
+                            ),
+                            title: "Phone No",
+                          ),
+                          MoFormWidget(
                             controller: passwordController,
-                            prefixIcon: const Icon(Icons.lock, color: Colors.grey,),
-                            title: "Password", isPassword: true, ),
-                           MoFormWidget(
+                            prefixIcon: const Icon(
+                              Icons.lock,
+                              color: Colors.grey,
+                            ),
+                            title: "Password",
+                            isPassword: true,
+                          ),
+                          MoFormWidget(
                             controller: confirmPasswordController,
-                            prefixIcon: const Icon(Icons.lock, color: Colors.grey,),
-                            title: "Confirm password",  isPassword: true,),
-                          const SizedBox(height: 20,),
+                            prefixIcon: const Icon(
+                              Icons.lock,
+                              color: Colors.grey,
+                            ),
+                            title: "Confirm password",
+                            isPassword: true,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           Padding(
-                            padding:  const EdgeInsets.symmetric(horizontal: 15),
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: MoButton(
-                                    isLoading: context.watch<RegisterBloc>().state is RegisterLoading,
+                                    isLoading: context
+                                        .watch<RegisterBloc>()
+                                        .state is RegisterLoading,
                                     title: "CONTINUE",
-                                    onTap: (){
-                                      Register register = Register(firstName: firstNameController.text, lastName: lastNameController.text,
+                                    onTap: () {
+                                      Register register = Register(
+                                          firstName: firstNameController.text,
+                                          lastName: lastNameController.text,
                                           meterNo: meterNoController.text,
                                           phone: phoneController.text,
-                                          email:  widget.email,
+                                          email: widget.email,
                                           password: passwordController.text,
-                                          confirmPassword: confirmPasswordController.text);
-                                          context.read<RegisterBloc>().add(UserRegisterEvent(register));
-
+                                          confirmPassword:
+                                              confirmPasswordController.text);
+                                      context
+                                          .read<RegisterBloc>()
+                                          .add(UserRegisterEvent(register));
                                     },
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20,)
-                        ],),
+                          const SizedBox(
+                            height: 20,
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -166,16 +224,15 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
                 case RegisterProcessFailure():
                   showErrorBottomSheet(context, state.error);
                 case RegisterSuccess():
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=>const RegistrationSuccessScreen()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => const RegistrationSuccessScreen()));
                 default:
                   log("state not implemented");
               }
-
-          },
+            },
           ),
         ),
       ),
     );
   }
-
 }

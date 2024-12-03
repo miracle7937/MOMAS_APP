@@ -29,7 +29,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       }
       if (event is CheckEmailEvent) {
         emit(RegisterLoading());
-        GenericResponse response = await authService.checkEmail(event.email);
+        GenericResponse response = await authService.checkEmail(
+            event.email, event.checkEmailType.name);
         if (response.status == true) {
           emit(EmailCheckSuccess(event.email));
         } else {
@@ -42,8 +43,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         GenericResponse response =
             await authService.verifyEmail(event.email, event.code);
         if (response.status == true) {
-          print("success------>");
-
           emit(EmailVerificationSuccess());
         } else {
           emit(EmailVerificationFail(response.message ?? ""));

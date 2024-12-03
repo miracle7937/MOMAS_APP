@@ -1,40 +1,53 @@
 class MomasMeterBuy {
-  String? amount;
+  String? vendingAmount;
   String? trxref;
   String? meterType;
   String? estateId;
   String? meterNo;
-  String? amountForVending;
+  String? vendValueKWPerNaira;
+  String? totalPaidAmount;
   String? tariffId;
+  String? utilityAmount;
+  String? vatAmount;
 
-  MomasMeterBuy(
-      {this.amount,
-      this.trxref,
-      this.meterType,
-      this.estateId,
-      this.meterNo,
-      this.amountForVending,
-      this.tariffId});
+  MomasMeterBuy({
+    this.vendingAmount,
+    this.trxref,
+    this.meterType,
+    this.estateId,
+    this.meterNo,
+    this.vendValueKWPerNaira,
+    this.tariffId,
+    this.totalPaidAmount,
+    this.utilityAmount,
+    this.vatAmount,
+  });
 
   MomasMeterBuy.fromJson(Map<String, dynamic> json) {
-    amount = json['amount'];
+    vendingAmount = json['vending_amount'];
     trxref = json['trxref'];
     meterType = json['meterType'];
     estateId = json['estate_id'];
     meterNo = json['meterNo'];
-    amountForVending = json['min_vend_amount'];
+    vendValueKWPerNaira = json['vend_amount_kw_per_naira'];
     tariffId = json['tariff_id'];
+    totalPaidAmount = json['total_paid_amount'];
+    utilityAmount = json['utility_amount'];
+    vatAmount = json['vat_amount'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['amount'] = amount;
+    data['vending_amount'] = vendingAmount;
     data['trxref'] = trxref;
     data['meterType'] = meterType;
     data['estate_id'] = estateId;
     data['meterNo'] = meterNo;
-    data['min_vend_amount'] = amountForVending;
     data['tariff_id'] = tariffId;
+    data['vend_amount_kw_per_naira'] = vendValueKWPerNaira;
+    data['total_paid_amount'] = totalPaidAmount;
+    data['utility_amount'] = utilityAmount;
+    data['vat_amount'] = vatAmount;
     return data;
   }
 }

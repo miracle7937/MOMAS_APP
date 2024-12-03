@@ -50,10 +50,13 @@ class MomasPaymentBloc extends Bloc<MomasPaymentEvent, MomasPaymentState> {
     emit(MomasPaymentLoading());
     try {
       var data = MomasMeterBuy(
+          vatAmount: event.vatAmount,
           estateId: event.estateId,
-          amountForVending: event.amountForVending,
+          vendValueKWPerNaira: event.vendValueKWPerNaira,
+          utilityAmount: event.utilityAmount,
           tariffId: event.tariffId,
-          amount: event.amount,
+          vendingAmount: event.vendingAmount,
+          totalPaidAmount: event.totalPaidAmount,
           trxref: event.trxref,
           meterType: event.meterType,
           meterNo: event.meterNo);

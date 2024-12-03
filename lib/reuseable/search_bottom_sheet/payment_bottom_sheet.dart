@@ -129,20 +129,20 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
                 _buildPaymentOption(
                     context, 'Pay with Paystack', MoImage.payStack,
                     onTap: () => _onPaymentOptionTap(PaymentType.paystack)),
-                const SizedBox(height: 10),
-                _buildPaymentOption(context, 'Pay with Remita', MoImage.remita,
-                    onTap: () => _onPaymentOptionTap(PaymentType.remita)),
+                // const SizedBox(height: 10),
+                // _buildPaymentOption(context, 'Pay with Remita', MoImage.remita,
+                //     onTap: () => _onPaymentOptionTap(PaymentType.remita)),
                 const SizedBox(height: 10),
                 _buildPaymentOption(
                     context, 'Pay with Flutterwave', MoImage.flutterWave,
                     onTap: () => _onPaymentOptionTap(PaymentType.flutterwave)),
                 const SizedBox(height: 10),
-                _buildPaymentOption(
-                    context, 'Pay with wallet', MoImage.walletPayment,
-                    additionalInfo: isNotEmpty(user?.mainWallet.toString())
-                        ? 'NGN ${user?.mainWallet}.'
-                        : "",
-                    onTap: () => _onPaymentOptionTap(PaymentType.wallet)),
+                // _buildPaymentOption(
+                //     context, 'Pay with wallet', MoImage.walletPayment,
+                //     additionalInfo: isNotEmpty(user?.mainWallet.toString())
+                //         ? 'NGN ${user?.mainWallet}.'
+                //         : "",
+                //     onTap: () => _onPaymentOptionTap(PaymentType.wallet)),
               ],
             ),
           );

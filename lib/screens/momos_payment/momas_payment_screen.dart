@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +28,7 @@ import '../../reuseable/shadow_container.dart';
 import '../../utils/receipt_builder.dart';
 import '../../utils/shared_pref.dart';
 import '../../utils/strings.dart';
+import '../../utils/vat_calculator.dart';
 
 class MomasPaymentScreen extends StatefulWidget {
   final MomasPaymentType momasPaymentType;
@@ -51,7 +51,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   User? user;
   num minPurchase = 0;
   num maxPurchase = 0;
-  num minVending = 0;
+  num utilitiesAmount = 0;
   String amountValue = "";
   Tariff? selectedTariff;
   List<Tariff> tariff = [];
@@ -69,7 +69,6 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
 
   load() async {
     user = await SharedPreferenceHelper.getUser();
-    tariff = user?.tariffs ?? [];
     if (widget.momasPaymentType == MomasPaymentType.self) {
       setState(() => isLoading = true);
       bloc.add(MomasVerification(
@@ -78,9 +77,12 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   }
 
   getForOtherVent(MomasVerificationResponse? verificationResponse) {
+    //set tariff
+    tariff = verificationResponse?.data?.tariffs ?? [];
+
     maxPurchase = verificationResponse!.data?.purchase?.maxPurchase ?? 0;
     minPurchase = verificationResponse.data?.purchase?.minPurchase ?? 0;
-    minVending = verificationResponse.data?.purchase?.minVending ?? 0;
+    utilitiesAmount = verificationResponse.data?.purchase?.minVending ?? 0;
     setState(() => isLoading = false);
   }
 
@@ -89,515 +91,561 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: InkWell(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: BlocConsumer<MomasPaymentBloc, MomasPaymentState>(
-            bloc: bloc,
-            builder: (context, state) {
-              return SingleChildScrollView(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 13,
-                        ),
-                        Center(
-                          child: ShadowContainer(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 8),
-                              child: SizedBox(
-                                height: 40,
-                                width: MediaQuery.of(context).size.width - 15,
-                                child: Row(
-                                  children: [
-                                    PopButton().pop(context),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    const Text("Pay for MOMAS Meter")
-                                  ],
-                                ),
+        body: BlocConsumer<MomasPaymentBloc, MomasPaymentState>(
+          bloc: bloc,
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 13,
+                      ),
+                      Center(
+                        child: ShadowContainer(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 8),
+                            child: SizedBox(
+                              height: 40,
+                              width: MediaQuery.of(context).size.width - 15,
+                              child: Row(
+                                children: [
+                                  PopButton().pop(context),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  const Text("Pay for MOMAS Meter")
+                                ],
                               ),
                             ),
                           ),
                         ),
-                        widget.momasPaymentType == MomasPaymentType.others
-                            ? Column(
-                                children: [
-                                  BlocConsumer<ServiceBloc, ServiceState>(
-                                    bloc: serviceBloc,
-                                    builder: (context, state) {
-                                      return EPDropdownButton<Estate>(
-                                        itemsListTitle: "Choose Estate",
-                                        iconSize: 22,
-                                        value: selectedEstate,
-                                        hint: const Text(""),
-                                        isExpanded: true,
-                                        underline: const Divider(),
-                                        searchMatcher: (item, text) {
-                                          return item.title!
-                                              .toLowerCase()
-                                              .contains(text.toLowerCase());
-                                        },
-                                        onChanged: (v) {
-                                          setState(() {
-                                            selectedEstate = v;
-                                            verificationResponse = null;
-                                          });
-                                        },
-                                        items: (serviceDataResponse
-                                                    ?.data?.estate ??
-                                                [])
-                                            .map(
-                                              (e) => DropdownMenuItem(
-                                                value: e,
-                                                child: Row(
-                                                  children: [
-                                                    Text(e.title.toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .labelMedium!
-                                                            .copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                color: Colors
-                                                                    .black)),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
-                                      );
-                                    },
-                                    listener: (BuildContext context,
-                                        ServiceState state) {
-                                      switch (state) {
-                                        case ServiceStateLoading():
-                                          setState(() => isLoading = true);
-                                        case ServiceStateFailed():
-                                          setState(() => isLoading = false);
-                                          showErrorBottomSheet(
-                                              context, state.error);
-                                        case ServiceStateSuccess():
-                                          setState(() => isLoading = false);
-                                          serviceDataResponse =
-                                              state.dataResponse;
-
-                                        default:
-                                          log("state not implemented");
-                                      }
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  const Text(
-                                    "Make payment on your momas meter easily  in few steps",
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                  (selectedEstate != null)
-                                      ? Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Expanded(
-                                              flex: 3,
-                                              child: MoFormWidget(
-                                                controller:
-                                                    meterTextFormController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                prefixIcon: const Icon(
-                                                  Icons.electric_meter,
-                                                  color: Colors.grey,
-                                                ),
-                                                title: "Meter Number",
-                                                onChange: (v) {
-                                                  setState(() {
-                                                    verificationResponse = null;
-                                                  });
-                                                },
+                      ),
+                      widget.momasPaymentType == MomasPaymentType.others
+                          ? Column(
+                              children: [
+                                BlocConsumer<ServiceBloc, ServiceState>(
+                                  bloc: serviceBloc,
+                                  builder: (context, state) {
+                                    return EPDropdownButton<Estate>(
+                                      itemsListTitle: "Choose Estate",
+                                      iconSize: 22,
+                                      value: selectedEstate,
+                                      hint: const Text(""),
+                                      isExpanded: true,
+                                      underline: const Divider(),
+                                      searchMatcher: (item, text) {
+                                        return item.title!
+                                            .toLowerCase()
+                                            .contains(text.toLowerCase());
+                                      },
+                                      onChanged: (v) {
+                                        setState(() {
+                                          selectedEstate = v;
+                                          verificationResponse = null;
+                                        });
+                                      },
+                                      items: (serviceDataResponse
+                                                  ?.data?.estate ??
+                                              [])
+                                          .map(
+                                            (e) => DropdownMenuItem(
+                                              value: e,
+                                              child: Row(
+                                                children: [
+                                                  Text(e.title.toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelMedium!
+                                                          .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: Colors
+                                                                  .black)),
+                                                ],
                                               ),
                                             ),
-                                            Expanded(
-                                              child: MoButton(
-                                                isLoading: state
-                                                    is MomasVerificationLoading,
-                                                title: "VERIFY",
-                                                onTap: () {
-                                                  verificationResponse = null;
-                                                  bloc.add(MomasVerification(
-                                                      meterNo:
-                                                          meterTextFormController
-                                                              .text,
-                                                      estateId: selectedEstate!
-                                                          .id
-                                                          .toString()));
-                                                },
-                                              ),
-                                            )
-                                          ],
-                                        )
-                                      : Container(),
-                                ],
-                              )
-                            : Container(),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        isNotEmpty(verificationResponse?.data?.customerName)
-                            ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color:
-                                          MoColors.mainColor.withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0, vertical: 10),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.person,
-                                          color: Colors.white,
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          verificationResponse!
-                                              .data!.customerName!,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: MoColors.mainColor),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                          )
+                                          .toList(),
+                                    );
+                                  },
+                                  listener: (BuildContext context,
+                                      ServiceState state) {
+                                    switch (state) {
+                                      case ServiceStateLoading():
+                                        setState(() => isLoading = true);
+                                      case ServiceStateFailed():
+                                        setState(() => isLoading = false);
+                                        showErrorBottomSheet(
+                                            context, state.error);
+                                      case ServiceStateSuccess():
+                                        setState(() => isLoading = false);
+                                        serviceDataResponse =
+                                            state.dataResponse;
+
+                                      default:
+                                        log("state not implemented");
+                                    }
+                                  },
                                 ),
-                              )
-                            : Container(),
-                        MoFormWidget(
-                          controller: amountFormController,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.deny(RegExp(r'[,.]')),
-                          ],
-                          title: "Amount (NGN)",
-                          onChange: (value) {
-                            setState(() {
-                              amountValue = value;
-                            });
-                          },
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Row(
-                            children: [
-                              Text("Min $minPurchase | Max $maxPurchase",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black)),
-                              const Spacer(),
-                              Text("Min Vend $minVending ",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black))
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        EPDropdownButton<Tariff>(
-                            itemsListTitle: "Selected Vending Type",
-                            iconSize: 22,
-                            value: selectedTariff,
-                            hint: const Text(""),
-                            isExpanded: true,
-                            underline: const Divider(),
-                            searchMatcher: (item, text) {
-                              return (item.title!)
-                                  .toLowerCase()
-                                  .contains(text.toLowerCase());
-                            },
-                            onChanged: (v) {
-                              setState(() {
-                                selectedTariff = v;
-                              });
-                            },
-                            items: tariff
-                                .map(
-                                  (e) => DropdownMenuItem(
-                                      value: e,
-                                      child: Row(
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                const Text(
+                                  "Make payment on your momas meter easily  in few steps",
+                                  style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                                (selectedEstate != null)
+                                    ? Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
-                                          Text(e.type.toString().toUpperCase(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.black)),
+                                          Expanded(
+                                            flex: 3,
+                                            child: MoFormWidget(
+                                              controller:
+                                                  meterTextFormController,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              prefixIcon: const Icon(
+                                                Icons.electric_meter,
+                                                color: Colors.grey,
+                                              ),
+                                              title: "Meter Number",
+                                              onChange: (v) {
+                                                setState(() {
+                                                  verificationResponse = null;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: MoButton(
+                                              isLoading: state
+                                                  is MomasVerificationLoading,
+                                              title: "VERIFY",
+                                              onTap: () {
+                                                verificationResponse = null;
+                                                bloc.add(MomasVerification(
+                                                    meterNo:
+                                                        meterTextFormController
+                                                            .text,
+                                                    estateId: selectedEstate!.id
+                                                        .toString()));
+                                              },
+                                            ),
+                                          )
                                         ],
-                                      )),
-                                )
-                                .toList()),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * .04,
-                        ),
-                        (amountFormController.text.isNotEmpty &&
-                                selectedTariff != null &&
-                                verificationResponse != null)
-                            ? Center(
+                                      )
+                                    : Container(),
+                              ],
+                            )
+                          : Container(),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      isNotEmpty(verificationResponse?.data?.customerName)
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: MoColors.mainColor.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(8)),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                      horizontal: 10.0, vertical: 10),
+                                  child: Row(
                                     children: [
-                                      // Header Row
-                                      const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 0.0, vertical: 8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Items",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                            Text(
-                                              "Amount (NGN)",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                      const Icon(
+                                        Icons.person,
+                                        color: Colors.white,
                                       ),
-                                      const Divider(),
-                                      // Items Table
-                                      Table(
-                                        columnWidths: const {
-                                          0: FlexColumnWidth(),
-                                          1: FixedColumnWidth(100),
-                                        },
-                                        children: [
-                                          TableRow(
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 8.0),
-                                                child: Text(
-                                                  "Tariff",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
-                                                child: Text(
-                                                  AmountFormatter.format(
-                                                    double.parse(selectedTariff
-                                                            ?.amount
-                                                            .toString() ??
-                                                        '0'),
-                                                  ),
-                                                  textAlign: TextAlign.right,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          TableRow(
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 8.0),
-                                                child: Text(
-                                                  "Utilities",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
-                                                child: Text(
-                                                  AmountFormatter.format(
-                                                      double.parse(minVending
-                                                          .toString())),
-                                                  textAlign: TextAlign.right,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          TableRow(
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 8.0),
-                                                child: Text(
-                                                  "Amount  to Vend",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
-                                                child: Text(
-                                                  AmountFormatter.format(
-                                                    double.parse(
-                                                            amountFormController
-                                                                .text) -
-                                                        minVending -
-                                                        (selectedTariff!
-                                                                .amount ??
-                                                            0),
-                                                  ),
-                                                  textAlign: TextAlign.right,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                      const SizedBox(
+                                        width: 10,
                                       ),
-                                      const Divider(),
-                                      // Total Section
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 16.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            const Text(
-                                              "Amount payable",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                            Text(
-                                              AmountFormatter.formatNaira(
-                                                  double.parse(
-                                                      amountFormController
-                                                          .text)),
-                                              style: const TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      Text(
+                                        verificationResponse!
+                                            .data!.customerName!,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: MoColors.mainColor),
+                                      )
                                     ],
                                   ),
                                 ),
-                              )
-                            : Container(),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * .05,
+                              ),
+                            )
+                          : Container(),
+                      MoFormWidget(
+                        controller: amountFormController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.deny(RegExp(r'[,.]')),
+                        ],
+                        title: "Amount (NGN)",
+                        onChange: (value) {
+                          setState(() {
+                            amountValue = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Row(
+                          children: [
+                            Text("Min $minPurchase | Max $maxPurchase",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black)),
+                            const Spacer(),
+                            Text("Utilities $utilitiesAmount ",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black))
+                          ],
                         ),
-                        MoButton(
-                          isLoading: state is MomasPaymentLoading || isLoading,
-                          title: "CONTINUE",
-                          onTap: () {
-                            widget.momasPaymentType == MomasPaymentType.self
-                                ? payForSelf()
-                                : payForOther();
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      EPDropdownButton<Tariff>(
+                          itemsListTitle: "Selected Vending Type",
+                          iconSize: 22,
+                          value: selectedTariff,
+                          hint: const Text(""),
+                          isExpanded: true,
+                          underline: const Divider(),
+                          searchMatcher: (item, text) {
+                            return (item.title!)
+                                .toLowerCase()
+                                .contains(text.toLowerCase());
                           },
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * .1,
-                        ),
-                      ],
-                    ),
+                          onChanged: (v) {
+                            if (v.amount == null) {
+                              showErrorBottomSheet(context,
+                                  "Tariff amount not set, Please contact an admin.");
+                              return;
+                            }
+                            setState(() {
+                              selectedTariff = v;
+                            });
+                          },
+                          items: tariff
+                              .map(
+                                (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Row(
+                                      children: [
+                                        Text(e.type.toString().toUpperCase(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .copyWith(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black)),
+                                      ],
+                                    )),
+                              )
+                              .toList()),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .04,
+                      ),
+                      (amountFormController.text.isNotEmpty &&
+                              selectedTariff != null &&
+                              verificationResponse != null)
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15.0,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // Header Row
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 0.0, vertical: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Items",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Amount (NGN)",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Divider(),
+                                    // Items Table
+                                    Table(
+                                      columnWidths: const {
+                                        0: FlexColumnWidth(),
+                                        1: FixedColumnWidth(100),
+                                      },
+                                      children: [
+                                        // TableRow(
+                                        //   children: [
+                                        //     const Padding(
+                                        //       padding: EdgeInsets.symmetric(
+                                        //           vertical: 8.0),
+                                        //       child: Text(
+                                        //         "Tariff(%)",
+                                        //         style: TextStyle(
+                                        //           fontSize: 16,
+                                        //           color: Colors.black,
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //     Padding(
+                                        //       padding:
+                                        //           const EdgeInsets.symmetric(
+                                        //               vertical: 8.0),
+                                        //       child: Text(
+                                        //         AmountFormatter.format(
+                                        //           double.parse(selectedTariff
+                                        //                   ?.amount
+                                        //                   .toString() ??
+                                        //               '0'),
+                                        //         ),
+                                        //         textAlign: TextAlign.right,
+                                        //         style: const TextStyle(
+                                        //           fontSize: 16,
+                                        //           fontWeight: FontWeight.bold,
+                                        //           color: Colors.black,
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        TableRow(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 8.0),
+                                              child: Text(
+                                                "Utilities",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                AmountFormatter.format(
+                                                    double.parse(utilitiesAmount
+                                                        .toString())),
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        TableRow(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 8.0),
+                                              child: Text(
+                                                "Cost of Unit",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                AmountFormatter.format(
+                                                    VatCalculator()
+                                                        .calculateCostOfUnit(
+                                                            amountText:
+                                                                amountFormController
+                                                                    .text,
+                                                            tariffAmount:
+                                                                selectedTariff
+                                                                    ?.amount,
+                                                            utilitiesAmount:
+                                                                utilitiesAmount,
+                                                            vat: selectedTariff
+                                                                ?.vat)
+                                                        .toDouble()),
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        TableRow(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 8.0),
+                                              child: Text(
+                                                "VAT Amount",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                AmountFormatter.format(
+                                                    VatCalculator()
+                                                        .calculateVatAmount(
+                                                            amountText:
+                                                                amountFormController
+                                                                    .text,
+                                                            tariffAmount:
+                                                                selectedTariff
+                                                                    ?.amount,
+                                                            utilitiesAmount:
+                                                                utilitiesAmount,
+                                                            vat: selectedTariff
+                                                                ?.vat)
+                                                        .toDouble()),
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    const Divider(),
+                                    // Total Section
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            "Amount payable",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Text(
+                                            AmountFormatter.formatNaira(
+                                                double.parse(
+                                                    amountFormController.text)),
+                                            style: const TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .05,
+                      ),
+                      MoButton(
+                        isLoading: state is MomasPaymentLoading || isLoading,
+                        title: "CONTINUE",
+                        onTap: () {
+                          widget.momasPaymentType == MomasPaymentType.self
+                              ? payForSelf()
+                              : payForOther();
+                        },
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .1,
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-            listener: (BuildContext context, MomasPaymentState state) {
-              switch (state) {
-                case MomasPaymentFailure():
-                  showErrorBottomSheet(context, state.error);
-                case MomasMeterVerificationState():
-                  verificationResponse = state.response;
-                  getForOtherVent(verificationResponse);
-                case MomasPaymentSuccess():
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (builder) => TransactionSuccessPage(
-                                details: ReceiptBuilder().meterPayment(
-                                    state.momasPaymentResponse.data!),
-                              )));
-                default:
-                  log("state not implemented");
-              }
-            },
-          ),
+              ),
+            );
+          },
+          listener: (BuildContext context, MomasPaymentState state) {
+            switch (state) {
+              case MomasPaymentLoading():
+                FocusScope.of(context).unfocus();
+              case MomasPaymentFailure():
+                showErrorBottomSheet(context, state.error);
+              case MomasMeterVerificationState():
+                verificationResponse = state.response;
+                getForOtherVent(verificationResponse);
+              case MomasPaymentSuccess():
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => TransactionSuccessPage(
+                              details: ReceiptBuilder().meterPayment(
+                                  state.momasPaymentResponse.data!),
+                            )));
+              default:
+                log("state not implemented");
+            }
+          },
         ),
       ),
     );
   }
 
   payForSelf() {
-    var receivableAmount = (isNotEmpty(amountFormController.text)
-            ? int.parse(amountFormController.text)
-            : 0) -
-        (selectedTariff?.amount ?? 0) -
-        minVending;
+    var receivableAmount = VatCalculator().calculateCostOfUnit(
+        amountText: amountFormController.text,
+        tariffAmount: selectedTariff?.amount,
+        utilitiesAmount: utilitiesAmount,
+        vat: selectedTariff?.vat);
 
     if (receivableAmount < minPurchase || receivableAmount > maxPurchase) {
       showErrorBottomSheet(context,
@@ -616,13 +664,26 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
     showPaymentModal(context, user!.meterNo!, () {
       MoBottomSheet().payment(context, amount: totalPayableAmount.toString(),
           onPayment: (String ref) {
-        FocusScope.of(context).unfocus();
         bloc.add(MomasMeterPayment(
+            vatAmount: VatCalculator()
+                .calculateVatAmount(
+                    amountText: amountFormController.text,
+                    tariffAmount: selectedTariff?.amount,
+                    utilitiesAmount: utilitiesAmount,
+                    vat: selectedTariff?.vat)
+                .toString(),
             estateId: user!.estateId,
-            totalPayable: totalPayableAmount.toString(),
-            amountForVending: receivableAmount.toString(),
+            utilityAmount: utilitiesAmount.toString(),
+            totalPaidAmount: totalPayableAmount.toString(),
+            vendValueKWPerNaira: VatCalculator()
+                .calculateTariffAmountPerKWatt(
+                    amountText: amountFormController.text,
+                    tariffAmount: selectedTariff?.amount,
+                    utilitiesAmount: utilitiesAmount,
+                    vat: selectedTariff?.vat)
+                .toString(),
             tariffId: selectedTariff!.id.toString(),
-            amount: totalPayableAmount.toString(),
+            vendingAmount: receivableAmount.toString(),
             meterNo: user!.meterNo!,
             meterType: user!.meterType ?? "",
             trxref: ref,
@@ -646,12 +707,13 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
       showErrorBottomSheet(context, "please select tariff type");
       return;
     }
+
     // amount - tariff - vent
-    var receivableAmount = (isNotEmpty(amountFormController.text)
-            ? int.parse(amountFormController.text)
-            : 0) -
-        (selectedTariff?.amount ?? 0) -
-        minVending;
+    var receivableAmount = VatCalculator().calculateCostOfUnit(
+        amountText: amountFormController.text,
+        tariffAmount: selectedTariff?.amount,
+        utilitiesAmount: utilitiesAmount,
+        vat: selectedTariff?.vat);
     if (receivableAmount < minPurchase || receivableAmount > maxPurchase) {
       showErrorBottomSheet(context,
           "Payable amount (NGN${amountFormController.text}) can not be less than minimum  vend.");
@@ -674,12 +736,26 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
       MoBottomSheet().payment(context, amount: totalPayableAmount.toString(),
           onPayment: (String ref) {
         bloc.add(MomasMeterPayment(
-            totalPayable: totalPayableAmount.toString(),
-            amountForVending: receivableAmount.toString(),
+            vatAmount: VatCalculator()
+                .calculateVatAmount(
+                    amountText: amountFormController.text,
+                    tariffAmount: selectedTariff?.amount,
+                    utilitiesAmount: utilitiesAmount,
+                    vat: selectedTariff?.vat)
+                .toString(),
+            utilityAmount: utilitiesAmount.toString(),
+            totalPaidAmount: totalPayableAmount.toString(),
+            vendValueKWPerNaira: VatCalculator()
+                .calculateTariffAmountPerKWatt(
+                    amountText: amountFormController.text,
+                    tariffAmount: selectedTariff?.amount,
+                    utilitiesAmount: utilitiesAmount,
+                    vat: selectedTariff?.vat)
+                .toString(),
             tariffId: selectedTariff!.id.toString(),
-            amount: totalPayableAmount.toString(),
+            vendingAmount: receivableAmount.toString(),
             meterNo: meterTextFormController.text,
-            meterType: verificationResponse!.data!.meterType!,
+            meterType: "",
             trxref: ref,
             estateId: selectedEstate!.id.toString(),
             paymentType: MomasPaymentType.others));

@@ -14,6 +14,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     on<SearchPayment>((event, emit) async {
       await searchPayment(event, emit);
     });
+    on<RetryPayment>((event, emit) async {
+      await retryPayment(event, emit);
+    });
   }
 
   payment(PaymentEvent event, Emitter<PaymentState> emit) async {
@@ -50,6 +53,21 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         emit(const PaymentFailure(error: 'Network error'));
       }
     } catch (e) {
+      emit(PaymentFailure(error: e.toString()));
+    }
+  }
+
+  retryPayment(RetryPayment event, Emitter<PaymentState> emit) async {
+    emit(PaymentLoading());
+    try {
+      final response = await repository.retryPayment(event.transactionId);
+      if (response.status == true) {
+        emit(MomasPaymentSuccess(response));
+      } else {
+        emit(PaymentFailure(error: response.message ?? "Network issue"));
+      }
+    } catch (e, _) {
+      print(_);
       emit(PaymentFailure(error: e.toString()));
     }
   }

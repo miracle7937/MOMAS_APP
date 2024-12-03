@@ -30,4 +30,11 @@ class SettingRepository {
     });
     return GenericResponse.fromJson(response.data);
   }
+
+  Future<GenericResponse> deleteAccount(String email) async {
+    var response = await _request.postData(path: Routes.deleteUser, body: {
+      "email": email,
+    });
+    return GenericResponse.fromJson(response.data);
+  }
 }

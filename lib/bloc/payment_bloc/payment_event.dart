@@ -24,3 +24,11 @@ class SearchPayment extends PaymentEvent {
   @override
   List<Object> get props => [];
 }
+
+class RetryPayment extends PaymentEvent {
+  const RetryPayment(this.transactionId);
+  final String transactionId;
+
+  @override
+  List<Object> get props => [];
+}

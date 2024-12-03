@@ -22,8 +22,15 @@ class ReceiptBuilder {
       TransactionDetail(label: 'Service:', value: data.service),
       TransactionDetail(label: 'Address:', value: data.address),
       TransactionDetail(label: 'Name:', value: data.fullName),
-      TransactionDetail(label: 'Token:', value: data.token.toString() ?? ""),
-      TransactionDetail(label: 'Date:', value: data.date.toString() ?? ""),
+      TransactionDetail(label: 'Token:', value: data.token ?? ""),
+      TransactionDetail(label: 'Date:', value: data.date ?? ""),
+      TransactionDetail(label: 'KCT1  Token:', value: data.kctToken1 ?? ""),
+      TransactionDetail(label: 'KCT2  Token:', value: data.kctToken2 ?? ""),
+      TransactionDetail(label: 'Amount  :', value: "NGN ${data.amount}"),
+      TransactionDetail(
+          label: 'Unit  :', value: "${data.vendAmountKwPerNaira}KWH"),
+      TransactionDetail(
+          label: 'VAT Amount  :', value: "NGN${data.vatAmount}" ?? ""),
     ];
   }
 

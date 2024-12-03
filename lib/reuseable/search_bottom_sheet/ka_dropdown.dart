@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:momas_pay/reuseable/search_bottom_sheet/selection_list_bottom.dart';
 
-
 import '../../utils/strings.dart';
 import 'drop_down_helper.dart';
 
@@ -11,7 +10,7 @@ const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = 60.0;
 const double _kDenseButtonHeight = 24.0;
 const EdgeInsetsGeometry _kAlignedButtonPadding =
-EdgeInsetsDirectional.only(start: 16.0, end: 4.0);
+    EdgeInsetsDirectional.only(start: 16.0, end: 4.0);
 const EdgeInsets _kUnalignedButtonPadding = EdgeInsets.zero;
 
 class _DropdownMenuPainter extends CustomPainter {
@@ -21,10 +20,10 @@ class _DropdownMenuPainter extends CustomPainter {
     this.selectedIndex,
     this.resize,
   })  : _painter = BoxDecoration(
-    color: color,
-    borderRadius: BorderRadius.circular(2.0),
-    boxShadow: kElevationToShadow[elevation],
-  ).createBoxPainter(),
+          color: color,
+          borderRadius: BorderRadius.circular(2.0),
+          boxShadow: kElevationToShadow[elevation],
+        ).createBoxPainter(),
         super(repaint: resize);
 
   final Color? color;
@@ -45,7 +44,7 @@ class _DropdownMenuPainter extends CustomPainter {
 
     final Tween<double> bottom = Tween<double>(
       begin:
-      (top.begin! + _kMenuItemHeight).clamp(_kMenuItemHeight, size.height),
+          (top.begin! + _kMenuItemHeight).clamp(_kMenuItemHeight, size.height),
       end: size.height,
     );
 
@@ -73,7 +72,7 @@ class _DropdownScrollBehavior extends ScrollBehavior {
 
   @override
   Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) =>
+          BuildContext context, Widget child, AxisDirection axisDirection) =>
       child;
 
   @override
@@ -119,7 +118,7 @@ class _DropdownMenuState<T> extends State<_DropdownMenu<T>> {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
     final MaterialLocalizations localizations =
-    MaterialLocalizations.of(context);
+        MaterialLocalizations.of(context);
     final _DropdownRoute<T> route = widget.route!;
     final double unit = 0.5 / (route.items!.length + 1.5);
     final List<Widget> children = <Widget>[];
@@ -201,7 +200,7 @@ class _DropdownMenuRouteLayout<T> extends SingleChildLayoutDelegate {
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
     final double maxHeight =
-    math.max(0.0, constraints.maxHeight - 2 * _kMenuItemHeight);
+        math.max(0.0, constraints.maxHeight - 2 * _kMenuItemHeight);
 
     final double width = math.min(constraints.maxWidth, buttonRect.width);
     return BoxConstraints(
@@ -299,18 +298,18 @@ class _DropdownRoute<T> extends PopupRoute<_DropdownRouteResult<T>> {
       Animation<double> secondaryAnimation) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          return _DropdownRoutePage<T>(
-            route: this,
-            constraints: constraints,
-            items: items!,
-            padding: padding!,
-            buttonRect: buttonRect!,
-            selectedIndex: selectedIndex!,
-            elevation: elevation!,
-            theme: theme!,
-            style: style!,
-          );
-        });
+      return _DropdownRoutePage<T>(
+        route: this,
+        constraints: constraints,
+        items: items!,
+        padding: padding!,
+        buttonRect: buttonRect!,
+        selectedIndex: selectedIndex!,
+        elevation: elevation!,
+        theme: theme!,
+        style: style!,
+      );
+    });
   }
 
   void _dismiss() {
@@ -353,7 +352,7 @@ class _DropdownRoutePage<T> extends StatelessWidget {
 
     final double topLimit = math.min(_kMenuItemHeight, buttonTop);
     final double bottomLimit =
-    math.max(availableHeight - _kMenuItemHeight, buttonBottom);
+        math.max(availableHeight - _kMenuItemHeight, buttonBottom);
 
     final double selectedItemOffset =
         selectedIndex! * _kMenuItemHeight + kMaterialListPadding.top;
@@ -422,7 +421,7 @@ class DropdownButtonHideUnderline extends InheritedWidget {
 
   static bool at(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<
-        DropdownButtonHideUnderline>() !=
+            DropdownButtonHideUnderline>() !=
         null;
   }
 
@@ -569,10 +568,10 @@ class _COXDropdownButtonState<T> extends State<EPDropdownButton<T>>
 
   TextStyle get _textStyle =>
       widget.style ??
-          Theme.of(context)
-              .textTheme
-              .headlineLarge!
-              .copyWith(fontWeight: FontWeight.w100, color: Colors.grey);
+      Theme.of(context)
+          .textTheme
+          .headlineLarge!
+          .copyWith(fontWeight: FontWeight.w100, color: Colors.grey);
 
   void _handleTap() {
     return displayBottomSheetDropUp();
@@ -592,16 +591,16 @@ class _COXDropdownButtonState<T> extends State<EPDropdownButton<T>>
       searchHint: widget.searchMatcher != null ? 'Search' : null,
       searchMatcher: widget.searchMatcher != null
           ? (DropdownMenuItem item, String text) {
-        return widget.searchMatcher!(item.value, text);
-      }
+              return widget.searchMatcher!(item.value, text);
+            }
           : null,
       onItemSelected: (DropdownMenuItem item) {
         widget.onChanged!(item.value);
       },
       segregationMap: widget.segregationMap?.map(
-            (key, value) => MapEntry(
+        (key, value) => MapEntry(
           key,
-              (DropdownMenuItem item) {
+          (DropdownMenuItem item) {
             return widget.segregationMap![key]!(item.value);
           },
         ),
@@ -649,9 +648,9 @@ class _COXDropdownButtonState<T> extends State<EPDropdownButton<T>>
 
   bool get _enabled =>
       widget.items != null &&
-          widget.items!.isNotEmpty &&
-          widget.onChanged != null &&
-          !widget.disabled!;
+      widget.items!.isNotEmpty &&
+      widget.onChanged != null &&
+      !widget.disabled!;
 
   @override
   Widget build(BuildContext context) {
@@ -664,7 +663,7 @@ class _COXDropdownButtonState<T> extends State<EPDropdownButton<T>>
       final Widget emplacedHint = _enabled
           ? widget.hint!
           : DropdownMenuItem<Widget>(
-          child: widget.disabledHint ?? widget.hint!);
+              child: widget.disabledHint ?? widget.hint!);
       hintIndex = items.length;
       items.add(DefaultTextStyle(
         style: _textStyle,
@@ -698,13 +697,23 @@ class _COXDropdownButtonState<T> extends State<EPDropdownButton<T>>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          isNotEmpty(widget.itemsListTitle)? Column(
-            children: [
-              const SizedBox(height: 20,),
-              Text(widget.itemsListTitle ?? "", style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),),
-              const SizedBox(height: 10,),
-            ],
-          ): Container(),
+          isNotEmpty(widget.itemsListTitle)
+              ? Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      widget.itemsListTitle ?? "",
+                      style: const TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                )
+              : Container(),
           Container(
             height: 49,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1.5),
@@ -726,15 +735,15 @@ class _COXDropdownButtonState<T> extends State<EPDropdownButton<T>>
                   children: <Widget>[
                     widget.value == null
                         ? Text(
-                       "",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineLarge!
-                          .copyWith(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.grey),
-                    )
+                            "",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineLarge!
+                                .copyWith(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.grey),
+                          )
                         : Container(),
                     widget.isExpanded!
                         ? Expanded(child: innerItemsWidget)
@@ -757,9 +766,7 @@ class _COXDropdownButtonState<T> extends State<EPDropdownButton<T>>
       ),
     );
 
-    void showNoItemsDialog() {
-
-    }
+    void showNoItemsDialog() {}
 
     return Semantics(
       button: true,
@@ -784,28 +791,28 @@ class DropdownButtonFormField<T> extends FormField<T> {
     Widget? hint,
   })  : assert(decoration != null),
         super(
-          key: key,
-          onSaved: onSaved,
-          initialValue: value,
-          validator: validator,
-          builder: (FormFieldState<T> field) {
-            final InputDecoration effectiveDecoration = decoration
-                .applyDefaults(Theme.of(field.context).inputDecorationTheme);
-            return InputDecorator(
-              decoration:
-              effectiveDecoration.copyWith(errorText: field.errorText),
-              isEmpty: value == null,
-              child: DropdownButtonHideUnderline(
-                child: EPDropdownButton<T>(
-                  isDense: true,
-                  value: value,
-                  items: items,
-                  hint: hint,
-                  onChanged: field.didChange,
+            key: key,
+            onSaved: onSaved,
+            initialValue: value,
+            validator: validator,
+            builder: (FormFieldState<T> field) {
+              final InputDecoration effectiveDecoration = decoration
+                  .applyDefaults(Theme.of(field.context).inputDecorationTheme);
+              return InputDecorator(
+                decoration:
+                    effectiveDecoration.copyWith(errorText: field.errorText),
+                isEmpty: value == null,
+                child: DropdownButtonHideUnderline(
+                  child: EPDropdownButton<T>(
+                    isDense: true,
+                    value: value,
+                    items: items,
+                    hint: hint,
+                    onChanged: field.didChange,
+                  ),
                 ),
-              ),
-            );
-          });
+              );
+            });
 
   final ValueChanged<T>? onChanged;
 

@@ -12,6 +12,7 @@ import 'package:momas_pay/domain/service/dashboard_service.dart';
 import 'package:momas_pay/utils/images.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../bloc/momas_bloc/momas_bloc.dart';
+import '../../../utils/amount_formatter.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/dashboard_builder.dart';
 import '../../../utils/launcher.dart';
@@ -149,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
                                               (state is WalletSuccessful)
                                                   ? state.wallet.mainWallet
                                                       .toString()
-                                                  : "",
+                                                  : "0",
                                             ),
                                             // unitWidget(
                                             //   state is WalletLoading,
@@ -428,7 +429,7 @@ class _MainScreenState extends State<MainScreen> {
         const Text(
           "Main Wallet",
           style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),
+              fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
         ),
         const SizedBox(
           height: 2,
@@ -442,17 +443,14 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(
               width: 10,
             ),
-            Shimmer.fromColors(
-              enabled: true,
-              baseColor: Colors.white,
-              highlightColor: Colors.grey,
-              child: Text(
-                _isBalanceVisible ? amount : "***",
-                style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+            Text(
+              _isBalanceVisible
+                  ? AmountFormatter.formatNaira(double.parse(amount))
+                  : "***",
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
             const SizedBox(
               width: 10,
