@@ -51,6 +51,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         }
       }
     } catch (_, e) {
+      print(_);
       print(e);
       emit(WalletFailure());
     }

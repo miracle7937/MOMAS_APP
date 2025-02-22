@@ -1,5 +1,3 @@
-
-
 class DashboardModel {
   bool status;
   Feature feature;
@@ -21,8 +19,8 @@ class DashboardModel {
       'status': status,
       'feature': feature.toJson(),
     };
-  }}
-
+  }
+}
 
 class Feature {
   int id;

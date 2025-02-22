@@ -1,6 +1,5 @@
 class Routes {
-  // static const String _baseURL = "http://192.64.115.75:9081/api";
-  static const String _baseURL = "https://momas.tomitechltd.com/api";
+  static const String _baseURL = "https://momaspay.memmserve.com/api";
   static String login = "$_baseURL/login";
   static String buyAirtime = "$_baseURL/buy-airtime";
   static String buyData = "$_baseURL/buy-data";
