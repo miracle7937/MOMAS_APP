@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:momas_pay/domain/data/response/tariff.dart';
 
 class UserModel {
@@ -47,6 +49,7 @@ class User {
   String? estateName;
   String? hno;
   String? address;
+  bool? monthlyAdminFee;
   FlutterWaveKeys? flutterWaveKeys;
   PayStackKeys? payStackKeys;
   UserRole? userRole;
@@ -76,6 +79,7 @@ class User {
     this.meter,
     this.hno,
     this.address,
+    this.monthlyAdminFee,
     this.estateId,
     this.flutterWaveKeys,
     this.payStackKeys,
@@ -106,6 +110,8 @@ class User {
     token = json['token'];
     estateId = json['estate_id'];
     hno = json['hno'];
+    monthlyAdminFee =
+        (json['monthly_admin_fee']).toString() == "1" ? true : false;
     address = json['address'];
     estateName = json['estate_name'];
     tariffs = json['tariff'] != null
@@ -146,6 +152,7 @@ class User {
     data['token'] = token;
     data['estate_id'] = estateId;
     data['estate_name'] = estateName;
+    data['monthly_admin_fee'] = monthlyAdminFee;
     data['tariff'] = tariffs?.map((value) {
       return value.toJson();
     }).toList();
@@ -205,7 +212,8 @@ enum UserRole {
   none(0),
   admin(1),
   customer(2),
-  estateStaff(3);
+  estateManager(3),
+  estateStaff(4);
 
   final int id;
   const UserRole(this.id);

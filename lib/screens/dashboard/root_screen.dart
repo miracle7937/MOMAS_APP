@@ -1,10 +1,12 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:momas_pay/screens/dashboard/search_screen/search_screen.dart';
 import 'package:momas_pay/utils/colors.dart';
 import 'package:momas_pay/utils/images.dart';
 
+import '../../domain/data/response/user_model.dart';
+import '../../utils/shared_pref.dart';
+import '../generate_token/access_token_verification.dart';
 import '../profile/profile_screen.dart';
 import 'main_dashboard/main_screen.dart';
 
@@ -32,29 +34,65 @@ class _RootScreenState extends State<RootScreen> {
     ];
   }
 
+  Row _rowBuildTap() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _buildCustomTab(0, MoImage.home),
+        _buildCustomTab(1, MoImage.history),
+        _buildCustomTab(2, MoImage.settingsIcon),
+      ],
+    );
+  }
+
+  List<Widget> _estateStaffTabView() {
+    return [
+      const AccessTokenVerification(),
+      const ProfileScreen(),
+    ];
+  }
+
+  Row _rowEstateStaff() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _buildCustomTab(0, MoImage.home),
+        _buildCustomTab(1, MoImage.settingsIcon),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: _buildTabViews()[_selectedIndex],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body: FutureBuilder<User?>(
+          future: SharedPreferenceHelper.getUser(),
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: const SpinKitFadingCircle(
+                  color: Colors.white,
+                  size: 30.0,
+                ),
+              );
+            }
+            return Column(
               children: [
-                _buildCustomTab( 0, MoImage.home),
-                _buildCustomTab( 1,  MoImage.history),
-                _buildCustomTab( 2,  MoImage.settingsIcon),
+                Expanded(
+                    child: (snapshot.data?.userRole == UserRole.estateStaff)
+                        ? _estateStaffTabView()[_selectedIndex]
+                        : _buildTabViews()[_selectedIndex]),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: (snapshot.data?.userRole == UserRole.estateStaff)
+                        ? _rowEstateStaff()
+                        : _rowBuildTap()),
               ],
-            ),
-          ),
-        ],
-      ),
+            );
+          }),
     );
   }
 
@@ -64,21 +102,28 @@ class _RootScreenState extends State<RootScreen> {
       onTap: () => _onTabTapped(index),
       child: Column(
         children: [
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           SizedBox(
               height: 20,
               width: 20,
-              child: Image.asset(image, fit: BoxFit.fill,
-              color:   isSelected ? MoColors.mainColor:null,
+              child: Image.asset(
+                image,
+                fit: BoxFit.fill,
+                color: isSelected ? MoColors.mainColor : null,
               )),
-         const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           Container(
             height: 5,
             width: 60,
-            padding: const EdgeInsets.symmetric( horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             decoration: BoxDecoration(
-              color: isSelected ? MoColors.mainColor: Colors.white,
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              color: isSelected ? MoColors.mainColor : Colors.white,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             ),
           ),
         ],

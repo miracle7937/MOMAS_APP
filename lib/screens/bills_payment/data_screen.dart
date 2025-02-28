@@ -10,6 +10,7 @@ import 'package:momas_pay/domain/repository/bill_repository.dart';
 
 import '../../bloc/data_bloc/data_bloc.dart';
 import '../../bloc/data_bloc/data_event.dart';
+import '../../bloc/payment_bloc/payment_bloc.dart';
 import '../../reuseable/bottom_sheet.dart';
 import '../../reuseable/error_modal.dart';
 import '../../reuseable/mo_button.dart';
@@ -186,7 +187,8 @@ class _DataScreenState extends State<DataScreen> {
                             selectedDataPlan?.variationAmount ?? "0";
                         final String phone = _phoneController.text;
                         if (selectedDataPlan != null) {
-                          MoBottomSheet().payment(context, amount: amount,
+                          MoBottomSheet().payment(context,
+                              amount: amount, serviceType: ServiceType.data,
                               onPayment: (String ref) {
                             dataBloc.add(
                               BuyData(

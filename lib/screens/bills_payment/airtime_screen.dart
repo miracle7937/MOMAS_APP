@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+import 'package:momas_pay/bloc/payment_bloc/payment_bloc.dart';
 import 'package:momas_pay/domain/repository/bill_repository.dart';
 import 'package:momas_pay/utils/colors.dart';
 
@@ -127,8 +128,8 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                         final String amount = _amountController.text;
                         final String phone = _phoneController.text;
                         MoBottomSheet().payment(context,
-                            amount: amount,
-                            service: "Airtime", onPayment: (String ref) {
+                            amount: amount, serviceType: ServiceType.airtime,
+                            onPayment: (String ref) {
                           BlocProvider.of<AirtimeBloc>(context).add(
                             BuyAirtime(
                               ref: ref,

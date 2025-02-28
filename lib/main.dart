@@ -14,6 +14,8 @@ import 'domain/repository/auth_repository.dart';
 import 'domain/repository/setting_repository.dart';
 import 'domain/service/auth_service.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 void main() {
   runApp(const MyApp());
 }
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [routeObserver],
       navigatorKey: NavigationService.navigatorKey,
       title: 'Momas Pay',
       theme: ThemeConfig.buildCustomTheme(),

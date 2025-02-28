@@ -86,7 +86,6 @@ Future showSuccessBottomSheet(BuildContext context, String successMessage,
               onTap: onTap ??
                   () {
                     Navigator.of(ctx).pop();
-                    Navigator.of(ctx).pop();
                   },
               title: 'Dismiss',
             ),

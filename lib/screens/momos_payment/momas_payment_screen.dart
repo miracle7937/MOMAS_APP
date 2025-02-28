@@ -11,6 +11,7 @@ import 'package:momas_pay/utils/colors.dart';
 import '../../bloc/momas_bloc/momas_bloc.dart';
 import '../../bloc/momas_bloc/momas_event.dart';
 import '../../bloc/momas_bloc/momas_state.dart';
+import '../../bloc/payment_bloc/payment_bloc.dart';
 import '../../bloc/service_bloc/service_bloc.dart';
 import '../../bloc/service_bloc/service_event.dart';
 import '../../bloc/service_bloc/service_state.dart';
@@ -333,6 +334,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                 .contains(text.toLowerCase());
                           },
                           onChanged: (v) {
+                            print(v.toJson());
                             if (v.amount == null) {
                               showErrorBottomSheet(context,
                                   "Tariff amount not set, Please contact an admin.");
@@ -408,49 +410,15 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                         1: FixedColumnWidth(100),
                                       },
                                       children: [
-                                        // TableRow(
-                                        //   children: [
-                                        //     const Padding(
-                                        //       padding: EdgeInsets.symmetric(
-                                        //           vertical: 8.0),
-                                        //       child: Text(
-                                        //         "Tariff(%)",
-                                        //         style: TextStyle(
-                                        //           fontSize: 16,
-                                        //           color: Colors.black,
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //     Padding(
-                                        //       padding:
-                                        //           const EdgeInsets.symmetric(
-                                        //               vertical: 8.0),
-                                        //       child: Text(
-                                        //         AmountFormatter.format(
-                                        //           double.parse(selectedTariff
-                                        //                   ?.amount
-                                        //                   .toString() ??
-                                        //               '0'),
-                                        //         ),
-                                        //         textAlign: TextAlign.right,
-                                        //         style: const TextStyle(
-                                        //           fontSize: 16,
-                                        //           fontWeight: FontWeight.bold,
-                                        //           color: Colors.black,
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // ),
                                         TableRow(
                                           children: [
                                             const Padding(
                                               padding: EdgeInsets.symmetric(
-                                                  vertical: 8.0),
+                                                  vertical: 5.0),
                                               child: Text(
                                                 "Utilities",
                                                 style: TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 14,
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -458,14 +426,14 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 8.0),
+                                                      vertical: 5.0),
                                               child: Text(
                                                 AmountFormatter.format(
                                                     double.parse(utilitiesAmount
                                                         .toString())),
                                                 textAlign: TextAlign.right,
                                                 style: const TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black,
                                                 ),
@@ -477,11 +445,11 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                           children: [
                                             const Padding(
                                               padding: EdgeInsets.symmetric(
-                                                  vertical: 8.0),
+                                                  vertical: 5.0),
                                               child: Text(
                                                 "Cost of Unit",
                                                 style: TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 14,
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -489,7 +457,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 8.0),
+                                                      vertical: 5.0),
                                               child: Text(
                                                 AmountFormatter.format(
                                                     VatCalculator()
@@ -507,7 +475,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                                         .toDouble()),
                                                 textAlign: TextAlign.right,
                                                 style: const TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black,
                                                 ),
@@ -519,11 +487,11 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                           children: [
                                             const Padding(
                                               padding: EdgeInsets.symmetric(
-                                                  vertical: 8.0),
+                                                  vertical: 5.0),
                                               child: Text(
                                                 "VAT Amount",
                                                 style: TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 14,
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -531,7 +499,7 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 8.0),
+                                                      vertical: 5.0),
                                               child: Text(
                                                 AmountFormatter.format(
                                                     VatCalculator()
@@ -549,7 +517,36 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                                                         .toDouble()),
                                                 textAlign: TextAlign.right,
                                                 style: const TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        TableRow(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 5.0),
+                                              child: Text(
+                                                "Unit",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5.0),
+                                              child: Text(
+                                                "${AmountFormatter.format(VatCalculator().calculateTariffAmountPerKWatt(amountText: amountFormController.text, tariffAmount: selectedTariff?.amount, utilitiesAmount: utilitiesAmount, vat: selectedTariff?.vat).toDouble())}Kw/h",
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black,
                                                 ),
@@ -662,8 +659,9 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
     }
 
     showPaymentModal(context, user!.meterNo!, () {
-      MoBottomSheet().payment(context, amount: totalPayableAmount.toString(),
-          onPayment: (String ref) {
+      MoBottomSheet().payment(context,
+          amount: totalPayableAmount.toString(),
+          serviceType: ServiceType.credit_token, onPayment: (String ref) {
         bloc.add(MomasMeterPayment(
             vatAmount: VatCalculator()
                 .calculateVatAmount(
@@ -733,8 +731,9 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
     }
 
     showPaymentModal(context, user!.meterNo!, () {
-      MoBottomSheet().payment(context, amount: totalPayableAmount.toString(),
-          onPayment: (String ref) {
+      MoBottomSheet().payment(context,
+          amount: totalPayableAmount.toString(),
+          serviceType: ServiceType.credit_token, onPayment: (String ref) {
         bloc.add(MomasMeterPayment(
             vatAmount: VatCalculator()
                 .calculateVatAmount(

@@ -11,15 +11,24 @@ abstract class PaymentEvent extends Equatable {
 class MakePayment extends PaymentEvent {
   final PaymentType payType;
   final String amount;
+  final ServiceType serviceType;
 
-  const MakePayment({required this.payType, required this.amount});
+  const MakePayment(
+      {required this.serviceType, required this.payType, required this.amount});
 
   @override
-  List<Object> get props => [payType, amount];
+  List<Object> get props => [payType, amount, serviceType];
 }
 
 class SearchPayment extends PaymentEvent {
   const SearchPayment();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GenerateAccount extends PaymentEvent {
+  const GenerateAccount();
 
   @override
   List<Object> get props => [];

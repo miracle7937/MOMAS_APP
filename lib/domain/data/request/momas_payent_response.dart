@@ -31,6 +31,7 @@ class MomasPaymentData {
   String? token;
   String? amount;
   String? date;
+  String? meterNo;
   String? kctToken1;
   String? kctToken2;
   String? vendingAmount;
@@ -45,6 +46,7 @@ class MomasPaymentData {
       this.token,
       this.amount,
       this.date,
+      this.meterNo,
       this.kctToken1,
       this.kctToken2,
       this.vendingAmount,
@@ -59,6 +61,7 @@ class MomasPaymentData {
     token = json['token'];
     amount = json['amount'];
     date = json['date'];
+    meterNo = json['meterNo'];
     kctToken1 = json['kct_token1'];
     kctToken2 = json['kct_token2'];
     vendingAmount = json['vending_amount'];
@@ -75,6 +78,7 @@ class MomasPaymentData {
     data['token'] = token;
     data['amount'] = amount;
     data['date'] = date;
+    data['meterNo'] = meterNo;
     data['kct_token1'] = kctToken1;
     data['kct_token2'] = kctToken2;
     data['vend_amount_kw_per_naira'] = vendAmountKwPerNaira;

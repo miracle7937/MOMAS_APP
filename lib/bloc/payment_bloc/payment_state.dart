@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../domain/data/request/momas_payent_response.dart';
+import '../../domain/data/response/bank_details.dart';
 import '../../domain/data/response/transaction_data_response.dart';
 
 abstract class PaymentState extends Equatable {
@@ -58,4 +59,13 @@ class MomasPaymentSuccess extends PaymentState {
 
   @override
   List<Object> get props => [momasPaymentResponse];
+}
+
+class MomasGenerateBank extends PaymentState {
+  final BankDetail bankDetail;
+
+  const MomasGenerateBank(this.bankDetail);
+
+  @override
+  List<Object> get props => [bankDetail];
 }

@@ -60,7 +60,8 @@ class AccessTokenBloc extends Bloc<AccessTokenEvent, AccessTokenState> {
         } else {
           emit(const AccessTokenFailed("Fails to get generated Token"));
         }
-      } catch (e) {
+      } catch (e, _) {
+        print(_);
         emit(AccessTokenFailed(e.toString()));
       }
     }

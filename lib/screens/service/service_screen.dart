@@ -334,14 +334,14 @@ class EmptyList extends StatelessWidget {
           children: [
             Icon(
               Icons.person_search_sharp,
-              size: 100,
+              size: 50,
               color: Colors.grey,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 5),
             Text(
               'No professional available',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey,
               ),

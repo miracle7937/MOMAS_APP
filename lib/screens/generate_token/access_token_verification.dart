@@ -11,12 +11,12 @@ import '../../bloc/access_token_bloc/access_token_state.dart';
 import '../../domain/data/response/access_token_list_data.dart';
 import '../../domain/repository/access_token_repository.dart';
 import '../../reuseable/error_modal.dart';
-import '../../reuseable/mo_button.dart';
 import '../../reuseable/mo_form.dart';
 import '../../utils/colors.dart';
 
 class AccessTokenVerification extends StatefulWidget {
-  const AccessTokenVerification({super.key});
+  const AccessTokenVerification({super.key, this.rootApp = false});
+  final bool? rootApp;
 
   @override
   State<AccessTokenVerification> createState() =>

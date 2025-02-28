@@ -9,6 +9,7 @@ import 'package:momas_pay/domain/data/response/cable_tv_response.dart';
 import '../../bloc/cable_tv/cable_event.dart';
 import '../../bloc/cable_tv/cable_tv_state.dart';
 import '../../bloc/data_bloc/data_state.dart';
+import '../../bloc/payment_bloc/payment_bloc.dart';
 import '../../domain/data/response/cable_tv_verification_response.dart';
 import '../../domain/repository/bill_repository.dart';
 import '../../reuseable/bottom_sheet.dart';
@@ -39,7 +40,6 @@ class _CableTvScreenState extends State<CableTvScreen> {
   var subscriptionTypes = ["renew", "new"];
   var selectedSubscriptionTypes = "";
   var numberOfMonth = "1";
-
 
   void _selectNetwork(CableEnum network) {
     setState(() {
@@ -283,11 +283,12 @@ class _CableTvScreenState extends State<CableTvScreen> {
                           final String amount =
                               selectedCableTvPlan?.variationAmount ?? "0";
                           if (selectedCableTvPlan != null) {
-                            MoBottomSheet().payment(context, amount: amount,
-                                onPayment: (String ref) {
+                            MoBottomSheet().payment(context,
+                                serviceType: ServiceType.cable,
+                                amount: amount, onPayment: (String ref) {
                               cableTvBloc.add(
                                 BuyCableTv(
-                                  ref: ref,
+                                    ref: ref,
                                     quantity: numberOfMonth,
                                     subscriptionType:
                                         selectedSubscriptionTypes == "renew"

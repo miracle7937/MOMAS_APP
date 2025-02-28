@@ -50,14 +50,14 @@ class TokenBody {
   factory TokenBody.fromJson(Map<String, dynamic> json) {
     return TokenBody(
       id: json['id'],
-      userId: json['user_id'],
+      userId: json['user_id'].toString(),
       validDate: json['valid_date'],
       token: json['token'],
-      estateId: json['estate_id'],
+      estateId: json['estate_id'].toString(),
       visitor: json['visitor'],
       address: json['address'],
       email: json['email'],
-      status: json['status'],
+      status: json['status'].toString(),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );

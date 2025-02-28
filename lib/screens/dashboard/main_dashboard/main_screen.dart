@@ -12,6 +12,7 @@ import 'package:momas_pay/domain/service/dashboard_service.dart';
 import 'package:momas_pay/utils/images.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../bloc/momas_bloc/momas_bloc.dart';
+import '../../../main.dart';
 import '../../../utils/amount_formatter.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/dashboard_builder.dart';
@@ -28,10 +29,11 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with RouteAware {
   late WalletBloc walletBloc;
   late PromoBloc promoBloc;
   late DashboardBloc dashboardBloc;
+  late UserBloc userBloc;
   bool _isBalanceVisible = true;
   bool _isUnitVisible = true;
   User? user;
@@ -47,6 +49,7 @@ class _MainScreenState extends State<MainScreen> {
       ..add(PromotionEvent());
     dashboardBloc = DashboardBloc(DashboardService(DashboardRepository()))
       ..add(FeatureDashboardEvent());
+    userBloc = UserBloc(DashboardService(DashboardRepository()));
   }
 
   Future<void> _load() async {
@@ -68,6 +71,24 @@ class _MainScreenState extends State<MainScreen> {
       _isUnitVisible = !_isUnitVisible;
     });
     SharedPreferenceHelper.saveUnitVisibility(_isUnitVisible);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    print('Screen return back');
+    userBloc.add(GetUserDashboardEvent());
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   getName(User? user) {

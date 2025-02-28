@@ -3,6 +3,7 @@ import 'package:momas_pay/bloc/dashboard_bloc/dashboard_state.dart';
 import 'package:momas_pay/domain/service/dashboard_service.dart';
 
 import '../../domain/repository/dashboard_repository.dart';
+import '../../utils/shared_pref.dart';
 import 'dashboard_event.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
@@ -88,6 +89,27 @@ class PromoBloc extends Bloc<DashboardEvent, DashboardState> {
         var data = await service.getPromo();
         if (data.status == true) {
           emit(PromotionSuccessful(data.promo));
+        } else {
+          emit(PromotionFailure());
+        }
+      } catch (e) {
+        emit(PromotionFailure());
+      }
+    });
+  }
+}
+
+class UserBloc extends Bloc<DashboardEvent, DashboardState> {
+  final DashboardService service;
+
+  UserBloc(this.service) : super(DashboardInitial()) {
+    on<GetUserDashboardEvent>((event, emit) async {
+      emit(FeaturesLoading());
+      try {
+        var data = await service.getUser();
+        if (data.status == true) {
+          SharedPreferenceHelper.saveUser(data.user!.toJson());
+          emit(GetUserSuccessful(data));
         } else {
           emit(PromotionFailure());
         }

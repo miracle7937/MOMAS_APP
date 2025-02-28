@@ -19,7 +19,7 @@ import '../error_modal.dart';
 
 class PaymentBottomSheet extends StatefulWidget {
   final String amount;
-  final String? service;
+  final ServiceType? service;
 
   final Function(String ref)? onPayment;
 
@@ -48,7 +48,8 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
       isLoading = true;
     });
     paymentBloc.add(
-      MakePayment(payType: type, amount: widget.amount),
+      MakePayment(
+          payType: type, amount: widget.amount, serviceType: widget.service!),
     );
   }
 
@@ -119,7 +120,7 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
                           fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     Text(
-                      widget.service ?? "",
+                      widget.service?.name ?? "",
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.w700),
                     ),

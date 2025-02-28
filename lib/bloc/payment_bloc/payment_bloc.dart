@@ -17,14 +17,18 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     on<RetryPayment>((event, emit) async {
       await retryPayment(event, emit);
     });
+
+    on<GenerateAccount>((event, emit) async {
+      await generateAccount(event, emit);
+    });
   }
 
   payment(PaymentEvent event, Emitter<PaymentState> emit) async {
     if (event is MakePayment) {
       emit(PaymentLoading());
       try {
-        final response =
-            await repository.fudWallet(event.amount, event.payType.name);
+        final response = await repository.fudWallet(
+            event.amount, event.payType.name, event.serviceType.name);
         if (response.status == true) {
           if (event.payType == PaymentType.wallet) {
             emit(PaymentWalletSuccess(
@@ -71,6 +75,23 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       emit(PaymentFailure(error: e.toString()));
     }
   }
+
+  generateAccount(GenerateAccount event, Emitter<PaymentState> emit) async {
+    emit(PaymentLoading());
+    try {
+      final response = await repository.generateAccount();
+      if (response.status == true) {
+        emit(MomasGenerateBank(response));
+      } else {
+        emit(const PaymentFailure(error: "Fail to generate bank account"));
+      }
+    } catch (e, _) {
+      print(_);
+      emit(PaymentFailure(error: e.toString()));
+    }
+  }
 }
 
 enum PaymentType { paystack, wallet, flutterwave, remita }
+
+enum ServiceType { credit_token, data, airtime, electricity, cable }

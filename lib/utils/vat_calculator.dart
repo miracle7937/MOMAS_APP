@@ -10,7 +10,12 @@ class VatCalculator {
   }
 
   num _calculateVatUnit(num vatValue) {
-    return (100 + vatValue) / 100;
+    return (vatValue) * 10;
+    // return (100 + vatValue) / 100;
+  }
+
+  num _removePaymentCharge(num amount) {
+    return amount - (2.5 / 100) * amount;
   }
 
   num calculateVatAmount({
@@ -26,8 +31,7 @@ class VatCalculator {
       utilitiesAmount: utilitiesAmount,
     );
     num vatUnit = _calculateVatUnit(vatValue);
-    num costOfUnit = amountReceivable / vatUnit;
-    return amountReceivable - costOfUnit;
+    return _removePaymentCharge(amountReceivable) * (vatUnit / (100 + vatUnit));
   }
 
   num calculateCostOfUnit({
@@ -37,13 +41,16 @@ class VatCalculator {
     required num? vat,
   }) {
     double amount = _parseAmount(amountText);
-    num vatValue = vat ?? 0;
     num amountReceivable = _calculateAmountReceivable(
       amount: amount,
       utilitiesAmount: utilitiesAmount,
     );
-    num vatUnit = _calculateVatUnit(vatValue);
-    return amountReceivable / vatUnit;
+    num vatAmount = calculateVatAmount(
+        amountText: amountText,
+        utilitiesAmount: utilitiesAmount,
+        tariffAmount: tariffAmount,
+        vat: vat);
+    return _removePaymentCharge(amountReceivable) - vatAmount;
   }
 
   num calculateTariffAmountPerKWatt({
@@ -52,15 +59,15 @@ class VatCalculator {
     required num utilitiesAmount,
     required num? vat,
   }) {
-    double amount = _parseAmount(amountText);
     num tariffAmountValue = tariffAmount ?? 0;
-    num vatValue = vat ?? 0;
-    num amountReceivable = _calculateAmountReceivable(
-      amount: amount,
-      utilitiesAmount: utilitiesAmount,
-    );
-    num vatUnit = _calculateVatUnit(vatValue);
-    num costOfUnit = amountReceivable / vatUnit;
-    return costOfUnit / tariffAmountValue;
+    num costOfUnit = calculateCostOfUnit(
+        amountText: amountText,
+        utilitiesAmount: utilitiesAmount,
+        tariffAmount: tariffAmount,
+        vat: vat);
+
+    print(tariffAmountValue);
+    print("JJJJ ${costOfUnit / tariffAmountValue}");
+    return tariffAmountValue > 0 ? costOfUnit / tariffAmountValue : 0;
   }
 }
