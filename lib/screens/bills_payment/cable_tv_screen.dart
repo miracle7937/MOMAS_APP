@@ -318,9 +318,9 @@ class _CableTvScreenState extends State<CableTvScreen> {
                     cableTvResponse = state.response;
                   case CableTvVerificationSuccess():
                     cableTvVerificationResponse = state.response;
-                  case BuyDataSuccess():
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const RegistrationSuccessScreen()));
+                  case BuyCableTvSuccess():
+                    showSuccessBottomSheet(
+                        context, state.response.message ?? "");
                   default:
                     log("state not implemented");
                 }

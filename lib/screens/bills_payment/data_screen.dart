@@ -216,8 +216,7 @@ class _DataScreenState extends State<DataScreen> {
                 case DataSuccess():
                   dataResponse = state.response;
                 case BuyDataSuccess():
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const RegistrationSuccessScreen()));
+                  showSuccessBottomSheet(context, state.response.message ?? "");
                 default:
                   log("state not implemented");
               }
