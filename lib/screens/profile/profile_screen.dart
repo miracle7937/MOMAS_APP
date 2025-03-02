@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momas_pay/screens/profile/request_meter_screen.dart';
 import 'package:momas_pay/screens/profile/support/support_screen.dart';
+import 'package:momas_pay/utils/colors.dart';
 import 'package:momas_pay/utils/images.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../bloc/setting_bloc/setting_bloc.dart';
 import '../../bloc/setting_bloc/setting_state.dart';
@@ -33,6 +35,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     load();
+    _loadBiometricPreference();
+  }
+
+  bool _isBiometricEnabled = false;
+
+  /// Load biometric preference from SharedPreferences
+  Future<void> _loadBiometricPreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isBiometricEnabled = prefs.getBool('biometric_enabled') ?? false;
+    });
+  }
+
+  /// Save biometric preference to SharedPreferences
+  Future<void> _saveBiometricPreference(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('biometric_enabled', value);
+    setState(() {
+      _isBiometricEnabled = value;
+    });
   }
 
   load() async {
@@ -195,6 +217,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context, "/", (route) => false);
                   },
                 ),
+                OptionTile(
+                  icon: Icons.fingerprint,
+                  title: "Enable Biometric Login",
+                  showSwitch: true,
+                  switchValue: _isBiometricEnabled,
+                  onSwitchChanged: (value) => _saveBiometricPreference(value),
+                )
               ],
             ),
           );
@@ -218,11 +247,17 @@ class OptionTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final VoidCallback? onTap;
+  final bool showSwitch;
+  final bool switchValue;
+  final ValueChanged<bool>? onSwitchChanged;
 
   const OptionTile({
     required this.icon,
     required this.title,
     this.onTap,
+    this.showSwitch = false,
+    this.switchValue = false,
+    this.onSwitchChanged,
   });
 
   @override
@@ -232,15 +267,27 @@ class OptionTile extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10),
           child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.green[100],
-                child: Icon(icon, color: Colors.green),
-              ),
-              title: Text(
-                title,
-                style: const TextStyle(color: Colors.black),
-              ),
-              onTap: onTap),
+            leading: CircleAvatar(
+              backgroundColor: Colors.green[100],
+              child: Icon(icon, color: Colors.green),
+            ),
+            title: Text(
+              title,
+              style: const TextStyle(color: Colors.black),
+            ),
+            trailing: showSwitch
+                ? Switch(
+                    activeTrackColor: MoColors.mainColor.withOpacity(0.5),
+                    activeColor: MoColors.mainColor,
+                    inactiveThumbColor: Colors.grey,
+                    inactiveTrackColor: Colors.grey
+                        .withOpacity(0.5), // Grey track when disabled
+                    value: switchValue,
+                    onChanged: onSwitchChanged,
+                  )
+                : null,
+            onTap: onTap,
+          ),
         ),
         const Divider(
           thickness: 0.2,

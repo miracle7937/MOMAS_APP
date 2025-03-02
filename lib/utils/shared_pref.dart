@@ -14,7 +14,9 @@ class SharedPreferenceHelper {
 
   static Future<void> clearUser() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    prefs.remove(_keyUser);
+    prefs.remove(_token);
+    // prefs.clear();
   }
 
   static Future<void> saveUser(Map user) async {

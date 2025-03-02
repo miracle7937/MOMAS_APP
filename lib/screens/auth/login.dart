@@ -19,6 +19,7 @@ import '../../reuseable/error_modal.dart';
 import '../../reuseable/mo_button.dart';
 import '../../reuseable/mo_form.dart';
 import '../../utils/bio_metric.dart';
+import '../../utils/bio_metric_widget.dart';
 import '../../utils/images.dart';
 import '../../utils/validators.dart';
 import 'email_code_screen.dart';
@@ -179,30 +180,43 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(
                                 width: 10,
                               ),
-                              FutureBuilder<List<dynamic>>(
-                                  future: Future.wait([
-                                    SharedPreferenceHelper.getLogin(),
-                                    BioMetric().isBiometricAvailable()
-                                  ]),
-                                  builder: (context, snapshot) {
-                                    return (snapshot.data?[0] != null ||
-                                            snapshot.data?[1] == true)
-                                        ? InkWell(
-                                            onTap: () {
-                                              BioMetric()
-                                                  .authenticate()
-                                                  .then((v) {
-                                                if (v == true) {
-                                                  context.read<LoginBloc>().add(
-                                                      UserLoginEvent(
-                                                          snapshot.data?[0]));
-                                                }
-                                              });
-                                            },
-                                            child: Image.asset(
-                                                MoImage.fingerPrint))
-                                        : Container();
-                                  }),
+                              BiometricLoginWidget(
+                                onLoginSuccess: () {
+                                  SharedPreferenceHelper.getLogin()
+                                      .then((onValue) {
+                                    if (onValue != null) {
+                                      context
+                                          .read<LoginBloc>()
+                                          .add(UserLoginEvent(onValue));
+                                    }
+                                  });
+                                },
+                              )
+
+                              // FutureBuilder<List<dynamic>>(
+                              //     future: Future.wait([
+                              //       SharedPreferenceHelper.getLogin(),
+                              //       BioMetric().isBiometricAvailable()
+                              //     ]),
+                              //     builder: (context, snapshot) {
+                              //       return (snapshot.data?[0] != null ||
+                              //               snapshot.data?[1] == true)
+                              //           ? InkWell(
+                              //               onTap: () {
+                              //                 BioMetric()
+                              //                     .authenticate()
+                              //                     .then((v) {
+                              //                   if (v == true) {
+                              //                     context.read<LoginBloc>().add(
+                              //                         UserLoginEvent(
+                              //                             snapshot.data?[0]));
+                              //                   }
+                              //                 });
+                              //               },
+                              //               child: Image.asset(
+                              //                   MoImage.fingerPrint))
+                              //           : Container();
+                              //     }),
                             ],
                           ),
                         ),
