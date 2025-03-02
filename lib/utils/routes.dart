@@ -37,4 +37,5 @@ class Routes {
   static String vendingProperties = "$_baseURL/vending-properties";
   static String resetPassword = "$_baseURL/reset-password";
   static String getAccount = "$_baseURL/get-account";
+  static String adminFeeCheck = "$_baseURL/admin-fee-check";
 }

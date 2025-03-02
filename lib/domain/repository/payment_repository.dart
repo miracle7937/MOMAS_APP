@@ -1,6 +1,7 @@
 import '../../utils/routes.dart';
 import '../data/request/momas_payent_response.dart';
 import '../data/response/bank_details.dart';
+import '../data/response/is_admin_fees_paid.dart';
 import '../data/response/payment_response.dart';
 import '../data/response/transaction_data_response.dart';
 import '../request.dart';
@@ -34,5 +35,12 @@ class PaymentRepository {
       path: Routes.getAccount,
     );
     return BankDetail.fromJson(response.data);
+  }
+
+  Future<IsAdminPaidModel> checkAminFeeIsPayed() async {
+    var response = await _request.getData(
+      path: Routes.adminFeeCheck,
+    );
+    return IsAdminPaidModel.fromJson(response.data);
   }
 }

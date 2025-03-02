@@ -132,6 +132,7 @@ class User {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['monthly_admin_fee'] = monthlyAdminFee;
     data['first_name'] = firstName;
     data['last_name'] = lastName;
     data['phone'] = phone;
@@ -152,7 +153,6 @@ class User {
     data['token'] = token;
     data['estate_id'] = estateId;
     data['estate_name'] = estateName;
-    data['monthly_admin_fee'] = monthlyAdminFee;
     data['tariff'] = tariffs?.map((value) {
       return value.toJson();
     }).toList();
