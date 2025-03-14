@@ -593,15 +593,15 @@ class _GridItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: 50,
-              width: 50,
+              height: 35,
+              width: 35,
               child: Image.asset(
                 image,
                 fit: BoxFit.contain,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(3.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -609,7 +609,7 @@ class _GridItem extends StatelessWidget {
                     title,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 11.0,
+                      fontSize: 8.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -618,7 +618,7 @@ class _GridItem extends StatelessWidget {
                     subtitle,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 6.0,
+                      fontSize: 7.0,
                       color: Colors.grey,
                     ),
                   ),

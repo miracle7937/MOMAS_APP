@@ -26,6 +26,7 @@ import '../../reuseable/mo_transaction_success_screen.dart';
 import '../../reuseable/pop_button.dart';
 import '../../reuseable/search_bottom_sheet/ka_dropdown.dart';
 import '../../reuseable/shadow_container.dart';
+import '../../utils/navigation.dart';
 import '../../utils/receipt_builder.dart';
 import '../../utils/shared_pref.dart';
 import '../../utils/strings.dart';
@@ -71,7 +72,14 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   load() async {
     user = await SharedPreferenceHelper.getUser();
     if (widget.momasPaymentType == MomasPaymentType.self) {
+      if (user!.meterNo == null) {
+        showErrorBottomSheet(NavigationService.navigatorKey.currentContext!,
+            "Please user have no active meter");
+        return;
+      }
+
       setState(() => isLoading = true);
+
       bloc.add(MomasVerification(
           meterNo: user!.meterNo!, estateId: user!.estateId!));
     }
@@ -80,7 +88,6 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
   getForOtherVent(MomasVerificationResponse? verificationResponse) {
     //set tariff
     tariff = verificationResponse?.data?.tariffs ?? [];
-
     maxPurchase = verificationResponse!.data?.purchase?.maxPurchase ?? 0;
     minPurchase = verificationResponse.data?.purchase?.minPurchase ?? 0;
     utilitiesAmount = verificationResponse.data?.purchase?.minVending ?? 0;
@@ -782,11 +789,13 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                   color: MoColors.mainColorII,
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  'Meter number: $meter',
-                  style: const TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
+                Center(
+                  child: Text(
+                    'Meter number: $meter',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -816,10 +825,10 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                         ),
                         child: const Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 12.0),
+                              horizontal: 15.0, vertical: 12.0),
                           child: Text(
                             'Pay',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
+                            style: TextStyle(fontSize: 10, color: Colors.white),
                           ),
                         ),
                       ),
@@ -841,11 +850,11 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 12.0),
+                              horizontal: 15.0, vertical: 12.0),
                           child: Text(
                             'Cancel',
                             style: TextStyle(
-                                fontSize: 12, color: MoColors.mainColorII),
+                                fontSize: 10, color: MoColors.mainColorII),
                           ),
                         ),
                       ),
