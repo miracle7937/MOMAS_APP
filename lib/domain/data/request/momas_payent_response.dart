@@ -1,3 +1,5 @@
+import '../response/transaction_data_response.dart';
+
 class MomasPaymentResponse {
   bool? status;
   MomasPaymentData? data;
@@ -27,6 +29,7 @@ class MomasPaymentData {
   String? fullName;
   String? address;
   String? service;
+  String? serviceType;
   String? orderId;
   String? token;
   String? amount;
@@ -37,26 +40,31 @@ class MomasPaymentData {
   String? vendingAmount;
   String? vendAmountKwPerNaira;
   String? vatAmount;
+  PaymentStatus? status;
 
-  MomasPaymentData(
-      {this.fullName,
-      this.address,
-      this.service,
-      this.orderId,
-      this.token,
-      this.amount,
-      this.date,
-      this.meterNo,
-      this.kctToken1,
-      this.kctToken2,
-      this.vendingAmount,
-      this.vendAmountKwPerNaira,
-      this.vatAmount});
+  MomasPaymentData({
+    this.fullName,
+    this.address,
+    this.service,
+    this.serviceType,
+    this.orderId,
+    this.token,
+    this.amount,
+    this.date,
+    this.meterNo,
+    this.kctToken1,
+    this.kctToken2,
+    this.vendingAmount,
+    this.vendAmountKwPerNaira,
+    this.vatAmount,
+    this.status,
+  });
 
   MomasPaymentData.fromJson(Map<String, dynamic> json) {
     fullName = json['full_name'];
     address = json['address'];
     service = json['service'];
+    serviceType = json['service_type'];
     orderId = json['order_id'];
     token = json['token'];
     amount = json['amount'];
@@ -67,6 +75,9 @@ class MomasPaymentData {
     vendingAmount = json['vending_amount'];
     vendAmountKwPerNaira = json['vend_amount_kw_per_naira'];
     vatAmount = json['vat_amount'];
+    status = json['status'] != null
+        ? PaymentStatus.fromValue(json['status'])
+        : PaymentStatus.none;
   }
 
   Map<String, dynamic> toJson() {
@@ -74,6 +85,7 @@ class MomasPaymentData {
     data['full_name'] = fullName;
     data['address'] = address;
     data['service'] = service;
+    data['service_type'] = serviceType;
     data['order_id'] = orderId;
     data['token'] = token;
     data['amount'] = amount;
@@ -84,6 +96,7 @@ class MomasPaymentData {
     data['vend_amount_kw_per_naira'] = vendAmountKwPerNaira;
     data['vending_amount'] = vendingAmount;
     data['vat_amount'] = vatAmount;
+    data['status'] = status;
     return data;
   }
 }

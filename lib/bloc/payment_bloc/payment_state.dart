@@ -69,3 +69,12 @@ class MomasGenerateBank extends PaymentState {
   @override
   List<Object> get props => [bankDetail];
 }
+
+class ViewMomasPaymentSuccess extends PaymentState {
+  final MomasPaymentResponse momasPaymentResponse;
+
+  const ViewMomasPaymentSuccess(this.momasPaymentResponse);
+
+  @override
+  List<Object> get props => [momasPaymentResponse];
+}

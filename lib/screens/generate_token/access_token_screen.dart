@@ -269,13 +269,13 @@ class _AccessTokenScreenState extends State<AccessTokenScreen> {
                                     selectedEstateData = v;
                                   });
                                 },
-                                items: (estateData ?? [])
+                                items: ([selectedEstateData])
                                     .map(
                                       (e) => DropdownMenuItem(
                                           value: e,
                                           child: Row(
                                             children: [
-                                              Text(e.title.toString(),
+                                              Text(e?.title ?? "",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .labelMedium!
@@ -317,7 +317,7 @@ class _AccessTokenScreenState extends State<AccessTokenScreen> {
                             _switchValue
                                 ? MoFormWidget(
                                     title: "Visitor's Email",
-                                    keyboardType: TextInputType.number,
+                                    keyboardType: TextInputType.emailAddress,
                                     controller: _emailController,
                                     prefixIcon: const Icon(
                                       Icons.email,

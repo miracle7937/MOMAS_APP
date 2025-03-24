@@ -118,18 +118,21 @@ class _SearchScreenState extends State<SearchScreen> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (builder) =>
-                                        TransactionSuccessPage(
-                                      details: ReceiptBuilder()
-                                          .transactionHistory(
-                                              filteredTransactionDataList![
-                                                  index]),
-                                    ),
-                                  ),
-                                );
+                                paymentBloc.add(ViewReceipt(
+                                    filteredTransactionDataList![index]
+                                        .id
+                                        .toString())); // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (builder) =>
+                                //         TransactionSuccessPage(
+                                //       details: ReceiptBuilder()
+                                //           .transactionHistory(
+                                //               filteredTransactionDataList![
+                                //                   index]),
+                                //     ),
+                                //   ),
+                                // );
                               },
                               child: TransactionCard(
                                 data: filteredTransactionDataList![index],
@@ -155,6 +158,16 @@ class _SearchScreenState extends State<SearchScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (builder) => TransactionSuccessPage(
+                            details: ReceiptBuilder()
+                                .meterPayment(state.momasPaymentResponse.data!),
+                          )));
+            } else if (state is ViewMomasPaymentSuccess) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => TransactionSuccessPage(
+                            failed: state.momasPaymentResponse.data?.status !=
+                                PaymentStatus.successful,
                             details: ReceiptBuilder()
                                 .meterPayment(state.momasPaymentResponse.data!),
                           )));

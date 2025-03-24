@@ -20,18 +20,32 @@ class ReceiptBuilder {
   List<TransactionDetail> meterPayment(MomasPaymentData data) {
     return [
       TransactionDetail(label: 'Service:', value: data.service),
+      TransactionDetail(
+          label: 'Service Type:',
+          value: data.serviceType?.toUpperCase().replaceAll("_", " ")),
       TransactionDetail(label: 'Address:', value: data.address),
       TransactionDetail(label: 'Name:', value: data.fullName),
       TransactionDetail(label: 'Date:', value: data.date ?? ""),
       TransactionDetail(label: 'Meter:', value: data.meterNo ?? ""),
       TransactionDetail(label: 'KCT1  Token:', value: data.kctToken1 ?? ""),
       TransactionDetail(label: 'KCT2  Token:', value: data.kctToken2 ?? ""),
-      TransactionDetail(label: 'Amount  :', value: "NGN ${data.amount}"),
-      TransactionDetail(
-          label: 'Unit  :', value: "${data.vendAmountKwPerNaira}KWH"),
-      TransactionDetail(
-          label: 'VAT Amount  :', value: "NGN${data.vatAmount}" ?? ""),
       TransactionDetail(label: 'Token:', value: data.token ?? ""),
+      TransactionDetail(
+          label: 'Unit  :',
+          value: data.vendAmountKwPerNaira == null
+              ? null
+              : "${data.vendAmountKwPerNaira}KWH"),
+      TransactionDetail(
+          label: 'VAT Amount  :',
+          value: data.vatAmount == null
+              ? null
+              : AmountFormatter.formatNaira(double.parse(data.vatAmount!)) ??
+                  ""),
+      TransactionDetail(
+          label: 'Amount  :',
+          value: data.amount == null
+              ? null
+              : AmountFormatter.formatNaira(double.parse(data.amount!)) ?? ""),
     ];
   }
 
@@ -53,9 +67,13 @@ class ReceiptBuilder {
       TransactionDetail(label: 'Transaction ID:', value: data.trxId),
       TransactionDetail(label: 'Payment Type:', value: data.payType ?? ""),
       TransactionDetail(label: 'Service Type:', value: data.serviceType ?? ""),
-      TransactionDetail(label: 'Amount:', value: 'NGN ${data.amount}'),
+      TransactionDetail(
+          label: 'Amount:',
+          value:
+              'NGN ${AmountFormatter.formatNaira(double.parse(data.amount == null ? "0" : data.amount.toString()))}'),
       TransactionDetail(label: 'Status:', value: data.status?.name ?? ""),
       TransactionDetail(label: 'Note:', value: data.note ?? ""),
+      TransactionDetail(label: 'Token:', value: data.token ?? ""),
       TransactionDetail(
           label: 'Date:', value: TimeUtil.formatMMMMDY(data.createdAt!)),
     ];

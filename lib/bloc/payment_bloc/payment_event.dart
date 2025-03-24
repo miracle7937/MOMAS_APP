@@ -41,3 +41,11 @@ class RetryPayment extends PaymentEvent {
   @override
   List<Object> get props => [];
 }
+
+class ViewReceipt extends PaymentEvent {
+  final String transactionId;
+  const ViewReceipt(this.transactionId);
+
+  @override
+  List<Object> get props => [];
+}

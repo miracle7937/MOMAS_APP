@@ -11,6 +11,7 @@ class Routes {
   static String pay = "$_baseURL/pay";
   static String getTransaction = "$_baseURL/get-transactions";
   static String retryMeter = "$_baseURL/retry-meter";
+  static String getTrx = "$_baseURL/get-trx";
   static String serviceProperties = "$_baseURL/service-properties";
   static String serviceSearch = "$_baseURL/service-search";
   static String features = "$_baseURL/features";

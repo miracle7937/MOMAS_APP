@@ -35,6 +35,7 @@ class TransactionData {
   int? amount;
   PaymentStatus? status;
   String? note;
+  String? token;
   String? createdAt;
   String? updatedAt;
 
@@ -47,6 +48,7 @@ class TransactionData {
       this.amount,
       this.status,
       this.note,
+      this.token,
       this.createdAt,
       this.updatedAt});
 
@@ -63,6 +65,7 @@ class TransactionData {
     note = json['note'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
@@ -77,6 +80,7 @@ class TransactionData {
     data['note'] = note;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['token'] = token;
     return data;
   }
 }
@@ -105,7 +109,6 @@ enum PaymentStatus {
       default:
         throw ArgumentError('Invalid PaymentStatus value: $value');
     }
-
   }
 
   Color get color {
@@ -120,6 +123,7 @@ enum PaymentStatus {
         return Colors.grey; // Default or unknown status
     }
   }
+
   @override
   String toString() {
     switch (this) {

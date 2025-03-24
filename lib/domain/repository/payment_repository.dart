@@ -43,4 +43,10 @@ class PaymentRepository {
     );
     return IsAdminPaidModel.fromJson(response.data);
   }
+
+  Future<MomasPaymentResponse> getReceipt(String transactionRef) async {
+    var response = await _request
+        .postData(path: Routes.getTrx, body: {"id": transactionRef});
+    return MomasPaymentResponse.fromJson(response.data);
+  }
 }

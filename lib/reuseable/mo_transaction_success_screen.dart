@@ -17,8 +17,9 @@ import '../utils/strings.dart';
 
 class TransactionSuccessPage extends StatefulWidget {
   final List<TransactionDetail>? details;
+  final bool failed;
 
-  const TransactionSuccessPage({super.key, this.details});
+  const TransactionSuccessPage({super.key, this.details, this.failed = false});
 
   @override
   State<TransactionSuccessPage> createState() => _TransactionSuccessPageState();
@@ -82,17 +83,28 @@ class _TransactionSuccessPageState extends State<TransactionSuccessPage> {
                         children: [
                           SizedBox(
                               height: MediaQuery.of(context).size.height * 0.1,
-                              child: Lottie.asset(MoImage.lottieSuccess,
-                                  repeat: true)),
+                              child: widget.failed == true
+                                  ? Lottie.asset(MoImage.error, repeat: true)
+                                  : Lottie.asset(MoImage.lottieSuccess,
+                                      repeat: true)),
                           const SizedBox(height: 16.0),
-                          const Text(
-                            'Payment Successful',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                            ),
-                          ),
+                          widget.failed == true
+                              ? const Text(
+                                  'Payment Failed(Retry)',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              : const Text(
+                                  "Payment Successful",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
                           const SizedBox(height: 16.0),
                           ReceiptWidget(details: widget.details ?? []),
                           const SizedBox(height: 16.0),

@@ -21,6 +21,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     on<GenerateAccount>((event, emit) async {
       await generateAccount(event, emit);
     });
+
+    on<ViewReceipt>((event, emit) async {
+      await viewPayment(event, emit);
+    });
   }
 
   payment(PaymentEvent event, Emitter<PaymentState> emit) async {
@@ -67,6 +71,21 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final response = await repository.retryPayment(event.transactionId);
       if (response.status == true) {
         emit(MomasPaymentSuccess(response));
+      } else {
+        emit(PaymentFailure(error: response.message ?? "Network issue"));
+      }
+    } catch (e, _) {
+      print(_);
+      emit(PaymentFailure(error: e.toString()));
+    }
+  }
+
+  viewPayment(ViewReceipt event, Emitter<PaymentState> emit) async {
+    emit(PaymentLoading());
+    try {
+      final response = await repository.getReceipt(event.transactionId);
+      if (response.status == true) {
+        emit(ViewMomasPaymentSuccess(response));
       } else {
         emit(PaymentFailure(error: response.message ?? "Network issue"));
       }
