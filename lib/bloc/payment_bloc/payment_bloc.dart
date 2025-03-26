@@ -60,7 +60,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       } else {
         emit(const PaymentFailure(error: 'Network error'));
       }
-    } catch (e) {
+    } catch (e, _) {
+      print(_);
+      print(e);
       emit(PaymentFailure(error: e.toString()));
     }
   }
@@ -75,7 +77,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         emit(PaymentFailure(error: response.message ?? "Network issue"));
       }
     } catch (e, _) {
-      print(_);
       emit(PaymentFailure(error: e.toString()));
     }
   }

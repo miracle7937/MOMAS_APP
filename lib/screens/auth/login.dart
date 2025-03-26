@@ -34,6 +34,22 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController generalController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferenceHelper.getLogin().then((onValue) {
+      print('====> ${onValue?.toJson()}');
+
+      setState(() {
+        if (onValue?.email != null) {
+          generalController.text = onValue!.email!;
+        }
+        if (onValue?.meterNo != null) {
+          generalController.text = onValue!.meterNo!;
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

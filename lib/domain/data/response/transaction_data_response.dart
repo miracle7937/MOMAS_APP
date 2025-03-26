@@ -58,7 +58,7 @@ class TransactionData {
     payType = json['pay_type'];
     serviceType = json['service_type'];
     trxId = json['trx_id'];
-    amount = json['amount'];
+    amount = json['amount'] != null ? int.parse(json['amount']) : 0;
     status = json['status'] != null
         ? PaymentStatus.fromValue(json['status'])
         : PaymentStatus.none;

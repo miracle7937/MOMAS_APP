@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'colors.dart';
 
-class ThemeConfig{
+class ThemeConfig {
   static ThemeData buildCustomTheme() {
     final ColorScheme colorScheme = ColorScheme(
       primary: MoColors.mainColor,
@@ -11,24 +11,28 @@ class ThemeConfig{
       background: Colors.grey[200],
       error: Colors.red,
       onPrimary: MoColors.mainColor,
-      onSecondary: Colors.white,
-      onSurface: Colors.white,
-      onError: Colors.white,
+      onSecondary: MoColors.mainColor.withOpacity(0.1),
+      onSurface: MoColors.mainColor,
+      onError: Colors.red,
       brightness: Brightness.light,
     );
-    final ThemeData base = ThemeData(fontFamily:"Effra" );
+    final ThemeData base = ThemeData(fontFamily: "Effra");
     return base.copyWith(
-
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: MoColors.mainColor,
+        selectionColor: MoColors.mainColor.withOpacity(0.5),
+        selectionHandleColor: MoColors.mainColor,
+      ),
       colorScheme: colorScheme,
       primaryColor: MoColors.mainColor,
       scaffoldBackgroundColor: Colors.grey[200],
-      appBarTheme:  AppBarTheme(
+      appBarTheme: AppBarTheme(
         color: MoColors.mainColor,
-        iconTheme:  IconThemeData(
+        iconTheme: IconThemeData(
           color: MoColors.whiteColor,
         ),
       ),
-      buttonTheme:  ButtonThemeData(
+      buttonTheme: ButtonThemeData(
         buttonColor: MoColors.mainColor,
         textTheme: ButtonTextTheme.primary,
       ),
@@ -37,5 +41,4 @@ class ThemeConfig{
       ),
     );
   }
-
 }
