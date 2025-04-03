@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:momas_pay/screens/dashboard/search_screen/search_screen.dart';
@@ -126,6 +128,11 @@ class _RootScreenState extends State<RootScreen> {
                   topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             ),
           ),
+          Platform.isIOS == true
+              ? const SizedBox(
+                  height: 20,
+                )
+              : Container()
         ],
       ),
     );

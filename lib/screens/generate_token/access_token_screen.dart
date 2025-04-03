@@ -288,7 +288,7 @@ class _AccessTokenScreenState extends State<AccessTokenScreen> {
                                     )
                                     .toList()),
                             MoFormWidget(
-                              title: "Expected Visitor",
+                              title: "Expected Number of Visitor ",
                               keyboardType: TextInputType.number,
                               controller: _expectedVisitorController,
                               prefixIcon: const Icon(
@@ -348,6 +348,7 @@ class _AccessTokenScreenState extends State<AccessTokenScreen> {
                                                   _switchValue ? "1" : "0",
                                               estateId: selectedEstateData?.id
                                                   .toString());
+                                          print(data.toJson());
                                           accessTokenBloc
                                               .add(GenerateTokenEvent(data));
                                         } else {
