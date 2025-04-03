@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/bloc/setting_bloc/setting_event.dart';
-import 'package:momas_pay/bloc/setting_bloc/setting_state.dart';
+import 'package:momaspayplus/bloc/setting_bloc/setting_event.dart';
+import 'package:momaspayplus/bloc/setting_bloc/setting_state.dart';
 
 import '../../domain/repository/setting_repository.dart';
 

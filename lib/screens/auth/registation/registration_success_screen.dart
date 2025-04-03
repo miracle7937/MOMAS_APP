@@ -1,9 +1,9 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:momas_pay/utils/colors.dart';
+import 'package:momaspayplus/utils/colors.dart';
 import 'package:lottie/lottie.dart';
-import 'package:momas_pay/utils/images.dart';
+import 'package:momaspayplus/utils/images.dart';
 
 import '../../../reuseable/mo_button.dart';
 import '../login.dart';

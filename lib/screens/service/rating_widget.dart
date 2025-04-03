@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:momas_pay/reuseable/mo_button.dart';
-import 'package:momas_pay/utils/colors.dart';
+import 'package:momaspayplus/reuseable/mo_button.dart';
+import 'package:momaspayplus/utils/colors.dart';
 
 class RatingModal extends StatefulWidget {
   final Function(int, String) onSubmit;

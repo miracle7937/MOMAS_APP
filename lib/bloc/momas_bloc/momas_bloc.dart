@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/domain/data/response/vending_properties.dart';
+import 'package:momaspayplus/domain/data/response/vending_properties.dart';
 
 import '../../domain/data/request/momas_meter_buy.dart';
 import '../../domain/data/request/momas_payent_response.dart';

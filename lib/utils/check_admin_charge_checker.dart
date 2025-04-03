@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:momas_pay/bloc/payment_bloc/payment_event.dart';
-import 'package:momas_pay/utils/colors.dart';
+import 'package:momaspayplus/bloc/payment_bloc/payment_event.dart';
+import 'package:momaspayplus/utils/colors.dart';
 import '../bloc/payment_bloc/payment_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

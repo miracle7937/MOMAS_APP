@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/domain/data/request/register.dart';
-import 'package:momas_pay/screens/auth/registation/registration_success_screen.dart';
+import 'package:momaspayplus/domain/data/request/register.dart';
+import 'package:momaspayplus/screens/auth/registation/registration_success_screen.dart';
 
 import '../../../bloc/registeration_bloc/register_bloc.dart';
 import '../../../bloc/registeration_bloc/register_event.dart';

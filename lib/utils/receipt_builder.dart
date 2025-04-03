@@ -1,5 +1,5 @@
-import 'package:momas_pay/domain/data/response/transaction_data_response.dart';
-import 'package:momas_pay/utils/time_util.dart';
+import 'package:momaspayplus/domain/data/response/transaction_data_response.dart';
+import 'package:momaspayplus/utils/time_util.dart';
 
 import '../domain/data/request/momas_payent_response.dart';
 import '../domain/data/response/generate_token_response.dart';

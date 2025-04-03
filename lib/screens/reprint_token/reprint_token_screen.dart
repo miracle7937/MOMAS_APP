@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:momas_pay/utils/colors.dart';
-import 'package:momas_pay/utils/time_util.dart';
+import 'package:momaspayplus/utils/colors.dart';
+import 'package:momaspayplus/utils/time_util.dart';
 
 import '../../bloc/momas_bloc/momas_bloc.dart';
 import '../../bloc/momas_bloc/momas_event.dart';

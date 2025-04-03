@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:momas_pay/domain/data/response/estate_response.dart';
+import 'package:momaspayplus/domain/data/response/estate_response.dart';
 
 import '../../domain/data/response/access_token_list_data.dart';
 import '../../domain/data/response/generate_token_response.dart';

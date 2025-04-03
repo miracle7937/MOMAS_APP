@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:momas_pay/reuseable/mo_button.dart';
+import 'package:momaspayplus/reuseable/mo_button.dart';
 
 import '../utils/images.dart';
 

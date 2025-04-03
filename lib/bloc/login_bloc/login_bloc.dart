@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/bloc/login_bloc/login_event.dart';
-import 'package:momas_pay/bloc/login_bloc/login_state.dart';
-import 'package:momas_pay/domain/service/auth_service.dart';
-import 'package:momas_pay/utils/shared_pref.dart';
+import 'package:momaspayplus/bloc/login_bloc/login_event.dart';
+import 'package:momaspayplus/bloc/login_bloc/login_state.dart';
+import 'package:momaspayplus/domain/service/auth_service.dart';
+import 'package:momaspayplus/utils/shared_pref.dart';
 
 import '../../domain/data/response/generic_response.dart';
 import '../../domain/data/response/user_model.dart';

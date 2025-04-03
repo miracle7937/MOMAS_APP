@@ -1,7 +1,7 @@
-import 'package:momas_pay/domain/data/request/register.dart';
-import 'package:momas_pay/domain/data/response/generic_response.dart';
-import 'package:momas_pay/domain/data/response/user_model.dart';
-import 'package:momas_pay/domain/request.dart';
+import 'package:momaspayplus/domain/data/request/register.dart';
+import 'package:momaspayplus/domain/data/response/generic_response.dart';
+import 'package:momaspayplus/domain/data/response/user_model.dart';
+import 'package:momaspayplus/domain/request.dart';
 
 import '../../utils/routes.dart';
 import '../data/request/login.dart';

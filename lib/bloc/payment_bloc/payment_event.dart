@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:momas_pay/bloc/payment_bloc/payment_bloc.dart';
+import 'package:momaspayplus/bloc/payment_bloc/payment_bloc.dart';
 
 abstract class PaymentEvent extends Equatable {
   const PaymentEvent();

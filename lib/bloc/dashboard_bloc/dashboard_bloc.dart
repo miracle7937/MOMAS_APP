@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/bloc/dashboard_bloc/dashboard_state.dart';
-import 'package:momas_pay/domain/service/dashboard_service.dart';
+import 'package:momaspayplus/bloc/dashboard_bloc/dashboard_state.dart';
+import 'package:momaspayplus/domain/service/dashboard_service.dart';
 
 import '../../domain/repository/dashboard_repository.dart';
 import '../../utils/shared_pref.dart';

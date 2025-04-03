@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:momas_pay/domain/data/request/generate_token_request.dart';
-import 'package:momas_pay/domain/data/request/set_estate_request.dart';
+import 'package:momaspayplus/domain/data/request/generate_token_request.dart';
+import 'package:momaspayplus/domain/data/request/set_estate_request.dart';
 
 abstract class AccessTokenEvent extends Equatable {
   const AccessTokenEvent();

@@ -1,6 +1,6 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/domain/data/response/data_response.dart';
+import 'package:momaspayplus/domain/data/response/data_response.dart';
 
 import '../../domain/data/request/data_request.dart';
 import '../../domain/data/response/generic_response.dart';

@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/screens/profile/request_meter_screen.dart';
-import 'package:momas_pay/screens/profile/support/support_screen.dart';
-import 'package:momas_pay/utils/colors.dart';
-import 'package:momas_pay/utils/images.dart';
+import 'package:momaspayplus/screens/profile/request_meter_screen.dart';
+import 'package:momaspayplus/screens/profile/support/support_screen.dart';
+import 'package:momaspayplus/utils/colors.dart';
+import 'package:momaspayplus/utils/images.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../bloc/setting_bloc/setting_bloc.dart';

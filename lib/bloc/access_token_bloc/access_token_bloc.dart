@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/utils/shared_pref.dart';
+import 'package:momaspayplus/utils/shared_pref.dart';
 
 import '../../domain/repository/access_token_repository.dart';
 import 'access_token_event.dart';

@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:momas_pay/domain/repository/payment_repository.dart';
-import 'package:momas_pay/utils/colors.dart';
-import 'package:momas_pay/utils/images.dart';
-import 'package:momas_pay/utils/strings.dart';
+import 'package:momaspayplus/domain/repository/payment_repository.dart';
+import 'package:momaspayplus/utils/colors.dart';
+import 'package:momaspayplus/utils/images.dart';
+import 'package:momaspayplus/utils/strings.dart';
 
 import '../../bloc/payment_bloc/payment_bloc.dart';
 import '../../bloc/payment_bloc/payment_event.dart';

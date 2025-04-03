@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:momas_pay/utils/images.dart';
+import 'package:momaspayplus/utils/images.dart';
 
 import '../../utils/strings.dart';
 import 'error_switch.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:momas_pay/domain/data/request/login.dart';
-import 'package:momas_pay/screens/auth/login.dart';
-import 'package:momas_pay/utils/images.dart';
+import 'package:momaspayplus/domain/data/request/login.dart';
+import 'package:momaspayplus/screens/auth/login.dart';
+import 'package:momaspayplus/utils/images.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});

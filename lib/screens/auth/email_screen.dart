@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/screens/auth/login.dart';
+import 'package:momaspayplus/screens/auth/login.dart';
 
 import '../../bloc/registeration_bloc/register_bloc.dart';
 import '../../bloc/registeration_bloc/register_event.dart';
