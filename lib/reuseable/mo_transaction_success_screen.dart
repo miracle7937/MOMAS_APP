@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:momas_pay/reuseable/shadow_container.dart';
-import 'package:momas_pay/utils/colors.dart';
+import 'package:momaspayplus/reuseable/shadow_container.dart';
+import 'package:momaspayplus/utils/colors.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:typed_data';

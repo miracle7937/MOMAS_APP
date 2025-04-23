@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:momas_pay/utils/colors.dart';
+import 'package:momaspayplus/utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BiometricLoginWidget extends StatefulWidget {

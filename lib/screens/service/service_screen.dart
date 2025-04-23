@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/bloc/service_bloc/service_state.dart';
-import 'package:momas_pay/domain/repository/service_repository.dart';
-import 'package:momas_pay/reuseable/mo_button.dart';
-import 'package:momas_pay/screens/service/service_preview.dart';
+import 'package:momaspayplus/bloc/service_bloc/service_state.dart';
+import 'package:momaspayplus/domain/repository/service_repository.dart';
+import 'package:momaspayplus/reuseable/mo_button.dart';
+import 'package:momaspayplus/screens/service/service_preview.dart';
 
 import '../../bloc/service_bloc/service_bloc.dart';
 import '../../bloc/service_bloc/service_event.dart';

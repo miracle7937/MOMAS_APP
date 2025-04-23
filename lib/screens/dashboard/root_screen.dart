@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:momas_pay/screens/dashboard/search_screen/search_screen.dart';
-import 'package:momas_pay/utils/colors.dart';
-import 'package:momas_pay/utils/images.dart';
+import 'package:momaspayplus/screens/dashboard/search_screen/search_screen.dart';
+import 'package:momaspayplus/utils/colors.dart';
+import 'package:momaspayplus/utils/images.dart';
 
 import '../../domain/data/response/user_model.dart';
 import '../../utils/shared_pref.dart';

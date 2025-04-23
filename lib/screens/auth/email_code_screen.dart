@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/screens/auth/reset_password/reset_passord_screen.dart';
+import 'package:momaspayplus/screens/auth/reset_password/reset_passord_screen.dart';
 
 import '../../bloc/registeration_bloc/register_bloc.dart';
 import '../../bloc/registeration_bloc/register_event.dart';

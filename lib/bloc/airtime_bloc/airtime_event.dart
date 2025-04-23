@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:momas_pay/domain/data/response/generic_response.dart';
+import 'package:momaspayplus/domain/data/response/generic_response.dart';
 
 abstract class AirtimeState extends Equatable {
   const AirtimeState();

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/bloc/service_bloc/service_event.dart';
-import 'package:momas_pay/bloc/service_bloc/service_state.dart';
+import 'package:momaspayplus/bloc/service_bloc/service_event.dart';
+import 'package:momaspayplus/bloc/service_bloc/service_state.dart';
 
 import '../../domain/repository/service_repository.dart';
 

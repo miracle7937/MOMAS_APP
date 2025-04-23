@@ -1,5 +1,5 @@
-import 'package:momas_pay/domain/data/response/promo.dart';
-import 'package:momas_pay/domain/data/response/wallet.dart';
+import 'package:momaspayplus/domain/data/response/promo.dart';
+import 'package:momaspayplus/domain/data/response/wallet.dart';
 
 import '../../utils/routes.dart';
 import '../data/response/feature.dart';

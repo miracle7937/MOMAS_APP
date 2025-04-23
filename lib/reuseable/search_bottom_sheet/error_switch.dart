@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:momas_pay/reuseable/mo_button.dart';
+import 'package:momaspayplus/reuseable/mo_button.dart';
 
 class ErrorSwitcher extends StatelessWidget {
   final VoidCallback? onRetry;

@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'package:momas_pay/domain/data/response/tariff.dart';
+import 'package:momaspayplus/domain/data/response/tariff.dart';
 
 class UserModel {
   bool? status;

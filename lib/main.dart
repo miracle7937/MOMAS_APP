@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/screens/auth/login.dart';
-import 'package:momas_pay/utils/navigation.dart';
-import 'package:momas_pay/utils/shared_pref.dart';
+import 'package:momaspayplus/screens/auth/login.dart';
+import 'package:momaspayplus/utils/navigation.dart';
+import 'package:momaspayplus/utils/shared_pref.dart';
 
-import 'package:momas_pay/utils/theme.dart';
+import 'package:momaspayplus/utils/theme.dart';
 
 import 'bloc/intro_page/intro_page.dart';
 import 'bloc/registeration_bloc/register_bloc.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:momas_pay/utils/colors.dart';
-import 'package:momas_pay/utils/images.dart';
+import 'package:momaspayplus/utils/colors.dart';
+import 'package:momaspayplus/utils/images.dart';
 
 import '../utils/network_enum.dart';
 

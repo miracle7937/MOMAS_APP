@@ -1,7 +1,7 @@
-import 'package:momas_pay/domain/data/response/feature.dart';
-import 'package:momas_pay/domain/data/response/promo.dart';
-import 'package:momas_pay/domain/data/response/user_model.dart';
-import 'package:momas_pay/domain/repository/dashboard_repository.dart';
+import 'package:momaspayplus/domain/data/response/feature.dart';
+import 'package:momaspayplus/domain/data/response/promo.dart';
+import 'package:momaspayplus/domain/data/response/user_model.dart';
+import 'package:momaspayplus/domain/repository/dashboard_repository.dart';
 
 import '../data/response/wallet.dart';
 

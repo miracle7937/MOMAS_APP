@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:momas_pay/screens/generate_token/widget/token_tile_view.dart';
+import 'package:momaspayplus/screens/generate_token/widget/token_tile_view.dart';
 
 import '../../bloc/access_token_bloc/access_token_bloc.dart';
 import '../../bloc/access_token_bloc/access_token_event.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:momas_pay/domain/data/response/generic_response.dart';
-import 'package:momas_pay/domain/repository/auth_repository.dart';
-import 'package:momas_pay/utils/validators.dart';
+import 'package:momaspayplus/domain/data/response/generic_response.dart';
+import 'package:momaspayplus/domain/repository/auth_repository.dart';
+import 'package:momaspayplus/utils/validators.dart';
 
 import '../../utils/strings.dart';
 import '../data/request/login.dart';

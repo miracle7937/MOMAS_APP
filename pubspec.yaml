@@ -1,9 +1,9 @@
-name: momas_pay
-description: "A new Flutter project."
-version: 1.0.0+1
+name: momaspayplus
+description: "Mobile vending application"
+
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-
+version: 1.0.0+1
 
 environment:
   sdk: '>=3.4.3 <4.0.0'

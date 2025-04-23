@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/domain/data/response/generic_response.dart';
-import 'package:momas_pay/domain/repository/bill_repository.dart';
+import 'package:momaspayplus/domain/data/response/generic_response.dart';
+import 'package:momaspayplus/domain/repository/bill_repository.dart';
 
 import '../../domain/data/request/airtime_request.dart';
 import 'airtime_event.dart';

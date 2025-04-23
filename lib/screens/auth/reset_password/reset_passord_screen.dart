@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momas_pay/domain/service/auth_service.dart';
+import 'package:momaspayplus/domain/service/auth_service.dart';
 
 import '../../../bloc/registeration_bloc/register_bloc.dart';
 import '../../../bloc/registeration_bloc/register_event.dart';

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:momas_pay/domain/data/response/vending_properties.dart';
+import 'package:momaspayplus/domain/data/response/vending_properties.dart';
 
 import '../../domain/data/request/momas_payent_response.dart';
 import '../../domain/data/response/meter_payment_response.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:momas_pay/utils/strings.dart';
+import 'package:momaspayplus/utils/strings.dart';
 
 import '../../../bloc/payment_bloc/payment_bloc.dart';
 import '../../../bloc/payment_bloc/payment_event.dart';

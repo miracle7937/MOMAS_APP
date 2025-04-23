@@ -1,4 +1,4 @@
-import 'package:momas_pay/domain/data/response/generic_response.dart';
+import 'package:momaspayplus/domain/data/response/generic_response.dart';
 
 import '../../utils/routes.dart';
 import '../data/response/setting_response.dart';

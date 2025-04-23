@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:momas_pay/bloc/momas_bloc/momas_bloc.dart';
-import 'package:momas_pay/screens/service/service_screen.dart';
+import 'package:momaspayplus/bloc/momas_bloc/momas_bloc.dart';
+import 'package:momaspayplus/screens/service/service_screen.dart';
 
 import '../domain/data/response/feature.dart';
 import '../domain/data/response/user_model.dart';

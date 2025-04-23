@@ -1,7 +1,7 @@
-import 'package:momas_pay/domain/data/request/airtime_request.dart';
-import 'package:momas_pay/domain/data/request/cable_tv_request.dart';
-import 'package:momas_pay/domain/data/request/data_request.dart';
-import 'package:momas_pay/domain/data/response/generic_response.dart';
+import 'package:momaspayplus/domain/data/request/airtime_request.dart';
+import 'package:momaspayplus/domain/data/request/cable_tv_request.dart';
+import 'package:momaspayplus/domain/data/request/data_request.dart';
+import 'package:momaspayplus/domain/data/response/generic_response.dart';
 
 import '../../utils/routes.dart';
 import '../data/request/momas_meter_buy.dart';

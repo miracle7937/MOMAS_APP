@@ -4,9 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
-import 'package:momas_pay/bloc/payment_bloc/payment_bloc.dart';
-import 'package:momas_pay/domain/repository/bill_repository.dart';
-import 'package:momas_pay/utils/colors.dart';
+import 'package:momaspayplus/bloc/payment_bloc/payment_bloc.dart';
+import 'package:momaspayplus/domain/repository/bill_repository.dart';
+import 'package:momaspayplus/utils/colors.dart';
 
 import '../../bloc/airtime_bloc/airtime_bloc.dart';
 import '../../bloc/airtime_bloc/airtime_event.dart';
