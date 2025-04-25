@@ -13,7 +13,7 @@ import 'package:flutter/foundation.dart';
 /// point [curve] will begin. Unlike [Interval], [curve] will not start at zero,
 /// but will use [startingPoint] as the Y position.
 ///
-/// For example, if [startingPoint] is set to `0.5`, and [curve] is set to
+/// For memmcol, if [startingPoint] is set to `0.5`, and [curve] is set to
 /// [Curves.easeOut], then the bottom-left quarter of the curve will be a
 /// straight line, and the top-right quarter will contain the entire contents of
 /// [Curves.easeOut].
