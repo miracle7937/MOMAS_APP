@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorObservers: [routeObserver],
       navigatorKey: NavigationService.navigatorKey,
+      debugShowCheckedModeBanner: false,
       title: 'Momas Pay',
       theme: ThemeConfig.buildCustomTheme(),
       home: const MyHomePage(title: 'Momas Pay'),
