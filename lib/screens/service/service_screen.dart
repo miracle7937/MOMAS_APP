@@ -6,6 +6,7 @@ import 'package:momaspayplus/bloc/service_bloc/service_state.dart';
 import 'package:momaspayplus/domain/repository/service_repository.dart';
 import 'package:momaspayplus/reuseable/mo_button.dart';
 import 'package:momaspayplus/screens/service/service_preview.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 
 import '../../bloc/service_bloc/service_bloc.dart';
 import '../../bloc/service_bloc/service_event.dart';
@@ -120,56 +121,69 @@ class _ServiceScreenState extends State<ServiceScreen> {
                         //       )
                         //       .toList(),
                         // ),
-                        EPDropdownButton<Service>(
-                          itemsListTitle: "Choose Services",
-                          iconSize: 22,
-                          value: selectedService,
-                          hint: const Text(""),
-                          isExpanded: true,
-                          underline: const Divider(),
-                          searchMatcher: (item, text) {
-                            return item.serviceTitle!
-                                .toLowerCase()
-                                .contains(text.toLowerCase());
-                          },
-                          onChanged: (v) {
-                            setState(() {
-                              selectedService = v;
-                            });
-                          },
-                          items: (serviceDataResponse?.data?.service ?? [])
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Row(
-                                    children: [
-                                      Text(e.serviceTitle.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black)),
-                                    ],
-                                  ),
+                        Padding(
+                          padding: context.isTablet
+                              ? EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.15)
+                              : const EdgeInsets.all(0.0),
+                          child: Column(
+                            children: [
+                              EPDropdownButton<Service>(
+                                itemsListTitle: "Choose Services",
+                                iconSize: 22,
+                                value: selectedService,
+                                hint: const Text(""),
+                                isExpanded: true,
+                                underline: const Divider(),
+                                searchMatcher: (item, text) {
+                                  return item.serviceTitle!
+                                      .toLowerCase()
+                                      .contains(text.toLowerCase());
+                                },
+                                onChanged: (v) {
+                                  setState(() {
+                                    selectedService = v;
+                                  });
+                                },
+                                items: (serviceDataResponse?.data?.service ??
+                                        [])
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Row(
+                                          children: [
+                                            Text(e.serviceTitle.toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.black)),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 15),
+                                child: MoButton(
+                                  isLoading: state is ServiceStateLoading,
+                                  title: "Search",
+                                  onTap: () {
+                                    serviceBloc.add(ServiceSearchEvent(
+                                        estateId.toString(),
+                                        selectedService!.id.toString()));
+                                  },
                                 ),
                               )
-                              .toList(),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 15),
-                          child: MoButton(
-                            isLoading: state is ServiceStateLoading,
-                            title: "Search",
-                            onTap: () {
-                              serviceBloc.add(ServiceSearchEvent(
-                                  estateId.toString(),
-                                  selectedService!.id.toString()));
-                            },
+                            ],
                           ),
                         )
                       ],

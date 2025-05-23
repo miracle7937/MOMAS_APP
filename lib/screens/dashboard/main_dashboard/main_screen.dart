@@ -10,6 +10,7 @@ import 'package:momaspayplus/domain/data/response/user_model.dart';
 import 'package:momaspayplus/domain/repository/dashboard_repository.dart';
 import 'package:momaspayplus/domain/service/dashboard_service.dart';
 import 'package:momaspayplus/utils/images.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../bloc/momas_bloc/momas_bloc.dart';
 import '../../../main.dart';
@@ -422,16 +423,21 @@ class _MainScreenState extends State<MainScreen> with RouteAware {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: context.isTablet
+              ? const EdgeInsets.symmetric(horizontal: 20)
+              : const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              SizedBox(width: 25, height: 25, child: Image.asset(image)),
+              SizedBox(
+                  width: context.isTablet ? 40 : 25,
+                  height: context.isTablet ? 40 : 25,
+                  child: Image.asset(image)),
               const SizedBox(
                 width: 5,
               ),
               Text(
                 title ?? "",
-                style: const TextStyle(fontSize: 8),
+                style: TextStyle(fontSize: context.isTablet ? 15 : 8),
               )
             ],
           ),
@@ -593,8 +599,8 @@ class _GridItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: 35,
-              width: 35,
+              height: context.isTablet ? 80 : 35,
+              width: context.isTablet ? 80 : 35,
               child: Image.asset(
                 image,
                 fit: BoxFit.contain,
@@ -608,8 +614,8 @@ class _GridItem extends StatelessWidget {
                   Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 8.0,
+                    style: TextStyle(
+                      fontSize: context.isTablet ? 14.0 : 8,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -617,8 +623,8 @@ class _GridItem extends StatelessWidget {
                   Text(
                     subtitle,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 7.0,
+                    style: TextStyle(
+                      fontSize: context.isTablet ? 13.0 : 7,
                       color: Colors.grey,
                     ),
                   ),

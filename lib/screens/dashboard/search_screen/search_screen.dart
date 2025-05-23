@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 import 'package:momaspayplus/utils/strings.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../../../bloc/payment_bloc/payment_bloc.dart';
 import '../../../bloc/payment_bloc/payment_event.dart';
@@ -82,68 +84,73 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 16.0),
-                      MoFormWidget(
-                        prefixIcon:
-                            Icon(Icons.search, color: MoColors.mainColor),
-                        hintText: "Search",
-                        onChange: (value) {
-                          _filterData(value);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                state is PaymentLoading
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SpinKitFadingCircle(
-                            color: MoColors.mainColorII,
-                            size: 50.0,
-                          )
-                        ],
-                      )
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: filteredTransactionDataList?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                paymentBloc.add(ViewReceipt(
-                                    filteredTransactionDataList![index]
-                                        .id
-                                        .toString())); // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (builder) =>
-                                //         TransactionSuccessPage(
-                                //       details: ReceiptBuilder()
-                                //           .transactionHistory(
-                                //               filteredTransactionDataList![
-                                //                   index]),
-                                //     ),
-                                //   ),
-                                // );
-                              },
-                              child: TransactionCard(
-                                data: filteredTransactionDataList![index],
-                                retry: (transRef) {
-                                  paymentBloc.add(RetryPayment(transRef));
+                Expanded(
+                  child: Padding(
+                    padding: context.isTablet
+                        ? EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.15)
+                        : const EdgeInsets.all(0.0),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 16.0),
+                              MoFormWidget(
+                                prefixIcon: Icon(Icons.search,
+                                    color: MoColors.mainColor),
+                                hintText: "Search",
+                                onChange: (value) {
+                                  _filterData(value);
                                 },
                               ),
-                            );
-                          },
+                            ],
+                          ),
                         ),
-                      ),
+                        state is PaymentLoading
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SpinKitFadingCircle(
+                                    color: MoColors.mainColorII,
+                                    size: 50.0,
+                                  )
+                                ],
+                              )
+                            : Expanded(
+                                child: ListView.builder(
+                                  itemCount:
+                                      filteredTransactionDataList?.length ?? 0,
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        paymentBloc.add(ViewReceipt(
+                                            filteredTransactionDataList![index]
+                                                .id
+                                                .toString())); // Navigator.push(
+                                      },
+                                      child: TransactionCard(
+                                        data:
+                                            filteredTransactionDataList![index],
+                                        retry: (transRef) {
+                                          paymentBloc
+                                              .add(RetryPayment(transRef));
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
+                )
               ],
             );
           },

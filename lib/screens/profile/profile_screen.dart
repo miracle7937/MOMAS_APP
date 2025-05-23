@@ -6,6 +6,7 @@ import 'package:momaspayplus/screens/profile/request_meter_screen.dart';
 import 'package:momaspayplus/screens/profile/support/support_screen.dart';
 import 'package:momaspayplus/utils/colors.dart';
 import 'package:momaspayplus/utils/images.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../bloc/setting_bloc/setting_bloc.dart';
@@ -77,154 +78,163 @@ class _ProfileScreenState extends State<ProfileScreen> {
         bloc: settingsBloc,
         builder: (context, state) {
           return SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: context.isTablet
+                  ? EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.15)
+                  : const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 10,
                   ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundImage: AssetImage(MoImage
-                            .profilePic), // Replace with your image asset
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            user?.firstName ?? "${user?.lastName}",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            user?.email ?? "",
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            user?.meterNo ?? "",
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Text(
-                              'Active',
-                              style: TextStyle(
-                                color: Colors.green,
+                  Container(
+                    margin: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundImage: AssetImage(MoImage
+                              .profilePic), // Replace with your image asset
+                        ),
+                        const SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user?.firstName ?? "${user?.lastName}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            Text(
+                              user?.email ?? "",
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              user?.meterNo ?? "",
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Text(
+                                'Active',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                // Options
-                OptionTile(
-                  icon: Icons.lock,
-                  title: 'Reset Password',
-                  onTap: () {
-                    if (isNotEmpty(user?.email)) {
-                      AuthService(AuthRepository())
-                          .checkEmail(user!.email!, "reset")
-                          .then((value) {
-                        if (value.status == true) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => EmailCodeScreen(
-                                        email: user?.email ?? "",
-                                        passCode: PassCode.resetPassword,
-                                      )));
-                        } else {
-                          showErrorBottomSheet(
-                              context, value.message ?? "Error occurred!");
-                        }
-                      });
-                    }
-                  },
-                ),
-                OptionTile(
-                  icon: Icons.electric_meter,
-                  title: 'Request for a meter',
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const RequestMeterScreen())),
-                ),
-                OptionTile(
-                    icon: Icons.support_agent,
-                    title: 'Support',
+                  // Options
+                  OptionTile(
+                    icon: Icons.lock,
+                    title: 'Reset Password',
+                    onTap: () {
+                      if (isNotEmpty(user?.email)) {
+                        AuthService(AuthRepository())
+                            .checkEmail(user!.email!, "reset")
+                            .then((value) {
+                          if (value.status == true) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => EmailCodeScreen(
+                                          email: user?.email ?? "",
+                                          passCode: PassCode.resetPassword,
+                                        )));
+                          } else {
+                            showErrorBottomSheet(
+                                context, value.message ?? "Error occurred!");
+                          }
+                        });
+                      }
+                    },
+                  ),
+                  OptionTile(
+                    icon: Icons.electric_meter,
+                    title: 'Request for a meter',
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => const SupportScreen()))),
-                OptionTile(
-                    icon: Icons.delete,
-                    title: 'Delete account',
-                    onTap: () {
-                      showAlertDialog(
-                        context,
-                        message:
-                            "Are you sure you want to delete your account?",
-                        onTap: () {
-                          Navigator.pop(context);
-                          setState(() => isDeleteAccount = true);
+                            builder: (_) => const RequestMeterScreen())),
+                  ),
+                  OptionTile(
+                      icon: Icons.support_agent,
+                      title: 'Support',
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const SupportScreen()))),
+                  OptionTile(
+                      icon: Icons.delete,
+                      title: 'Delete account',
+                      onTap: () {
+                        showAlertDialog(
+                          context,
+                          message:
+                              "Are you sure you want to delete your account?",
+                          onTap: () {
+                            Navigator.pop(context);
+                            setState(() => isDeleteAccount = true);
 
-                          SettingRepository()
-                              .deleteAccount(user!.email!)
-                              .then((value) {
-                            if (value.status == true) {
+                            SettingRepository()
+                                .deleteAccount(user!.email!)
+                                .then((value) {
+                              if (value.status == true) {
+                                SharedPreferenceHelper.clearUser();
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, "/", (route) => false);
+                              }
+                              setState(() => isDeleteAccount = false);
+                            }).catchError((error) {
+                              setState(() => isDeleteAccount = false);
                               SharedPreferenceHelper.clearUser();
                               Navigator.pushNamedAndRemoveUntil(
                                   context, "/", (route) => false);
-                            }
-                            setState(() => isDeleteAccount = false);
-                          }).catchError((error) {
-                            setState(() => isDeleteAccount = false);
-                            SharedPreferenceHelper.clearUser();
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, "/", (route) => false);
-                          });
-                        },
-                      );
-                    }),
-                OptionTile(
-                  icon: Icons.logout,
-                  title: 'Log out',
-                  onTap: () {
-                    SharedPreferenceHelper.clearUser();
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/", (route) => false);
-                  },
-                ),
-                OptionTile(
-                  icon: Icons.fingerprint,
-                  title: "Enable Biometric Login",
-                  showSwitch: true,
-                  switchValue: _isBiometricEnabled,
-                  onSwitchChanged: (value) => _saveBiometricPreference(value),
-                )
-              ],
+                            });
+                          },
+                        );
+                      }),
+                  OptionTile(
+                    icon: Icons.logout,
+                    title: 'Log out',
+                    onTap: () {
+                      SharedPreferenceHelper.clearUser();
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, "/", (route) => false);
+                    },
+                  ),
+                  OptionTile(
+                    icon: Icons.fingerprint,
+                    title: "Enable Biometric Login",
+                    showSwitch: true,
+                    switchValue: _isBiometricEnabled,
+                    onSwitchChanged: (value) => _saveBiometricPreference(value),
+                  )
+                ],
+              ),
             ),
           );
         },

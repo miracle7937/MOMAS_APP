@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:momaspayplus/domain/service/auth_service.dart';
 import 'package:momaspayplus/screens/auth/email_screen.dart';
 import 'package:momaspayplus/screens/dashboard/root_screen.dart';
 import 'package:momaspayplus/utils/colors.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 import 'package:momaspayplus/utils/shared_pref.dart';
 
 import '../../bloc/login_bloc/login_event.dart';
@@ -116,155 +118,162 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius:
                           BorderRadius.only(topLeft: Radius.circular(100)),
                     ),
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 100,
-                        ),
-                        MoFormWidget(
-                          controller: generalController,
-                          prefixIcon: const Icon(
-                            Icons.email,
-                            color: Colors.grey,
+                    child: Padding(
+                      padding: context.isTablet
+                          ? EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.2)
+                          : const EdgeInsets.all(0.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 100,
                           ),
-                          title: "Email / Meter Number",
-                        ),
-                        MoFormWidget(
-                          controller: passwordController,
-                          prefixIcon: const Icon(
-                            Icons.lock,
-                            color: Colors.grey,
+                          MoFormWidget(
+                            controller: generalController,
+                            prefixIcon: const Icon(
+                              Icons.email,
+                              color: Colors.grey,
+                            ),
+                            title: "Email / Meter Number",
                           ),
-                          title: "Password",
-                          isPassword: true,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 15),
-                          child: Row(
-                            children: [
-                              const Spacer(),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => const EmailScreen(
-                                                emailType: CheckEmail.forget,
-                                              )));
-                                },
-                                child: Text(
-                                  "Forgot Password",
-                                  style: TextStyle(color: MoColors.mainColor),
-                                ),
-                              )
-                            ],
+                          MoFormWidget(
+                            controller: passwordController,
+                            prefixIcon: const Icon(
+                              Icons.lock,
+                              color: Colors.grey,
+                            ),
+                            title: "Password",
+                            isPassword: true,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: MoButton(
-                                  title: "LOGIN",
-                                  isLoading: context.watch<LoginBloc>().state
-                                      is LoginLoading,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 15),
+                            child: Row(
+                              children: [
+                                const Spacer(),
+                                InkWell(
                                   onTap: () {
-                                    var meterNo = "";
-                                    var email = "";
-                                    if (FormValidators.isValidEmail(
-                                        generalController.text)) {
-                                      email = generalController.text;
-                                    } else {
-                                      meterNo = generalController.text;
-                                    }
-                                    final password = passwordController.text;
-                                    final login = Login(
-                                        meterNo: meterNo,
-                                        password: password,
-                                        email: email);
-                                    context
-                                        .read<LoginBloc>()
-                                        .add(UserLoginEvent(login));
-                                  },
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              BiometricLoginWidget(
-                                onLoginSuccess: () {
-                                  SharedPreferenceHelper.getLogin()
-                                      .then((onValue) {
-                                    if (onValue != null) {
-                                      context
-                                          .read<LoginBloc>()
-                                          .add(UserLoginEvent(onValue));
-                                    }
-                                  });
-                                },
-                              )
-
-                              // FutureBuilder<List<dynamic>>(
-                              //     future: Future.wait([
-                              //       SharedPreferenceHelper.getLogin(),
-                              //       BioMetric().isBiometricAvailable()
-                              //     ]),
-                              //     builder: (context, snapshot) {
-                              //       return (snapshot.data?[0] != null ||
-                              //               snapshot.data?[1] == true)
-                              //           ? InkWell(
-                              //               onTap: () {
-                              //                 BioMetric()
-                              //                     .authenticate()
-                              //                     .then((v) {
-                              //                   if (v == true) {
-                              //                     context.read<LoginBloc>().add(
-                              //                         UserLoginEvent(
-                              //                             snapshot.data?[0]));
-                              //                   }
-                              //                 });
-                              //               },
-                              //               child: Image.asset(
-                              //                   MoImage.fingerPrint))
-                              //           : Container();
-                              //     }),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: 'New on MOMAS PAY?  ',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 15),
-                              ),
-                              TextSpan(
-                                text: 'Register Here!',
-                                style: TextStyle(
-                                    color: MoColors.mainColor, fontSize: 14),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
                                             builder: (_) => const EmailScreen(
-                                                  emailType:
-                                                      CheckEmail.register,
+                                                  emailType: CheckEmail.forget,
                                                 )));
                                   },
-                              ),
-                            ],
+                                  child: Text(
+                                    "Forgot Password",
+                                    style: TextStyle(color: MoColors.mainColor),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        )
-                      ],
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: MoButton(
+                                    title: "LOGIN",
+                                    isLoading: context.watch<LoginBloc>().state
+                                        is LoginLoading,
+                                    onTap: () {
+                                      var meterNo = "";
+                                      var email = "";
+                                      if (FormValidators.isValidEmail(
+                                          generalController.text)) {
+                                        email = generalController.text;
+                                      } else {
+                                        meterNo = generalController.text;
+                                      }
+                                      final password = passwordController.text;
+                                      final login = Login(
+                                          meterNo: meterNo,
+                                          password: password,
+                                          email: email);
+                                      context
+                                          .read<LoginBloc>()
+                                          .add(UserLoginEvent(login));
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                BiometricLoginWidget(
+                                  onLoginSuccess: () {
+                                    SharedPreferenceHelper.getLogin()
+                                        .then((onValue) {
+                                      if (onValue != null) {
+                                        context
+                                            .read<LoginBloc>()
+                                            .add(UserLoginEvent(onValue));
+                                      }
+                                    });
+                                  },
+                                )
+
+                                // FutureBuilder<List<dynamic>>(
+                                //     future: Future.wait([
+                                //       SharedPreferenceHelper.getLogin(),
+                                //       BioMetric().isBiometricAvailable()
+                                //     ]),
+                                //     builder: (context, snapshot) {
+                                //       return (snapshot.data?[0] != null ||
+                                //               snapshot.data?[1] == true)
+                                //           ? InkWell(
+                                //               onTap: () {
+                                //                 BioMetric()
+                                //                     .authenticate()
+                                //                     .then((v) {
+                                //                   if (v == true) {
+                                //                     context.read<LoginBloc>().add(
+                                //                         UserLoginEvent(
+                                //                             snapshot.data?[0]));
+                                //                   }
+                                //                 });
+                                //               },
+                                //               child: Image.asset(
+                                //                   MoImage.fingerPrint))
+                                //           : Container();
+                                //     }),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'New on MOMAS PAY?  ',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 15),
+                                ),
+                                TextSpan(
+                                  text: 'Register Here!',
+                                  style: TextStyle(
+                                      color: MoColors.mainColor, fontSize: 14),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (_) => const EmailScreen(
+                                                    emailType:
+                                                        CheckEmail.register,
+                                                  )));
+                                    },
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],

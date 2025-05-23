@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momaspayplus/reuseable/mo_button.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 
 import '../../bloc/setting_bloc/setting_bloc.dart';
 import '../../bloc/setting_bloc/setting_event.dart';
@@ -43,55 +44,61 @@ class _RequestMeterScreenState extends State<RequestMeterScreen> {
         child: BlocConsumer<SettingsBloc, SettingsState>(
           bloc: settingsBloc,
           builder: (context, state) {
-            return Column(
-              children: [
-                MoFormWidget(
-                  controller: fullNameController,
-                  prefixIcon: const Icon(
-                    Icons.person,
-                    color: Colors.grey,
+            return Padding(
+              padding: context.isTablet
+                  ? EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.15)
+                  : const EdgeInsets.all(0),
+              child: Column(
+                children: [
+                  MoFormWidget(
+                    controller: fullNameController,
+                    prefixIcon: const Icon(
+                      Icons.person,
+                      color: Colors.grey,
+                    ),
+                    title: "Full Name",
                   ),
-                  title: "Full Name",
-                ),
-                MoFormWidget(
-                  controller: emailController,
-                  prefixIcon: const Icon(
-                    Icons.email,
-                    color: Colors.grey,
+                  MoFormWidget(
+                    controller: emailController,
+                    prefixIcon: const Icon(
+                      Icons.email,
+                      color: Colors.grey,
+                    ),
+                    title: "Email Address",
                   ),
-                  title: "Email Address",
-                ),
-                MoFormWidget(
-                  keyboardType: TextInputType.phone,
-                  controller: phoneController,
-                  prefixIcon: const Icon(
-                    Icons.phone,
-                    color: Colors.grey,
+                  MoFormWidget(
+                    keyboardType: TextInputType.phone,
+                    controller: phoneController,
+                    prefixIcon: const Icon(
+                      Icons.phone,
+                      color: Colors.grey,
+                    ),
+                    title: "Phone Number",
                   ),
-                  title: "Phone Number",
-                ),
-                MoFormWidget(
-                  controller: addressController,
-                  prefixIcon: const Icon(
-                    Icons.location_on,
-                    color: Colors.grey,
+                  MoFormWidget(
+                    controller: addressController,
+                    prefixIcon: const Icon(
+                      Icons.location_on,
+                      color: Colors.grey,
+                    ),
+                    title: "Address",
                   ),
-                  title: "Address",
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: MoButton(
-                      isLoading: state is SettingsStateLoading,
-                      title: "Submit",
-                      onTap: () {
-                        settingsBloc.add(RequestMeterEvent(
-                            emailController.text,
-                            fullNameController.text,
-                            phoneController.text,
-                            addressController.text));
-                      }),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: MoButton(
+                        isLoading: state is SettingsStateLoading,
+                        title: "Submit",
+                        onTap: () {
+                          settingsBloc.add(RequestMeterEvent(
+                              emailController.text,
+                              fullNameController.text,
+                              phoneController.text,
+                              addressController.text));
+                        }),
+                  )
+                ],
+              ),
             );
           },
           listener: (BuildContext context, SettingsState state) {

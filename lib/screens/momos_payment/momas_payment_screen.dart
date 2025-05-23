@@ -8,6 +8,7 @@ import 'package:momaspayplus/domain/data/response/user_model.dart';
 import 'package:momaspayplus/domain/repository/bill_repository.dart';
 import 'package:momaspayplus/utils/amount_formatter.dart';
 import 'package:momaspayplus/utils/colors.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 import '../../bloc/momas_bloc/momas_bloc.dart';
 import '../../bloc/momas_bloc/momas_event.dart';
 import '../../bloc/momas_bloc/momas_state.dart';
@@ -108,7 +109,6 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(
                         height: 13,
@@ -134,483 +134,524 @@ class _MomasPaymentScreenState extends State<MomasPaymentScreen> {
                           ),
                         ),
                       ),
-                      widget.momasPaymentType == MomasPaymentType.others
-                          ? Column(
-                              children: [
-                                BlocConsumer<ServiceBloc, ServiceState>(
-                                  bloc: serviceBloc,
-                                  builder: (context, state) {
-                                    return EPDropdownButton<Estate>(
-                                      itemsListTitle: "Choose Estate",
-                                      iconSize: 22,
-                                      value: selectedEstate,
-                                      hint: const Text(""),
-                                      isExpanded: true,
-                                      underline: const Divider(),
-                                      searchMatcher: (item, text) {
-                                        return item.title!
-                                            .toLowerCase()
-                                            .contains(text.toLowerCase());
-                                      },
-                                      onChanged: (v) {
-                                        setState(() {
-                                          selectedEstate = v;
-                                          verificationResponse = null;
-                                        });
-                                      },
-                                      items: (serviceDataResponse
-                                                  ?.data?.estate ??
-                                              [])
-                                          .map(
-                                            (e) => DropdownMenuItem(
-                                              value: e,
-                                              child: Row(
-                                                children: [
-                                                  Text(e.title.toString(),
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .labelMedium!
-                                                          .copyWith(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: Colors
-                                                                  .black)),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                    );
-                                  },
-                                  listener: (BuildContext context,
-                                      ServiceState state) {
-                                    switch (state) {
-                                      case ServiceStateLoading():
-                                        setState(() => isLoading = true);
-                                      case ServiceStateFailed():
-                                        setState(() => isLoading = false);
-                                        showErrorBottomSheet(
-                                            context, state.error);
-                                      case ServiceStateSuccess():
-                                        setState(() => isLoading = false);
-                                        serviceDataResponse =
-                                            state.dataResponse;
-
-                                      default:
-                                        log("state not implemented");
-                                    }
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                const Text(
-                                  "Make payment on your momas meter easily  in few steps",
-                                  style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w300),
-                                ),
-                                (selectedEstate != null)
-                                    ? Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: MoFormWidget(
-                                              controller:
-                                                  meterTextFormController,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              prefixIcon: const Icon(
-                                                Icons.electric_meter,
-                                                color: Colors.grey,
-                                              ),
-                                              title: "Meter Number",
-                                              onChange: (v) {
-                                                setState(() {
-                                                  verificationResponse = null;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: MoButton(
-                                              isLoading: state
-                                                  is MomasVerificationLoading,
-                                              title: "VERIFY",
-                                              onTap: () {
-                                                verificationResponse = null;
-                                                bloc.add(MomasVerification(
-                                                    meterNo:
-                                                        meterTextFormController
-                                                            .text,
-                                                    estateId: selectedEstate!.id
-                                                        .toString()));
-                                              },
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    : Container(),
-                              ],
-                            )
-                          : Container(),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      isNotEmpty(verificationResponse?.data?.customerName)
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: MoColors.mainColor.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 10),
-                                  child: Row(
+                      Padding(
+                        padding: context.isTablet
+                            ? EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.15)
+                            : const EdgeInsets.all(0.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            widget.momasPaymentType == MomasPaymentType.others
+                                ? Column(
                                     children: [
-                                      const Icon(
-                                        Icons.person,
-                                        color: Colors.white,
+                                      BlocConsumer<ServiceBloc, ServiceState>(
+                                        bloc: serviceBloc,
+                                        builder: (context, state) {
+                                          return EPDropdownButton<Estate>(
+                                            itemsListTitle: "Choose Estate",
+                                            iconSize: 22,
+                                            value: selectedEstate,
+                                            hint: const Text(""),
+                                            isExpanded: true,
+                                            underline: const Divider(),
+                                            searchMatcher: (item, text) {
+                                              return item.title!
+                                                  .toLowerCase()
+                                                  .contains(text.toLowerCase());
+                                            },
+                                            onChanged: (v) {
+                                              setState(() {
+                                                selectedEstate = v;
+                                                verificationResponse = null;
+                                              });
+                                            },
+                                            items: (serviceDataResponse
+                                                        ?.data?.estate ??
+                                                    [])
+                                                .map(
+                                                  (e) => DropdownMenuItem(
+                                                    value: e,
+                                                    child: Row(
+                                                      children: [
+                                                        Text(e.title.toString(),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .labelMedium!
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: Colors
+                                                                        .black)),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          );
+                                        },
+                                        listener: (BuildContext context,
+                                            ServiceState state) {
+                                          switch (state) {
+                                            case ServiceStateLoading():
+                                              setState(() => isLoading = true);
+                                            case ServiceStateFailed():
+                                              setState(() => isLoading = false);
+                                              showErrorBottomSheet(
+                                                  context, state.error);
+                                            case ServiceStateSuccess():
+                                              setState(() => isLoading = false);
+                                              serviceDataResponse =
+                                                  state.dataResponse;
+
+                                            default:
+                                              log("state not implemented");
+                                          }
+                                        },
                                       ),
                                       const SizedBox(
-                                        width: 10,
+                                        height: 20,
                                       ),
-                                      Text(
-                                        verificationResponse!
-                                            .data!.customerName!,
+                                      const Text(
+                                        "Make payment on your momas meter easily  in few steps",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: MoColors.mainColor),
-                                      )
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                      (selectedEstate != null)
+                                          ? Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: MoFormWidget(
+                                                    controller:
+                                                        meterTextFormController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    prefixIcon: const Icon(
+                                                      Icons.electric_meter,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    title: "Meter Number",
+                                                    onChange: (v) {
+                                                      setState(() {
+                                                        verificationResponse =
+                                                            null;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: MoButton(
+                                                    isLoading: state
+                                                        is MomasVerificationLoading,
+                                                    title: "VERIFY",
+                                                    onTap: () {
+                                                      verificationResponse =
+                                                          null;
+                                                      bloc.add(MomasVerification(
+                                                          meterNo:
+                                                              meterTextFormController
+                                                                  .text,
+                                                          estateId:
+                                                              selectedEstate!.id
+                                                                  .toString()));
+                                                    },
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          : Container(),
                                     ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          : Container(),
-                      MoFormWidget(
-                        controller: amountFormController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.deny(RegExp(r'[,.]')),
-                        ],
-                        title: "Amount (NGN)",
-                        onChange: (value) {
-                          setState(() {
-                            amountValue = value;
-                          });
-                        },
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Row(
-                          children: [
-                            Text("Min $minPurchase | Max $maxPurchase",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
-                            const Spacer(),
-                            Text("Utilities $utilitiesAmount ",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black))
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      EPDropdownButton<Tariff>(
-                          itemsListTitle: "Selected Vending Type",
-                          iconSize: 22,
-                          value: selectedTariff,
-                          hint: const Text(""),
-                          isExpanded: true,
-                          underline: const Divider(),
-                          searchMatcher: (item, text) {
-                            return (item.title!)
-                                .toLowerCase()
-                                .contains(text.toLowerCase());
-                          },
-                          onChanged: (v) {
-                            print(v.toJson());
-                            if (v.amount == null) {
-                              showErrorBottomSheet(context,
-                                  "Tariff amount not set, Please contact an admin.");
-                              return;
-                            }
-                            setState(() {
-                              selectedTariff = v;
-                            });
-                          },
-                          items: tariff
-                              .map(
-                                (e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Row(
-                                      children: [
-                                        Text(e.type.toString().toUpperCase(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium!
-                                                .copyWith(
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black)),
-                                      ],
-                                    )),
-                              )
-                              .toList()),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * .04,
-                      ),
-                      (amountFormController.text.isNotEmpty &&
-                              selectedTariff != null &&
-                              verificationResponse != null)
-                          ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15.0,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    // Header Row
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 0.0, vertical: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Items",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey,
+                                  )
+                                : Container(),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            isNotEmpty(verificationResponse?.data?.customerName)
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: MoColors.mainColor
+                                              .withOpacity(0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0, vertical: 10),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.person,
+                                              color: Colors.white,
                                             ),
-                                          ),
-                                          Text(
-                                            "Amount (NGN)",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey,
+                                            const SizedBox(
+                                              width: 10,
                                             ),
-                                          ),
-                                        ],
+                                            Text(
+                                              verificationResponse!
+                                                  .data!.customerName!,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: MoColors.mainColor),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                    const Divider(),
-                                    // Items Table
-                                    Table(
-                                      columnWidths: const {
-                                        0: FlexColumnWidth(),
-                                        1: FixedColumnWidth(100),
-                                      },
-                                      children: [
-                                        TableRow(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 5.0),
-                                              child: Text(
-                                                "Utilities",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Text(
-                                                AmountFormatter.format(
-                                                    double.parse(utilitiesAmount
-                                                        .toString())),
-                                                textAlign: TextAlign.right,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        TableRow(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 5.0),
-                                              child: Text(
-                                                "Cost of Unit",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Text(
-                                                AmountFormatter.format(
-                                                    VatCalculator()
-                                                        .calculateCostOfUnit(
-                                                            amountText:
-                                                                amountFormController
-                                                                    .text,
-                                                            tariffAmount:
-                                                                selectedTariff
-                                                                    ?.amount,
-                                                            utilitiesAmount:
-                                                                utilitiesAmount,
-                                                            vat: selectedTariff
-                                                                ?.vat)
-                                                        .toDouble()),
-                                                textAlign: TextAlign.right,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        TableRow(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 5.0),
-                                              child: Text(
-                                                "VAT Amount",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Text(
-                                                AmountFormatter.format(
-                                                    VatCalculator()
-                                                        .calculateVatAmount(
-                                                            amountText:
-                                                                amountFormController
-                                                                    .text,
-                                                            tariffAmount:
-                                                                selectedTariff
-                                                                    ?.amount,
-                                                            utilitiesAmount:
-                                                                utilitiesAmount,
-                                                            vat: selectedTariff
-                                                                ?.vat)
-                                                        .toDouble()),
-                                                textAlign: TextAlign.right,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        TableRow(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 5.0),
-                                              child: Text(
-                                                "Unit",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: Text(
-                                                "${AmountFormatter.format(VatCalculator().calculateTariffAmountPerKWatt(amountText: amountFormController.text, tariffAmount: selectedTariff?.amount, utilitiesAmount: utilitiesAmount, vat: selectedTariff?.vat).toDouble())}Kw/h",
-                                                textAlign: TextAlign.right,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const Divider(),
-                                    // Total Section
-                                    Padding(
+                                  )
+                                : Container(),
+                            MoFormWidget(
+                              controller: amountFormController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.deny(
+                                    RegExp(r'[,.]')),
+                              ],
+                              title: "Amount (NGN)",
+                              onChange: (value) {
+                                setState(() {
+                                  amountValue = value;
+                                });
+                              },
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: Row(
+                                children: [
+                                  Text("Min $minPurchase | Max $maxPurchase",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black)),
+                                  const Spacer(),
+                                  Text("Utilities $utilitiesAmount ",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black))
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            EPDropdownButton<Tariff>(
+                                itemsListTitle: "Selected Vending Type",
+                                iconSize: 22,
+                                value: selectedTariff,
+                                hint: const Text(""),
+                                isExpanded: true,
+                                underline: const Divider(),
+                                searchMatcher: (item, text) {
+                                  return (item.title!)
+                                      .toLowerCase()
+                                      .contains(text.toLowerCase());
+                                },
+                                onChanged: (v) {
+                                  print(v.toJson());
+                                  if (v.amount == null) {
+                                    showErrorBottomSheet(context,
+                                        "Tariff amount not set, Please contact an admin.");
+                                    return;
+                                  }
+                                  setState(() {
+                                    selectedTariff = v;
+                                  });
+                                },
+                                items: tariff
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                  e.type
+                                                      .toString()
+                                                      .toUpperCase(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Colors.black)),
+                                            ],
+                                          )),
+                                    )
+                                    .toList()),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .04,
+                            ),
+                            (amountFormController.text.isNotEmpty &&
+                                    selectedTariff != null &&
+                                    verificationResponse != null)
+                                ? Center(
+                                    child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 16.0),
+                                        horizontal: 15.0,
+                                      ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          const Text(
-                                            "Amount payable",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey,
+                                          // Header Row
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 0.0, vertical: 8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Items",
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "Amount (NGN)",
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          Text(
-                                            AmountFormatter.formatNaira(
-                                                double.parse(
-                                                    amountFormController.text)),
-                                            style: const TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
+                                          const Divider(),
+                                          // Items Table
+                                          Table(
+                                            columnWidths: const {
+                                              0: FlexColumnWidth(),
+                                              1: FixedColumnWidth(100),
+                                            },
+                                            children: [
+                                              TableRow(
+                                                children: [
+                                                  const Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 5.0),
+                                                    child: Text(
+                                                      "Utilities",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Text(
+                                                      AmountFormatter.format(
+                                                          double.parse(
+                                                              utilitiesAmount
+                                                                  .toString())),
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              TableRow(
+                                                children: [
+                                                  const Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 5.0),
+                                                    child: Text(
+                                                      "Cost of Unit",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Text(
+                                                      AmountFormatter.format(VatCalculator()
+                                                          .calculateCostOfUnit(
+                                                              amountText:
+                                                                  amountFormController
+                                                                      .text,
+                                                              tariffAmount:
+                                                                  selectedTariff
+                                                                      ?.amount,
+                                                              utilitiesAmount:
+                                                                  utilitiesAmount,
+                                                              vat:
+                                                                  selectedTariff
+                                                                      ?.vat)
+                                                          .toDouble()),
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              TableRow(
+                                                children: [
+                                                  const Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 5.0),
+                                                    child: Text(
+                                                      "VAT Amount",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Text(
+                                                      AmountFormatter.format(VatCalculator()
+                                                          .calculateVatAmount(
+                                                              amountText:
+                                                                  amountFormController
+                                                                      .text,
+                                                              tariffAmount:
+                                                                  selectedTariff
+                                                                      ?.amount,
+                                                              utilitiesAmount:
+                                                                  utilitiesAmount,
+                                                              vat:
+                                                                  selectedTariff
+                                                                      ?.vat)
+                                                          .toDouble()),
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              TableRow(
+                                                children: [
+                                                  const Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 5.0),
+                                                    child: Text(
+                                                      "Unit",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5.0),
+                                                    child: Text(
+                                                      "${AmountFormatter.format(VatCalculator().calculateTariffAmountPerKWatt(amountText: amountFormController.text, tariffAmount: selectedTariff?.amount, utilitiesAmount: utilitiesAmount, vat: selectedTariff?.vat).toDouble())}Kw/h",
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          const Divider(),
+                                          // Total Section
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 16.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "Amount payable",
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  AmountFormatter.formatNaira(
+                                                      double.parse(
+                                                          amountFormController
+                                                              .text)),
+                                                  style: const TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : Container(),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * .05,
-                      ),
-                      MoButton(
-                        isLoading: state is MomasPaymentLoading || isLoading,
-                        title: "CONTINUE",
-                        onTap: () {
-                          widget.momasPaymentType == MomasPaymentType.self
-                              ? payForSelf()
-                              : payForOther();
-                        },
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * .1,
+                                  )
+                                : Container(),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .05,
+                            ),
+                            MoButton(
+                              isLoading:
+                                  state is MomasPaymentLoading || isLoading,
+                              title: "CONTINUE",
+                              onTap: () {
+                                widget.momasPaymentType == MomasPaymentType.self
+                                    ? payForSelf()
+                                    : payForOther();
+                              },
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .1,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

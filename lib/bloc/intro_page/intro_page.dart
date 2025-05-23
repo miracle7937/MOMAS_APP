@@ -18,6 +18,7 @@ class _IntroPageState extends State<IntroPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.green[700],
         body: Padding(
           padding: const EdgeInsets.only(bottom: 30.0),
           child: Stack(
@@ -94,13 +95,12 @@ class _IntroPageState extends State<IntroPage> {
     return Stack(
       children: [
         // Image section
-        Container(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.8,
-            child: Image.asset(
-              image,
-              fit: BoxFit.cover,
-            ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.8,
+          width: MediaQuery.of(context).size.width,
+          child: Image.asset(
+            image,
+            fit: BoxFit.cover,
           ),
         ),
         // Skip button
@@ -134,6 +134,7 @@ class _IntroPageState extends State<IntroPage> {
           alignment: Alignment.bottomCenter,
           child: Container(
             height: MediaQuery.of(context).size.height * 0.34,
+            width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
             decoration: BoxDecoration(
               color: Colors.green[700],

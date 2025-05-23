@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momaspayplus/screens/auth/reset_password/reset_passord_screen.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 
 import '../../bloc/registeration_bloc/register_bloc.dart';
 import '../../bloc/registeration_bloc/register_event.dart';
@@ -108,68 +109,76 @@ class _EmailCodeScreenState extends State<EmailCodeScreen> {
                         borderRadius:
                             BorderRadius.only(topLeft: Radius.circular(100)),
                       ),
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 100,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              style: const TextStyle(color: Colors.grey),
-                              children: <TextSpan>[
-                                const TextSpan(
-                                    text: '4 Digit code has been sent to '),
-                                TextSpan(
-                                  text: widget.email,
-                                  style: TextStyle(
-                                      color: MoColors.mainColorII,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const TextSpan(
-                                    text:
-                                        '.\nCheck your inbox or spam folder.'),
-                              ],
+                      child: Padding(
+                        padding: context.isTablet
+                            ? EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.15)
+                            : const EdgeInsets.all(0),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 100,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Center(
-                            child: DynamicPasscodeForm(
-                              title: 'Enter Passcode',
-                              passcodeLength: 4,
-                              onPasscodeEntered: (v) {
-                                _code = v;
-                                log("Miracle $v");
-                              },
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: MoButton(
-                                    isLoading: context
-                                        .watch<RegisterBloc>()
-                                        .state is RegisterLoading,
-                                    title: "CONTINUE",
-                                    onTap: () {
-                                      context.read<RegisterBloc>().add(
-                                          VerifyEmailEvent(
-                                              widget.email, _code));
-                                      // Navigator.of(context).push(MaterialPageRoute(builder:
-                                      //     (_)=> AccountSetupScreen(email: widget.email,)));
-                                    },
+                            RichText(
+                              text: TextSpan(
+                                style: const TextStyle(color: Colors.grey),
+                                children: <TextSpan>[
+                                  const TextSpan(
+                                      text: '4 Digit code has been sent to '),
+                                  TextSpan(
+                                    text: widget.email,
+                                    style: TextStyle(
+                                        color: MoColors.mainColorII,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                              ],
+                                  const TextSpan(
+                                      text:
+                                          '.\nCheck your inbox or spam folder.'),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Center(
+                              child: DynamicPasscodeForm(
+                                title: 'Enter Passcode',
+                                passcodeLength: 4,
+                                onPasscodeEntered: (v) {
+                                  _code = v;
+                                  log("Miracle $v");
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: MoButton(
+                                      isLoading: context
+                                          .watch<RegisterBloc>()
+                                          .state is RegisterLoading,
+                                      title: "CONTINUE",
+                                      onTap: () {
+                                        context.read<RegisterBloc>().add(
+                                            VerifyEmailEvent(
+                                                widget.email, _code));
+                                        // Navigator.of(context).push(MaterialPageRoute(builder:
+                                        //     (_)=> AccountSetupScreen(email: widget.email,)));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

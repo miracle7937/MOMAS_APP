@@ -7,6 +7,7 @@ import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart
 import 'package:momaspayplus/bloc/payment_bloc/payment_bloc.dart';
 import 'package:momaspayplus/domain/repository/bill_repository.dart';
 import 'package:momaspayplus/utils/colors.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 
 import '../../bloc/airtime_bloc/airtime_bloc.dart';
 import '../../bloc/airtime_bloc/airtime_event.dart';
@@ -53,12 +54,16 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
         child: BlocProvider(
           create: (context) => AirtimeBloc(repository: BillRepository()),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: context.isTablet
+                ? EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.15)
+                : const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Select Network', style: TextStyle(fontSize: 16)),
                 const SizedBox(height: 10),
+                const Text('Select Network', style: TextStyle(fontSize: 16)),
+                const SizedBox(height: 20),
                 NetworkSelector(
                   selectedNetwork: _selectedNetwork,
                   onSelectNetwork: (network) => _selectNetwork(network),

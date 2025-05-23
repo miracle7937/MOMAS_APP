@@ -7,6 +7,7 @@ import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart
 import 'package:momaspayplus/bloc/data_bloc/data_state.dart';
 import 'package:momaspayplus/domain/data/response/data_response.dart';
 import 'package:momaspayplus/domain/repository/bill_repository.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 
 import '../../bloc/data_bloc/data_bloc.dart';
 import '../../bloc/data_bloc/data_event.dart';
@@ -77,135 +78,142 @@ class _DataScreenState extends State<DataScreen> {
             bloc: dataBloc,
             builder: (context, state) {
               return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Select Network',
-                        style: TextStyle(fontSize: 16)),
-                    const SizedBox(height: 10),
-                    NetworkSelector(
-                      selectedNetwork: _selectedNetwork,
-                      onSelectNetwork: (network) => _selectNetwork(network),
-                    ),
-                    EPDropdownButton<DataPlan>(
-                        itemsListTitle: "Select Plan",
-                        iconSize: 22,
-                        value: selectedDataPlan,
-                        hint: const Text(""),
-                        isExpanded: true,
-                        underline: const Divider(),
-                        searchMatcher: (item, text) {
-                          return item.name!
-                              .toLowerCase()
-                              .contains(text.toLowerCase());
-                        },
-                        onChanged: (v) {
-                          setState(() {
-                            selectedDataPlan = v;
-                          });
-                        },
-                        items: (dataResponse
-                                    ?.dataMap[_selectedNetwork?.displayName] ??
-                                [])
-                            .map(
-                              (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Row(
-                                    children: [
-                                      Text(e.name.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black)),
-                                    ],
-                                  )),
-                            )
-                            .toList()),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: MoFormWidget(
-                            controller: _phoneController,
-                            keyboardType: TextInputType.phone,
-                            prefixIcon: const Icon(
-                              Icons.phone,
-                              color: Colors.grey,
-                            ),
-                            title: "Phone Number",
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            Contact? contact =
-                                await _contactPicker.selectContact();
-                            setState(() {
-                              _contact = contact;
-                            });
-                            _phoneController.text =
-                                _contact?.phoneNumbers?.first ?? "";
+                child: Padding(
+                  padding: context.isTablet
+                      ? EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.15)
+                      : const EdgeInsets.all(0.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Select Network',
+                          style: TextStyle(fontSize: 16)),
+                      const SizedBox(height: 10),
+                      NetworkSelector(
+                        selectedNetwork: _selectedNetwork,
+                        onSelectNetwork: (network) => _selectNetwork(network),
+                      ),
+                      EPDropdownButton<DataPlan>(
+                          itemsListTitle: "Select Plan",
+                          iconSize: 22,
+                          value: selectedDataPlan,
+                          hint: const Text(""),
+                          isExpanded: true,
+                          underline: const Divider(),
+                          searchMatcher: (item, text) {
+                            return item.name!
+                                .toLowerCase()
+                                .contains(text.toLowerCase());
                           },
-                          child: const Column(
-                            children: [
-                              SizedBox(
-                                height: 53,
+                          onChanged: (v) {
+                            setState(() {
+                              selectedDataPlan = v;
+                            });
+                          },
+                          items: (dataResponse?.dataMap[
+                                      _selectedNetwork?.displayName] ??
+                                  [])
+                              .map(
+                                (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Row(
+                                      children: [
+                                        Text(e.name.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .copyWith(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black)),
+                                      ],
+                                    )),
+                              )
+                              .toList()),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MoFormWidget(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              prefixIcon: const Icon(
+                                Icons.phone,
+                                color: Colors.grey,
                               ),
-                              Icon(
-                                Icons.perm_contact_cal_outlined,
-                                size: 40,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    selectedDataPlan != null
-                        ? MoFormWidget(
-                            enable: false,
-                            controller: TextEditingController(
-                                text:
-                                    "NGN ${selectedDataPlan?.variationAmount}"),
-                            keyboardType: TextInputType.number,
-                            prefixIcon: const Icon(
-                              Icons.wallet,
-                              color: Colors.grey,
+                              title: "Phone Number",
                             ),
-                            title: "Amount",
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              Contact? contact =
+                                  await _contactPicker.selectContact();
+                              setState(() {
+                                _contact = contact;
+                              });
+                              _phoneController.text =
+                                  _contact?.phoneNumbers?.first ?? "";
+                            },
+                            child: const Column(
+                              children: [
+                                SizedBox(
+                                  height: 53,
+                                ),
+                                Icon(
+                                  Icons.perm_contact_cal_outlined,
+                                  size: 40,
+                                ),
+                              ],
+                            ),
                           )
-                        : Container(),
-                    const SizedBox(height: 20),
-                    MoButton(
-                      isLoading: state is DataLoading,
-                      title: "BUY NOW",
-                      onTap: () {
-                        String serviceId = _selectedNetwork!.name.toLowerCase();
-                        String? variantCode = selectedDataPlan?.variationCode;
-                        final String amount =
-                            selectedDataPlan?.variationAmount ?? "0";
-                        final String phone = _phoneController.text;
-                        if (selectedDataPlan != null) {
-                          MoBottomSheet().payment(context,
-                              amount: amount, serviceType: ServiceType.data,
-                              onPayment: (String ref) {
-                            dataBloc.add(
-                              BuyData(
-                                  serviceId: serviceId,
-                                  amount: amount,
-                                  phone: phone,
-                                  variationCode: variantCode ?? "",
-                                  ref: ref),
-                            );
-                          });
-                        } else {
-                          showErrorBottomSheet(
-                              context, "Please select data plan");
-                        }
-                      },
-                    )
-                  ],
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      selectedDataPlan != null
+                          ? MoFormWidget(
+                              enable: false,
+                              controller: TextEditingController(
+                                  text:
+                                      "NGN ${selectedDataPlan?.variationAmount}"),
+                              keyboardType: TextInputType.number,
+                              prefixIcon: const Icon(
+                                Icons.wallet,
+                                color: Colors.grey,
+                              ),
+                              title: "Amount",
+                            )
+                          : Container(),
+                      const SizedBox(height: 20),
+                      MoButton(
+                        isLoading: state is DataLoading,
+                        title: "BUY NOW",
+                        onTap: () {
+                          String serviceId =
+                              _selectedNetwork!.name.toLowerCase();
+                          String? variantCode = selectedDataPlan?.variationCode;
+                          final String amount =
+                              selectedDataPlan?.variationAmount ?? "0";
+                          final String phone = _phoneController.text;
+                          if (selectedDataPlan != null) {
+                            MoBottomSheet().payment(context,
+                                amount: amount, serviceType: ServiceType.data,
+                                onPayment: (String ref) {
+                              dataBloc.add(
+                                BuyData(
+                                    serviceId: serviceId,
+                                    amount: amount,
+                                    phone: phone,
+                                    variationCode: variantCode ?? "",
+                                    ref: ref),
+                              );
+                            });
+                          } else {
+                            showErrorBottomSheet(
+                                context, "Please select data plan");
+                          }
+                        },
+                      )
+                    ],
+                  ),
                 ),
               );
             },

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 
 import '../../../bloc/setting_bloc/setting_bloc.dart';
 import '../../../bloc/setting_bloc/setting_event.dart';
@@ -23,16 +24,16 @@ class SupportScreen extends StatefulWidget {
 }
 
 class _SupportScreenState extends State<SupportScreen> {
-
   late SettingsBloc settingsBloc;
   SupportData? supportData;
-
 
   @override
   void initState() {
     super.initState();
-    settingsBloc = SettingsBloc(SettingRepository())..add(SupportSettingEvent());
+    settingsBloc = SettingsBloc(SettingRepository())
+      ..add(SupportSettingEvent());
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,39 +41,40 @@ class _SupportScreenState extends State<SupportScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocConsumer<SettingsBloc, SettingsState>(
-            bloc: settingsBloc,
-            builder: (context, state) {
-
-
-              if (state is SettingsStateLoading) {
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Center(
-                    child: SpinKitFadingCircle(
-                      color: MoColors.mainColor,
-                      size: 30.0,
-                    ),
+          bloc: settingsBloc,
+          builder: (context, state) {
+            if (state is SettingsStateLoading) {
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: SpinKitFadingCircle(
+                    color: MoColors.mainColor,
+                    size: 30.0,
                   ),
-                );
-              }
-
+                ),
+              );
+            }
 
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 13,),
+                const SizedBox(
+                  height: 13,
+                ),
                 Center(
                   child: ShadowContainer(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 8),
                       child: SizedBox(
                         height: 40,
-                        width: MediaQuery.of(context).size.width -15,
+                        width: MediaQuery.of(context).size.width - 15,
                         child: Row(
                           children: [
                             PopButton().pop(context),
-                            const SizedBox(width: 20,),
+                            const SizedBox(
+                              width: 20,
+                            ),
                             const Text("Support")
                           ],
                         ),
@@ -80,59 +82,69 @@ class _SupportScreenState extends State<SupportScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20,),
-                const Text(
-                  'Reach out to us for any issues, we are always here to support you',
-                  style: TextStyle(fontSize: 16),
+                const SizedBox(
+                  height: 20,
                 ),
-                const SizedBox(height: 20),
-                SupportOption(
-                  icon: Icons.payment,
-                  title: 'Payment Issues',
-                  subtitle: 'Connect to us on all payment issues',
-                  onTap: () {
-                    Launcher()
-                        .launchInBrowser(
-                        Uri.parse(
-                            supportData?.paymentSupport ?? ""));
-                  },
-                ),
-                const SizedBox(height: 20),
-                SupportOption(
-                  icon: Icons.electric_meter,
-                  title: 'Meter Issues',
-                  subtitle: 'Connect to us on all meter issues',
-                  onTap: () {
-                    Launcher()
-                        .launchInBrowser(
-                        Uri.parse(
-                            supportData?.meterSupport ?? ""));
-                  },
-                ),
-                const SizedBox(height: 20),
-                SupportOption(
-                  icon: Icons.help_outline,
-                  title: 'Other Issues',
-                  subtitle: 'Connect to us on all other issues',
-                  onTap: () {
-                    Launcher()
-                        .launchInBrowser(
-                        Uri.parse(
-                            supportData?.generalSupport ?? ""));
-                  },
+                Padding(
+                  padding: context.isTablet
+                      ? EdgeInsets.only(
+                          right: MediaQuery.of(context).size.width * 0.15,
+                          left: MediaQuery.of(context).size.width * 0.15,
+                        )
+                      : const EdgeInsets.all(0.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Reach out to us for any issues, we are always here to support you',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 20),
+                      SupportOption(
+                        icon: Icons.payment,
+                        title: 'Payment Issues',
+                        subtitle: 'Connect to us on all payment issues',
+                        onTap: () {
+                          Launcher().launchInBrowser(
+                              Uri.parse(supportData?.paymentSupport ?? ""));
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      SupportOption(
+                        icon: Icons.electric_meter,
+                        title: 'Meter Issues',
+                        subtitle: 'Connect to us on all meter issues',
+                        onTap: () {
+                          Launcher().launchInBrowser(
+                              Uri.parse(supportData?.meterSupport ?? ""));
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      SupportOption(
+                        icon: Icons.help_outline,
+                        title: 'Other Issues',
+                        subtitle: 'Connect to us on all other issues',
+                        onTap: () {
+                          Launcher().launchInBrowser(
+                              Uri.parse(supportData?.generalSupport ?? ""));
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );
-          }, listener: (BuildContext context, SettingsState state) {
-          switch (state) {
-            case SettingsStateFailed():
-              showErrorBottomSheet(context, state.error);
-            case SettingsSupportStateLoading():
-              supportData = state.response.data;
-            default:
-              log("state not implemented");
-          }
-        },
+          },
+          listener: (BuildContext context, SettingsState state) {
+            switch (state) {
+              case SettingsStateFailed():
+                showErrorBottomSheet(context, state.error);
+              case SettingsSupportStateLoading():
+                supportData = state.response.data;
+              default:
+                log("state not implemented");
+            }
+          },
         ),
       ),
     );

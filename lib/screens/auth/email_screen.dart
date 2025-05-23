@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momaspayplus/screens/auth/login.dart';
+import 'package:momaspayplus/utils/screen_utils.dart';
 
 import '../../bloc/registeration_bloc/register_bloc.dart';
 import '../../bloc/registeration_bloc/register_event.dart';
@@ -87,70 +88,80 @@ class _EmailScreenState extends State<EmailScreen> {
                         borderRadius:
                             BorderRadius.only(topLeft: Radius.circular(100)),
                       ),
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 100,
-                          ),
-                          MoFormWidget(
-                            controller: emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            prefixIcon: const Icon(
-                              Icons.email,
-                              color: Colors.grey,
+                      child: Padding(
+                        padding: context.isTablet
+                            ? EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.2)
+                            : const EdgeInsets.all(0.0),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 50,
                             ),
-                            title: "Email",
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.1,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: MoButton(
-                                    isLoading: context
-                                        .watch<RegisterBloc>()
-                                        .state is RegisterLoading,
-                                    title: "CONTINUE",
-                                    onTap: () {
-                                      context.read<RegisterBloc>().add(
-                                          CheckEmailEvent(emailController.text,
-                                              widget.emailType));
-                                    },
+                            MoFormWidget(
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              prefixIcon: const Icon(
+                                Icons.email,
+                                color: Colors.grey,
+                              ),
+                              title: "Email",
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: MoButton(
+                                      isLoading: context
+                                          .watch<RegisterBloc>()
+                                          .state is RegisterLoading,
+                                      title: "CONTINUE",
+                                      onTap: () {
+                                        context.read<RegisterBloc>().add(
+                                            CheckEmailEvent(
+                                                emailController.text,
+                                                widget.emailType));
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                const TextSpan(
-                                  text: 'Already has an account?   ',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 15),
-                                ),
-                                TextSpan(
-                                  text: 'Login',
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const LoginScreen()));
-                                    },
-                                  style: TextStyle(
-                                      color: MoColors.mainColor, fontSize: 14),
-                                ),
-                              ],
+                            const SizedBox(
+                              height: 25,
                             ),
-                          )
-                        ],
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: 'Already has an account?   ',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
+                                  ),
+                                  TextSpan(
+                                    text: 'Login',
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const LoginScreen()));
+                                      },
+                                    style: TextStyle(
+                                        color: MoColors.mainColor,
+                                        fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],
