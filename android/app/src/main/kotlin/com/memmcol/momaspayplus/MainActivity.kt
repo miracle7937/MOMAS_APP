@@ -1,4 +1,4 @@
-package com.example.momas_pay
+package com.memmcol.momaspayplus
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
