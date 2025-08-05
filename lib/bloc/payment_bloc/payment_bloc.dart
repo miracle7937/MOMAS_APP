@@ -112,6 +112,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   }
 }
 
-enum PaymentType { paystack, wallet, flutterwave, remita }
+enum PaymentType { paystack, wallet, flutterwave, remita, enkpay }
 
-enum ServiceType { credit_token, data, airtime, electricity, cable }
+enum ServiceType { credit_token, data, airtime, electricity, cable, arrears }

@@ -4,6 +4,7 @@ import 'package:momaspayplus/screens/service/service_screen.dart';
 
 import '../domain/data/response/feature.dart';
 import '../domain/data/response/user_model.dart';
+import '../screens/arrears/arrears_page.dart';
 import '../screens/bills_payment/bill_selected_screen.dart';
 import '../screens/generate_token/access_token_screen.dart';
 import '../screens/generate_token/access_token_verification.dart';
@@ -152,6 +153,17 @@ class DashboardBuilder {
             }),
       );
     }
+
+    value.add(
+      GridItemModel(
+          image: MoImage.analytics,
+          title: "Arrears",
+          subtitle: "Buy for unpaid utilities",
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (builder) => CustomerArrearsPage()));
+          }),
+    );
     return value;
   }
 }

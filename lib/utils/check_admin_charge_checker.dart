@@ -21,7 +21,8 @@ class _AdminChargeUIState extends State<AdminChargeUI> {
   @override
   void initState() {
     super.initState();
-    paymentBloc = PaymentBloc(PaymentRepository())..add(GenerateAccount());
+    paymentBloc = PaymentBloc(PaymentRepository())
+      ..add(const GenerateAccount());
   }
 
   @override

@@ -1,7 +1,9 @@
 import 'package:momaspayplus/domain/data/request/airtime_request.dart';
 import 'package:momaspayplus/domain/data/request/cable_tv_request.dart';
 import 'package:momaspayplus/domain/data/request/data_request.dart';
+import 'package:momaspayplus/domain/data/response/arrears_items.dart';
 import 'package:momaspayplus/domain/data/response/generic_response.dart';
+import 'package:momaspayplus/screens/arrears/arrears_page.dart';
 
 import '../../utils/routes.dart';
 import '../data/request/momas_meter_buy.dart';
@@ -88,5 +90,17 @@ class BillRepository {
   Future<VendingPropertiesData> getVendingProperties() async {
     var response = await _request.getData(path: Routes.vendingProperties);
     return VendingPropertiesData.fromJson(response.data);
+  }
+
+  Future<List<ArrearItem>> getCustomerArrears() async {
+    var response = await _request.getData(path: Routes.arrears);
+    return (response.data["data"] as List)
+        .map((v) => ArrearItem.fromJson(v))
+        .toList();
+  }
+
+  Future<GenericResponse> payArrear(Map<String, String> map) async {
+    var response = await _request.postData(path: Routes.payArrears, body: map);
+    return GenericResponse.fromJson(response.data);
   }
 }

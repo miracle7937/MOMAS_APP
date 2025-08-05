@@ -14,7 +14,8 @@ class MoBottomSheet {
   Future payment(BuildContext context,
       {required String amount,
       required ServiceType serviceType,
-      Function(String ref)? onPayment}) {
+      Function(String ref)? onPayment,
+      bool? showMonthlyFee = true}) {
     return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -40,7 +41,8 @@ class MoBottomSheet {
               ));
             }
             //when it is false it means you haven't pay  -->(0)
-            if (snapshot.data?.monthlyAdminFee == false) {
+            if (snapshot.data?.monthlyAdminFee == false &&
+                showMonthlyFee == true) {
               return AdminChargeUI();
             }
             return PaymentBottomSheet(

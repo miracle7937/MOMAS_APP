@@ -129,19 +129,22 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
                 const SizedBox(height: 20),
                 _buildPaymentOption(
                     context, 'Pay with Paystack', MoImage.payStack,
-                    onTap: () => _onPaymentOptionTap(PaymentType.paystack)),
-                // const SizedBox(height: 10),
-                // _buildPaymentOption(context, 'Pay with Remita', MoImage.remita,
-                //     onTap: () => _onPaymentOptionTap(PaymentType.remita)),
+                    onTap: () => _onPaymentOptionTap(PaymentType.paystack),
+                    additionalInfo: "1.5% + NGN100"),
+                const SizedBox(height: 10),
+                _buildPaymentOption(context, 'Enkpay payment', null,
+                    onTap: () => _onPaymentOptionTap(PaymentType.enkpay),
+                    additionalInfo: "Flat NGN100"),
                 const SizedBox(height: 10),
                 _buildPaymentOption(
                     context, 'Pay with Flutterwave', MoImage.flutterWave,
+                    additionalInfo: "2.0%",
                     onTap: () => _onPaymentOptionTap(PaymentType.flutterwave)),
                 const SizedBox(height: 10),
                 _buildPaymentOption(
                     context, 'Pay with wallet', MoImage.walletPayment,
                     additionalInfo: isNotEmpty(user?.mainWallet.toString())
-                        ? 'NGN ${user?.mainWallet}.'
+                        ? ' Balance: NGN ${user?.mainWallet}.'
                         : "",
                     onTap: () => _onPaymentOptionTap(PaymentType.wallet)),
               ],
@@ -185,7 +188,8 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
     );
   }
 
-  Widget _buildPaymentOption(BuildContext context, String title, String iconUrl,
+  Widget _buildPaymentOption(
+      BuildContext context, String title, String? iconUrl,
       {bool isSelected = false, String? additionalInfo, VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
@@ -199,11 +203,19 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: ListTile(
-          leading: Image.asset(
-            iconUrl,
-            width: 40,
-            height: 40,
-          ),
+          leading: iconUrl == null
+              ? CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  child: Text(
+                    title.isNotEmpty ? title[0].toUpperCase() : '',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                )
+              : Image.asset(
+                  iconUrl,
+                  width: 40,
+                  height: 40,
+                ),
           title: Text(
             title,
             style: const TextStyle(color: Colors.black),
@@ -269,7 +281,8 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             Uri uri = Uri.parse(request.url);
             bool containsPayment = uri.toString().contains('payment');
             if (containsPayment == true) {
-              String? ref = uri.queryParameters['ref'];
+              String? ref =
+                  uri.queryParameters['ref'] ?? uri.queryParameters["trans_id"];
               String? status = uri.queryParameters['status'];
               Navigator.pop(context, {"ref": ref, "status": status});
             }

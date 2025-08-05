@@ -36,6 +36,8 @@ class Routes {
   static String disApproveToken = "$_baseURL/disapprove-token";
   static String tokenList = "$_baseURL/token-list";
   static String vendingProperties = "$_baseURL/vending-properties";
+  static String payArrears = "$_baseURL/pay_arrears";
+  static String arrears = "$_baseURL/arrears";
   static String resetPassword = "$_baseURL/reset-password";
   static String getAccount = "$_baseURL/get-account";
   static String adminFeeCheck = "$_baseURL/admin-fee-check";

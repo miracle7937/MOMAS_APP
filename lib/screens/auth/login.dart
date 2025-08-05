@@ -40,8 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     SharedPreferenceHelper.getLogin().then((onValue) {
-      print('====> ${onValue?.toJson()}');
-
       setState(() {
         if (onValue?.email != null) {
           generalController.text = onValue!.email!;
@@ -135,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Icons.email,
                               color: Colors.grey,
                             ),
-                            title: "Email / Meter Number",
+                            title: "Email or Meter Number",
                           ),
                           MoFormWidget(
                             controller: passwordController,
